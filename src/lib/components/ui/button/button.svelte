@@ -3,6 +3,7 @@
 	import { type Events, type Props, buttonVariants } from './index.js';
 	import { cn } from '$lib/utils.js';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 
 	type $$Props = Props;
 	type $$Events = Events;
@@ -33,7 +34,7 @@
 		<slot />
 	</ButtonPrimitive.Root>
 {:else if href}
-	<a
+	<button
 		class={cn(
 			buttonVariants({
 				variant,
@@ -43,10 +44,10 @@
 		)}
 		class:active={$page.url.pathname.includes(href)}
 		{...$$restProps}
-		{href}
+		on:click={() => goto(href)}
 	>
 		<slot />
-	</a>
+	</button>
 {/if}
 
 <style lang="postcss">

@@ -6,15 +6,20 @@ export function treatMessage(message: any) {
 	switch (wsMessage.type) {
 		case 'text_message':
 			const newMessage: Message = wsMessage.content;
-			messages.update((messages) => {
-				messages.push(newMessage);
-				return messages;
-			});
-
-			const chatbox = document.getElementById('chatbox');
-			setTimeout(() => {
-				chatbox?.scrollTo({ left: 0, top: chatbox.scrollHeight, behavior: 'smooth' });
-			}, 10);
+			const pathname = window.location.pathname;
+			if (
+				pathname.includes(newMessage.channel_id) ||
+				pathname.includes(newMessage.author.id.split(':')[1])
+			) {
+				messages.update((messages) => {
+					messages.push(newMessage);
+					return messages;
+				});
+				const chatbox = document.getElementById('chatbox');
+				setTimeout(() => {
+					chatbox?.scrollTo({ left: 0, top: chatbox.scrollHeight, behavior: 'smooth' });
+				}, 10);
+			}
 			break;
 		case 'friend_request':
 			const newFR: Notification = wsMessage.content;

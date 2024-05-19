@@ -2,7 +2,13 @@
 	import Navbar from '$lib/components/ui/navbar/Navbar.svelte';
 	import Sidebar from '$lib/components/ui/sidebar/Sidebar.svelte';
 	import { treatMessage } from '$lib/websocket';
-	import { setUserState, setServersState, setFriendsState, notifications } from '$lib/stores';
+	import {
+		setUserState,
+		setServersState,
+		setFriendsState,
+		notifications,
+		friendRequest
+	} from '$lib/stores';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
 
@@ -11,6 +17,7 @@
 	setServersState(data.props?.servers);
 	setFriendsState(data.props?.friends);
 	notifications.set(data.props?.notifications);
+	friendRequest.set(data.props?.form);
 
 	let ws;
 
@@ -41,4 +48,7 @@
 </div>
 
 <style>
+	:global(a[data-internal='true']::after) {
+		content: none;
+	}
 </style>

@@ -1,6 +1,8 @@
 import { type Writable, writable } from 'svelte/store';
 import type { User, Server, Message, Notification } from './types';
 import { getContext, setContext } from 'svelte';
+import { type SuperValidated, type Infer } from 'sveltekit-superforms';
+import type { FriendRequestFormSchema } from './components/friends/schema-friend-request';
 
 const USER_CTX = 'user';
 const SERVERS_CTX = 'servers';
@@ -13,6 +15,7 @@ export const user = writable<User | undefined>();
 export const messages = writable<Message[]>();
 export const notifications = writable<Notification[]>();
 export const friends = writable<User[]>();
+export const friendRequest = writable<SuperValidated<Infer<FriendRequestFormSchema>>>();
 
 export function setUserState(initData: User | undefined) {
 	user.set(initData);

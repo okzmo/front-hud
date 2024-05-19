@@ -1,10 +1,12 @@
+import { superValidate } from 'sveltekit-superforms';
 import type { LayoutServerLoad } from './$types';
+import { zod } from 'sveltekit-superforms/adapters';
+import { friendRequestSchema } from '$lib/components/friends/schema-friend-request';
 
 export const load: LayoutServerLoad = async ({ cookies, locals }) => {
 	const friendsEndpoint = 'api/v1/friends';
 	const serversEndpoint = 'api/v1/servers';
 	const notificationsEndpoint = 'api/v1/notifications';
-
 	const sessionId = cookies.get('session');
 	const user = locals.user;
 	const userId = user.id.split(':')[1];
@@ -52,7 +54,8 @@ export const load: LayoutServerLoad = async ({ cookies, locals }) => {
 				user,
 				friends: friendsData.friends,
 				servers: serversData.servers,
-				notifications: notificationsData.notifications
+				notifications: notificationsData.notifications,
+				form: await superValidate(zod(friendRequestSchema))
 			}
 		};
 	} catch (error) {

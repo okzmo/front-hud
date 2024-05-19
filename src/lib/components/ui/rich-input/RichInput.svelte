@@ -14,10 +14,11 @@
 	async function sendMessage(content: string) {
 		const body = {
 			author: $user,
-			channel_id: $page.params.id,
+			channel_id: $page.params.id || $page.params.channelId,
 			content: content,
 			private_message: friend_chatbox
 		};
+		console.log(body);
 
 		try {
 			const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/messages/create`, {

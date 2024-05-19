@@ -55,6 +55,6 @@ export const actions: Actions = {
 			return fail(500, { error: 'An unexpected error occured.' });
 		}
 
-		throw redirect(303, '/hudori/chat');
+		throw redirect(303, '/hudori/chat/friends');
 	}
 };

@@ -82,3 +82,25 @@ export function formatISODate(isoDate: string): string {
 	);
 }
 
+export function formatError(message: string): string {
+	return message[0].toUpperCase() + message.slice(1) + '.';
+}
+
+export function manageTooltip(node: HTMLAnchorElement) {
+	const handleMouseOver = (ev: MouseEvent) => {
+		const link = ev.currentTarget as HTMLAnchorElement;
+		if (link.hostname === window.location.hostname) {
+			link.setAttribute('data-internal', 'true');
+		} else {
+			link.removeAttribute('data-internal');
+		}
+	};
+
+	node.addEventListener('mouseover', handleMouseOver);
+
+	return {
+		destroy() {
+			node.removeEventListener('mouseover', handleMouseOver);
+		}
+	};
+}

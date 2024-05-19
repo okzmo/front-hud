@@ -23,7 +23,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 			event.locals.user = data.user;
 		} catch (err) {
-			console.log(err);
+			// console.log(err);
 			if (!isAuthPage) {
 				redirect(303, '/signin');
 			}

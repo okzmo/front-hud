@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import FriendsContextMenu from './FriendsContextMenu.svelte';
 	export let href: string = '';
 	export let username: string;
@@ -11,9 +12,9 @@
 
 <ContextMenu.Root>
 	<ContextMenu.Trigger>
-		<a
-			{href}
-			class="flex gap-x-3 hover:bg-zinc-800/75 p-3 rounded-2xl active:scale-[0.97] items-center"
+		<button
+			on:click={() => goto(href)}
+			class="flex gap-x-3 hover:bg-zinc-800/75 p-3 rounded-2xl active:scale-[0.97] items-center w-full"
 			class:active={$page.url.pathname.includes(href)}
 			id="friend-link"
 		>
@@ -27,13 +28,13 @@
 			>
 				<img class="w-full rounded-xl h-full object-cover" src={avatar} alt="" />
 			</div>
-			<div>
+			<div class="text-left">
 				<p class="text-lg leading-none font-medium">{username}</p>
 				{#if about_me}
 					<p class="text-zinc-500 leading-none mt-1 font-light">{about_me}</p>
 				{/if}
 			</div>
-		</a>
+		</button>
 	</ContextMenu.Trigger>
 	<FriendsContextMenu />
 </ContextMenu.Root>
