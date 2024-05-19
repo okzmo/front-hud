@@ -1,9 +1,11 @@
 <script lang="ts">
 	import ServerChannelLink from './ServerChannelLink.svelte';
 	import { server } from '$lib/stores';
+	import * as ContextMenu from '$lib/components/ui/context-menu';
+	import ServerContextMenu from '$lib/components/server/ServerContextMenu.svelte';
 </script>
 
-<ul class="flex flex-col px-4 pt-4 w-full">
+<ul class="flex flex-col px-4 pt-4 w-full h-[calc(100%_-_4.25rem)]">
 	<span class="block w-full h-[12rem] rounded-lg bg-zinc-500" />
 	{#if $server && $server.channels}
 		<div class="px-2 mt-8 flex flex-col gap-y-2">
@@ -20,4 +22,8 @@
 	{:else}
 		<p>no bro</p>
 	{/if}
+	<ContextMenu.Root>
+		<ContextMenu.Trigger class="w-full h-full flex-1"></ContextMenu.Trigger>
+		<ServerContextMenu />
+	</ContextMenu.Root>
 </ul>

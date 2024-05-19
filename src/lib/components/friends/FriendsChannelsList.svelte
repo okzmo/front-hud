@@ -1,14 +1,11 @@
 <script>
-	import { getFriendsState, getUserState } from '$lib/stores';
+	import { friends, user } from '$lib/stores';
 	import Icon from '@iconify/svelte';
 	import { Button } from '../ui/button';
 	import { Input } from '../ui/input';
 	import FriendChatLink from './FriendChatLink.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import FriendRequestDialog from './FriendRequestDialog.svelte';
-
-	const friends = getFriendsState();
-	const user = getUserState();
 </script>
 
 <div class="px-4 pt-4">

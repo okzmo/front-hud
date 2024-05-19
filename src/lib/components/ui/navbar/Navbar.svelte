@@ -3,14 +3,12 @@
 
 	import Button from '../button/button.svelte';
 	import Separator from '../separator/separator.svelte';
-	import { getServersState } from '$lib/stores';
+	import { servers } from '$lib/stores';
 	import ServerActionsButton from './ServerActionsButton.svelte';
 	import GlobalButton from './GlobalButton.svelte';
 	import FriendsButton from './FriendsButton.svelte';
 	import ServerAccessButton from './ServerAccessButton.svelte';
 	import NotificationsButton from './NotificationsButton.svelte';
-
-	const servers = getServersState();
 </script>
 
 <nav class="p-3 border-r border-zinc-850 w-fit h-full">

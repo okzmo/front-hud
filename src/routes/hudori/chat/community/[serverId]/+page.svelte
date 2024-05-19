@@ -3,5 +3,5 @@
 	import type { Server } from '$lib/types';
 
 	export let data: { server: Server };
-	server.set(data.server);
+	$: server.set(data.server);
 </script>

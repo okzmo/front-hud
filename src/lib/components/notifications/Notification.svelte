@@ -3,9 +3,8 @@
 	import Button from '../ui/button/button.svelte';
 	import { acceptFriendRequest, refuseFriendRequest } from './friendRequest';
 	import { formatISODate } from '$lib/utils';
-	import { getFriendsState, notifications } from '$lib/stores';
+	import { friends, notifications } from '$lib/stores';
 
-	const friends = getFriendsState();
 	async function handleAccept(request_id: string, notif_id: string) {
 		const friend = await acceptFriendRequest(request_id, notif_id);
 		if (friend) {

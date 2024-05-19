@@ -1,9 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import Button from '../ui/button/button.svelte';
-	import { getUserState } from '$lib/stores';
-
-	const user = getUserState();
+	import { user } from '$lib/stores';
 </script>
 
 <div class="absolute left-1/2 -translate-x-1/2 bottom-3 w-sidebar flex justify-center">

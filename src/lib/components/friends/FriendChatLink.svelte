@@ -2,16 +2,24 @@
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
+	import { contextMenuId } from '$lib/stores';
 	import FriendsContextMenu from './FriendsContextMenu.svelte';
+	import { handleContextMenu } from '$lib/utils';
+
 	export let href: string = '';
 	export let username: string;
 	export let about_me: string = '';
 	export let avatar: string = '';
 	export let status: string = 'bg-offline';
+
+	let openContextMenuId = `context-menu-${username}`;
+	let isOpen: boolean = false;
+
+	$: isOpen = $contextMenuId === openContextMenuId;
 </script>
 
 <ContextMenu.Root>
-	<ContextMenu.Trigger>
+	<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId)}>
 		<button
 			on:click={() => goto(href)}
 			class="flex gap-x-3 hover:bg-zinc-800/75 p-3 rounded-2xl active:scale-[0.97] items-center w-full"
@@ -36,7 +44,9 @@
 			</div>
 		</button>
 	</ContextMenu.Trigger>
-	<FriendsContextMenu />
+	{#if isOpen}
+		<FriendsContextMenu />
+	{/if}
 </ContextMenu.Root>
 
 <style lang="postcss">

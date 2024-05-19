@@ -2,20 +2,14 @@
 	import Navbar from '$lib/components/ui/navbar/Navbar.svelte';
 	import Sidebar from '$lib/components/ui/sidebar/Sidebar.svelte';
 	import { treatMessage } from '$lib/websocket';
-	import {
-		setUserState,
-		setServersState,
-		setFriendsState,
-		notifications,
-		friendRequest
-	} from '$lib/stores';
+	import { notifications, friendRequest, friends, servers, user } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
 
 	export let data: LayoutData;
-	setUserState(data.props?.user);
-	setServersState(data.props?.servers);
-	setFriendsState(data.props?.friends);
+	user.set(data.props?.user);
+	servers.set(data.props?.servers);
+	friends.set(data.props?.friends);
 	notifications.set(data.props?.notifications);
 	friendRequest.set(data.props?.form);
 

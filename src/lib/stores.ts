@@ -16,6 +16,7 @@ export const messages = writable<Message[]>();
 export const notifications = writable<Notification[]>();
 export const friends = writable<User[]>();
 export const friendRequest = writable<SuperValidated<Infer<FriendRequestFormSchema>>>();
+export const contextMenuId = writable<String | undefined>();
 
 export function setUserState(initData: User | undefined) {
 	user.set(initData);
