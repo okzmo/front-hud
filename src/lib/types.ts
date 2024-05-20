@@ -17,6 +17,7 @@ export interface Server {
 	icon: string;
 	banner: string;
 	channels: Channel[];
+	roles?: string[];
 	created_at: string;
 }
 

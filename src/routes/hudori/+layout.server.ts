@@ -4,16 +4,17 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { friendRequestSchema } from '$lib/components/friends/schema-friend-request';
 
 export const load: LayoutServerLoad = async ({ cookies, locals }) => {
-	const friendsEndpoint = 'api/v1/friends';
-	const serversEndpoint = 'api/v1/servers';
-	const notificationsEndpoint = 'api/v1/notifications';
-	const sessionId = cookies.get('session');
 	const user = locals.user;
 	const userId = user.id.split(':')[1];
 
+	const friendsEndpoint = `api/v1/friends/${userId}`;
+	const serversEndpoint = `api/v1/servers/${userId}`;
+	const notificationsEndpoint = `api/v1/notifications/${userId}`;
+	const sessionId = cookies.get('session');
+
 	try {
 		const [friendsResponse, serversResponse, notificationsResponse] = await Promise.all([
-			fetch(`${import.meta.env.VITE_API_URL}/${friendsEndpoint}/${userId}`, {
+			fetch(`${import.meta.env.VITE_API_URL}/${friendsEndpoint}`, {
 				method: 'GET',
 				credentials: 'include',
 				headers: {
@@ -21,7 +22,7 @@ export const load: LayoutServerLoad = async ({ cookies, locals }) => {
 					'Content-Type': 'application/json'
 				}
 			}),
-			fetch(`${import.meta.env.VITE_API_URL}/${serversEndpoint}/${userId}`, {
+			fetch(`${import.meta.env.VITE_API_URL}/${serversEndpoint}`, {
 				method: 'GET',
 				credentials: 'include',
 				headers: {
@@ -29,7 +30,7 @@ export const load: LayoutServerLoad = async ({ cookies, locals }) => {
 					'Content-Type': 'application/json'
 				}
 			}),
-			fetch(`${import.meta.env.VITE_API_URL}/${notificationsEndpoint}/${userId}`, {
+			fetch(`${import.meta.env.VITE_API_URL}/${notificationsEndpoint}`, {
 				method: 'GET',
 				credentials: 'include',
 				headers: {
@@ -55,7 +56,7 @@ export const load: LayoutServerLoad = async ({ cookies, locals }) => {
 				friends: friendsData.friends,
 				servers: serversData.servers,
 				notifications: notificationsData.notifications,
-				form: await superValidate(zod(friendRequestSchema))
+				formFriendRequest: await superValidate(zod(friendRequestSchema))
 			}
 		};
 	} catch (error) {

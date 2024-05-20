@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
-import { contextMenuId } from './stores';
+import { contextMenuInfo } from './stores';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -106,6 +106,10 @@ export function manageTooltip(node: HTMLAnchorElement) {
 	};
 }
 
-export function handleContextMenu(id: string) {
-	contextMenuId.set(id);
+export function handleContextMenu(id: string, roles: string[] | undefined = undefined) {
+	const informations = {
+		id: id,
+		roles: roles
+	};
+	contextMenuInfo.set(informations);
 }

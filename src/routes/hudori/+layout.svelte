@@ -11,7 +11,7 @@
 	servers.set(data.props?.servers);
 	friends.set(data.props?.friends);
 	notifications.set(data.props?.notifications);
-	friendRequest.set(data.props?.form);
+	friendRequest.set(data.props?.formFriendRequest);
 
 	let ws;
 

@@ -12,6 +12,9 @@
 	export let friend_chatbox: boolean;
 
 	async function sendMessage(content: string) {
+		if (content.length <= 0) {
+			return;
+		}
 		const body = {
 			author: $user,
 			channel_id: $page.params.id || $page.params.channelId,

@@ -14,7 +14,7 @@
 
 <ContextMenuPrimitive.Item
 	class={cn(
-		'relative flex first:mt-0 cursor-pointer select-none items-center rounded-lg px-3 py-2 text-base outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-zinc-700 data-[highlighted]:transition-colors data-[highlighted]:duration-75 data-[disabled]:opacity-50',
+		'relative flex first:mt-0 cursor-pointer select-none items-center rounded-lg pl-2 pr-5 py-2 text-base outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-zinc-700 data-[highlighted]:transition-colors data-[highlighted]:duration-75 data-[disabled]:opacity-50',
 		inset && 'pl-8',
 		className
 	)}

@@ -2,22 +2,23 @@
 	import Button from '../button/button.svelte';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import ServerAccessContextMenu from './ServerAccessContextMenu.svelte';
-	import { contextMenuId } from '$lib/stores';
+	import { contextMenuInfo } from '$lib/stores';
 	import { handleContextMenu } from '$lib/utils';
 
 	export let icon: string | undefined;
 	export let name: string;
 	export let id: string;
+	export let roles: string[] | undefined;
 
 	let openContextMenuId = `context-menu-${id}`;
 	let isOpen: boolean = false;
 
-	$: isOpen = $contextMenuId === openContextMenuId;
+	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
 </script>
 
 <li>
 	<ContextMenu.Root>
-		<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId)}>
+		<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId, roles)}>
 			<Button
 				class="h-14 w-14 rounded-xl text-zinc-500 overflow-hidden"
 				size="icon"
@@ -31,7 +32,7 @@
 			</Button>
 		</ContextMenu.Trigger>
 		{#if isOpen}
-			<ServerAccessContextMenu />
+			<ServerAccessContextMenu {roles} {name} />
 		{/if}
 	</ContextMenu.Root>
 </li>

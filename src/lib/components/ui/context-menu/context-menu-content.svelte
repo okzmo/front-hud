@@ -10,7 +10,7 @@
 
 <ContextMenuPrimitive.Content
 	class={cn(
-		'z-50 min-w-[8rem] rounded-xl border bg-zinc-800 border-zinc-750 p-1 text-zinc-50 shadow-md focus:outline-none',
+		'z-50 min-w-[8rem] rounded-xl border bg-zinc-800 border-zinc-750 p-2 text-zinc-50 shadow-md focus:outline-none',
 		className
 	)}
 	{...$$restProps}

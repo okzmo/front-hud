@@ -9,6 +9,8 @@
 	import FriendsButton from './FriendsButton.svelte';
 	import ServerAccessButton from './ServerAccessButton.svelte';
 	import NotificationsButton from './NotificationsButton.svelte';
+
+	$: console.log($servers);
 </script>
 
 <nav class="p-3 border-r border-zinc-850 w-fit h-full">
@@ -19,7 +21,12 @@
 			<FriendsButton />
 			{#if $servers}
 				{#each $servers as server}
-					<ServerAccessButton id={server.id} icon={server.icon} name={server.name} />
+					<ServerAccessButton
+						id={server.id}
+						icon={server.icon}
+						name={server.name}
+						roles={server.roles}
+					/>
 				{/each}
 			{/if}
 			<ServerActionsButton />
