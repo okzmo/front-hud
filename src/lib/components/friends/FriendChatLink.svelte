@@ -28,7 +28,7 @@
 		>
 			<div
 				id="friend-avatar"
-				class={`h-12 w-12 relative before:block before:h-3 before:w-3 before:border-2 before:border-zinc-900 before:absolute before:-bottom-2 before:rounded-xl before:left-1/2 before:-translate-x-1/2 before:z-10 before:transition-[width] before:duration-200 before:ease-bounce-hard`}
+				class={`h-10 w-10 relative before:block before:h-3 before:w-3 before:border-2 before:border-zinc-900 before:absolute before:-bottom-2 before:rounded-xl before:left-1/2 before:-translate-x-1/2 before:z-10 before:transition-[width] before:duration-200 before:ease-bounce-hard`}
 				class:before:bg-online={status === 'online'}
 				class:before:bg-dontdisturb={status === 'dontdisturb'}
 				class:before:bg-absent={status === 'absent'}
@@ -37,9 +37,9 @@
 				<img class="w-full rounded-xl h-full object-cover" src={avatar} alt="" />
 			</div>
 			<div class="text-left">
-				<p class="text-lg leading-none font-medium">{username}</p>
+				<p class="leading-none font-medium text-sm">{username}</p>
 				{#if about_me}
-					<p class="text-zinc-500 leading-none mt-1 font-light">{about_me}</p>
+					<p class="text-zinc-500 leading-none mt-1 font-light text-sm">{about_me}</p>
 				{/if}
 			</div>
 		</button>

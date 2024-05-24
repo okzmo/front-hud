@@ -6,7 +6,7 @@
 	import Userbar from '$lib/components/user/Userbar.svelte';
 </script>
 
-<aside class="border-r border-zinc-850 bg-zinc-900 w-sidebar relative flex-shrink-0 w-[20rem]">
+<aside class="border-r border-zinc-850 bg-zinc-900 relative flex-shrink-0 w-[17rem]">
 	{#if $page.url.pathname.includes('friends')}
 		<FriendsChannelsList />
 	{:else}

@@ -15,12 +15,12 @@
 		<div class="flex flex-col">
 			{#if !groupedWithPrevious}
 				<span class="flex justify-end items-end gap-x-2">
-					<time class="text-zinc-650 leading-5">{formatISODate(time)}</time>
-					<p>{name}</p>
+					<time class="text-zinc-650 leading-2 text-xs">{formatISODate(time)}</time>
+					<p class="text-sm">{name}</p>
 				</span>
 			{/if}
 			<p
-				class="bg-accent rounded-3xl rounded-tr-sm px-5 py-4 mt-1 w-fit self-end"
+				class="bg-accent rounded-3xl rounded-tr-sm px-5 py-3 mt-1 w-fit self-end text-sm"
 				class:smaller_message={content.length < 75}
 				class:groupMessagePreviousSender={groupedWithPrevious}
 				class:groupMessageAfterSender={groupedWithAfter}
@@ -49,7 +49,7 @@
 				</span>
 			{/if}
 			<p
-				class="bg-zinc-800 rounded-3xl rounded-tl-sm px-5 py-4 mt-1 w-fit"
+				class="bg-zinc-800 rounded-3xl rounded-tl-sm px-5 py-4 mt-1 w-fit text-sm"
 				class:smaller_message={content.length < 75}
 				class:groupMessagePrevious={groupedWithPrevious}
 				class:groupMessageAfter={groupedWithAfter}
@@ -62,7 +62,7 @@
 
 <style lang="postcss">
 	.smaller_message {
-		padding: 0.75rem 1.25rem;
+		padding: 0.45rem 1rem;
 	}
 
 	.groupMessagePrevious {

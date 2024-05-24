@@ -6,9 +6,9 @@
 </script>
 
 <ul class="flex flex-col px-4 pt-4 w-full h-[calc(100%_-_4.25rem)]">
-	<span class="block w-full h-[12rem] rounded-lg bg-zinc-500" />
+	<span class="block w-full h-[10rem] rounded-lg bg-zinc-500" />
 	{#if $server && $server.channels}
-		<div class="px-2 mt-8 flex flex-col gap-y-2">
+		<div class="mt-4 flex flex-col gap-y-1">
 			{#each $server.channels as channel}
 				<li>
 					<ServerChannelLink

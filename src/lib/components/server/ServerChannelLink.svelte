@@ -18,11 +18,11 @@
 			on:click={() => goto(href)}
 		>
 			{#if type === 'textual'}
-				<Icon icon="ph:chat-teardrop-text-duotone" height="22" width="22" />
+				<Icon icon="ph:chat-teardrop-text-duotone" height="20" width="20" />
 			{:else if type === 'voice'}
-				<Icon icon="ph:speaker-simple-low-duotone" height="22" width="22" />
+				<Icon icon="ph:speaker-simple-low-duotone" height="20" width="20" />
 			{/if}
-			<p class="text-lg leading-none">{channelName}</p>
+			<p class="leading-none">{channelName}</p>
 		</button>
 	</ContextMenu.Trigger>
 	<ServersChannelContextMenu />

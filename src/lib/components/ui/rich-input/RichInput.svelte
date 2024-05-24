@@ -101,15 +101,17 @@
 		max-height: 20rem;
 		border: 1px solid theme(colors.zinc.750);
 		background-color: theme(colors.zinc.850);
-		padding: 1rem;
+		font-size: theme(fontSize.sm);
+		padding: 0.685rem 1rem;
 		border-radius: 0.75rem;
-		scroll-padding-block: 16px;
+		scroll-padding-block: 0.685rem;
 		overflow: auto;
 		margin: 0rem 0.75rem 0.75rem;
 	}
 
 	:global(.is-editor-empty:first-child::before) {
 		color: theme(colors.zinc.600);
+		font-size: theme(fontSize.sm);
 		content: attr(data-placeholder);
 		float: left;
 		height: 0;

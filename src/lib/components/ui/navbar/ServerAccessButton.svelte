@@ -20,7 +20,7 @@
 	<ContextMenu.Root>
 		<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId, roles)}>
 			<Button
-				class="h-14 w-14 rounded-xl text-zinc-500 overflow-hidden"
+				class="h-12 w-12 rounded-xl text-zinc-500 overflow-hidden"
 				size="icon"
 				href={`/hudori/chat/community/${id.split(':')[1]}`}
 			>

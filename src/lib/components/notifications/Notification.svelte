@@ -34,12 +34,14 @@
 	export let request_id: string | undefined;
 </script>
 
-<div class="flex gap-x-4 w-full bg-zinc-800 border border-zinc-700 flex-shrink-0 p-5 rounded-xl">
+<div
+	class="flex gap-x-4 w-full bg-zinc-800 border border-zinc-700 flex-shrink-0 py-4 px-5 rounded-xl"
+>
 	<Icon icon="ph:user-plus-duotone" height={30} width={30} class="text-green-500" />
 	<div class="flex flex-col gap-y-4">
 		<span class="flex flex-col">
-			<p class="leading-5">{message}</p>
-			<time class="text-zinc-500 leading-5">{formatISODate(time)}</time>
+			<p class="leading-5 text-sm">{message}</p>
+			<time class="text-zinc-500 leading-5 text-xs">{formatISODate(time)}</time>
 		</span>
 		{#if type === 'friend_request' && request_id}
 			<span class="flex gap-x-2">

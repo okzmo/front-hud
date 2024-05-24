@@ -13,8 +13,8 @@
 <li>
 	<Dialog.Root open={$open} onOpenChange={() => open.set(!$open)}>
 		<Dialog.Trigger>
-			<Button class="h-14 w-14 rounded-xl text-zinc-500" size="icon">
-				<Icon icon="ph:plus-light" height="26" width="26" />
+			<Button class="h-12 w-12 rounded-xl text-zinc-500" size="icon">
+				<Icon icon="ph:plus-light" height="22" width="22" />
 			</Button>
 		</Dialog.Trigger>
 		<ServerActionsDialog {open} />
