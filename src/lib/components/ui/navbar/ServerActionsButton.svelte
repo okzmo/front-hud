@@ -6,8 +6,6 @@
 	import { writable } from 'svelte/store';
 
 	const open = writable<boolean>(false);
-
-	$: console.log($open);
 </script>
 
 <li>

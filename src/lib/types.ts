@@ -16,9 +16,14 @@ export interface Server {
 	name: string;
 	icon: string;
 	banner: string;
-	channels: Channel[];
+	categories: Category[];
 	roles?: string[];
 	created_at: string;
+}
+
+export interface Category {
+	name: string;
+	channels: Channel[];
 }
 
 export interface Channel {

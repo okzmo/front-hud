@@ -34,6 +34,7 @@
 			{#each $friends as friend}
 				<li>
 					<FriendChatLink
+						id={friend.id}
 						username={friend.display_name}
 						about_me={friend.about_me}
 						href={`/hudori/chat/friends/${friend.id.split(':')[1]}`}

@@ -113,3 +113,9 @@ export function handleContextMenu(id: string, roles: string[] | undefined = unde
 	};
 	contextMenuInfo.set(informations);
 }
+
+export function generateRandomId(length = 5): string {
+	return Math.random()
+		.toString(36)
+		.substring(2, 2 + length);
+}

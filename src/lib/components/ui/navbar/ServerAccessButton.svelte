@@ -3,14 +3,14 @@
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import ServerAccessContextMenu from './ServerAccessContextMenu.svelte';
 	import { contextMenuInfo } from '$lib/stores';
-	import { handleContextMenu } from '$lib/utils';
+	import { generateRandomId, handleContextMenu } from '$lib/utils';
 
 	export let icon: string | undefined;
 	export let name: string;
 	export let id: string;
 	export let roles: string[] | undefined;
 
-	let openContextMenuId = `context-menu-${id}`;
+	let openContextMenuId = `context-menu-${generateRandomId()}`;
 	let isOpen: boolean = false;
 
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
@@ -32,7 +32,7 @@
 			</Button>
 		</ContextMenu.Trigger>
 		{#if isOpen}
-			<ServerAccessContextMenu {roles} {name} />
+			<ServerAccessContextMenu {roles} {name} {id} />
 		{/if}
 	</ContextMenu.Root>
 </li>

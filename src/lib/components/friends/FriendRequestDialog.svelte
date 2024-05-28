@@ -24,7 +24,6 @@
 			formData.set('initiator_username', initiator_username);
 		},
 		onResult({ result }) {
-			console.log(result);
 			if (result.type === 'success') {
 				success = true;
 				setTimeout(() => {

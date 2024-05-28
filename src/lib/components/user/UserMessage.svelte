@@ -29,7 +29,7 @@
 			</p>
 		</div>
 		{#if !groupedWithPrevious}
-			<div class="flex-shrink-0 h-14 w-14 rounded-2xl overflow-hidden">
+			<div class="flex-shrink-0 h-12 w-12 rounded-2xl overflow-hidden">
 				<img class="w-full h-full object-cover" src={avatar} alt="" />
 			</div>
 		{/if}
@@ -37,15 +37,15 @@
 {:else}
 	<div class="flex gap-x-3 max-w-3xl" class:mt-6={!groupedWithPrevious}>
 		{#if !groupedWithPrevious}
-			<div class="flex-shrink-0 h-14 w-14 rounded-2xl overflow-hidden">
+			<div class="flex-shrink-0 h-12 w-12 rounded-2xl overflow-hidden">
 				<img class="w-full h-full object-cover" src={avatar} alt="" />
 			</div>
 		{/if}
 		<div class="flex flex-col">
 			{#if !groupedWithPrevious}
 				<span class="flex gap-x-2">
-					<p>{name}</p>
-					<time class="text-zinc-650 leading-5">{formatISODate(time)}</time>
+					<p class="text-sm">{name}</p>
+					<time class="text-zinc-650 leading-2 text-xs">{formatISODate(time)}</time>
 				</span>
 			{/if}
 			<p
@@ -66,11 +66,11 @@
 	}
 
 	.groupMessagePrevious {
-		margin-left: calc(theme(margin.14) + theme(margin.3));
+		margin-left: calc(theme(margin.12) + theme(margin.3));
 	}
 
 	.groupMessagePreviousSender {
-		margin-right: calc(theme(margin.14) + theme(margin.3));
+		margin-right: calc(theme(margin.12) + theme(margin.3));
 	}
 
 	.groupMessageAfter {

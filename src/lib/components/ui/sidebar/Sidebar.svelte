@@ -1,8 +1,8 @@
 <script>
 	import { page } from '$app/stores';
 
-	import ServerChannelsList from '$lib/components/server/ServerChannelsList.svelte';
 	import FriendsChannelsList from '$lib/components/friends/FriendsChannelsList.svelte';
+	import ChannelsList from '$lib/components/server/channels/ChannelsList.svelte';
 	import Userbar from '$lib/components/user/Userbar.svelte';
 </script>
 
@@ -10,7 +10,7 @@
 	{#if $page.url.pathname.includes('friends')}
 		<FriendsChannelsList />
 	{:else}
-		<ServerChannelsList />
+		<ChannelsList />
 	{/if}
 
 	<Userbar />

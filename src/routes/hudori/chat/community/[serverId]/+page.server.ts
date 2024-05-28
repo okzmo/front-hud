@@ -1,16 +1,21 @@
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ cookies, params }) => {
+export const load: PageServerLoad = async ({ cookies, locals, params }) => {
 	const sessionId = cookies.get('session');
+	const user = locals.user;
+	const userId = user.id.split(':')[1];
 
 	try {
-		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/server/${params.serverId}`, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				Cookie: `session=${sessionId}`
+		const response = await fetch(
+			`${import.meta.env.VITE_API_URL}/api/v1/server/${userId}/${params.serverId}`,
+			{
+				method: 'GET',
+				credentials: 'include',
+				headers: {
+					Cookie: `session=${sessionId}`
+				}
 			}
-		});
+		);
 
 		const data = await response.json();
 

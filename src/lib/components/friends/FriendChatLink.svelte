@@ -4,15 +4,16 @@
 	import { goto } from '$app/navigation';
 	import { contextMenuInfo } from '$lib/stores';
 	import FriendsContextMenu from './FriendsContextMenu.svelte';
-	import { handleContextMenu } from '$lib/utils';
+	import { generateRandomId, handleContextMenu } from '$lib/utils';
 
+	export let id: string;
 	export let href: string = '';
 	export let username: string;
 	export let about_me: string = '';
 	export let avatar: string = '';
 	export let status: string = 'bg-offline';
 
-	let openContextMenuId = `context-menu-${username}`;
+	let openContextMenuId = `context-menu-${generateRandomId()}`;
 	let isOpen: boolean = false;
 
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
@@ -45,7 +46,7 @@
 		</button>
 	</ContextMenu.Trigger>
 	{#if isOpen}
-		<FriendsContextMenu {username} />
+		<FriendsContextMenu {id} {username} />
 	{/if}
 </ContextMenu.Root>
 

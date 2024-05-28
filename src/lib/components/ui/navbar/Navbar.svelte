@@ -9,8 +9,6 @@
 	import FriendsButton from './FriendsButton.svelte';
 	import ServerAccessButton from './ServerAccessButton.svelte';
 	import NotificationsButton from './NotificationsButton.svelte';
-
-	$: console.log($servers);
 </script>
 
 <nav class="p-3 border-r border-zinc-850 w-fit h-full">

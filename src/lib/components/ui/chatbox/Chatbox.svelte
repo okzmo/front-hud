@@ -5,6 +5,7 @@
 	import RichInput from '../rich-input/RichInput.svelte';
 	import { afterNavigate } from '$app/navigation';
 	import type { Message, MessageUI } from '$lib/types';
+	import Icon from '@iconify/svelte';
 
 	export let friend_chatbox: boolean;
 
@@ -60,7 +61,12 @@
 				/>
 			{/each}
 		{:else}
-			<p>no message lol</p>
+			<div class="w-full h-full flex justify-center items-center">
+				<div class="flex flex-col items-center">
+					<Icon icon="quill:user-sad" height={150} width={150} class="text-zinc-725" />
+					<p class="text-zinc-700 text-2xl mt-4">No messages were found.</p>
+				</div>
+			</div>
 		{/if}
 	</div>
 	<RichInput {friend_chatbox} />
