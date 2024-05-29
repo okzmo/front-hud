@@ -63,3 +63,16 @@ export interface Notification {
 	initiator_id?: string;
 	request_id?: string;
 }
+
+export interface ServersState {
+	[serverId: string]: ServerState;
+}
+
+export interface ServerState {
+	categories: {
+		[categoryName: string]: {
+			isOpen: boolean;
+		};
+	};
+	lastVisited: string;
+}

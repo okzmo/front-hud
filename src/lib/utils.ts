@@ -119,3 +119,21 @@ export function generateRandomId(length = 5): string {
 		.toString(36)
 		.substring(2, 2 + length);
 }
+
+export function debounce<T extends (...args: any[]) => void>(
+	func: T,
+	wait: number
+): (...args: Parameters<T>) => void {
+	let timeout: ReturnType<typeof setTimeout> | null;
+
+	return function (...args) {
+		const later = () => {
+			clearTimeout(timeout as ReturnType<typeof setTimeout>);
+			func(...args);
+		};
+		if (timeout !== null) {
+			clearTimeout(timeout);
+		}
+		timeout = setTimeout(later, wait);
+	};
+}

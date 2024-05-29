@@ -4,7 +4,7 @@
 	import Icon from '@iconify/svelte';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import ChannelContextMenu from './ChannelContextMenu.svelte';
-	import { contextMenuInfo } from '$lib/stores';
+	import { contextMenuInfo, server, updateLastVisited } from '$lib/stores';
 	import { generateRandomId, handleContextMenu } from '$lib/utils';
 
 	export let href: string = '';
@@ -17,6 +17,9 @@
 	let isOpen: boolean = false;
 
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
+	$: if ($server && $page.params.channelId) {
+		updateLastVisited($server.id, $page.params.channelId);
+	}
 </script>
 
 <ContextMenu.Root>

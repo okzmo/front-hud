@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { contextMenuInfo, server } from '$lib/stores';
+	import { contextMenuInfo, getCategoryState, server, updateCategoryState } from '$lib/stores';
 	import type { Category } from '$lib/types';
 	import Icon from '@iconify/svelte';
 	import Button from '../ui/button/button.svelte';
@@ -14,7 +14,17 @@
 
 	$: contextMenuOpen = $contextMenuInfo?.id === openContextMenuId;
 
-	let isOpen: boolean = true;
+	let isOpen: boolean;
+	$: if ($server) {
+		isOpen = getCategoryState($server?.id, category.name);
+	}
+
+	function toggleCategory() {
+		isOpen = !isOpen;
+		if ($server) {
+			updateCategoryState($server.id, category.name, isOpen);
+		}
+	}
 </script>
 
 <ContextMenu.Root>
@@ -23,11 +33,11 @@
 			<Button
 				variant="ghost"
 				class="p-0 text-zinc-500 w-full justify-start hover:bg-transparent hover:text-zinc-400 uppercase text-xs"
-				on:click={() => (isOpen = !isOpen)}
+				on:click={() => toggleCategory()}
 			>
 				<Icon
 					icon="material-symbols:keyboard-arrow-down-rounded"
-					class={`mr-1 transition-transform duration-75 ${!isOpen ? '-rotate-90' : ''}`}
+					class={`mr-1 ${!isOpen ? '-rotate-90' : ''}`}
 				/>
 				{category.name}
 			</Button>

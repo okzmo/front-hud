@@ -9,18 +9,18 @@
 </script>
 
 <div class="px-4 pt-4">
-	<div class="relative flex gap-x-3">
-		<Input placeholder="Search friend..." />
+	<div class="relative flex gap-x-2">
+		<Input class="py-2 text-sm" placeholder="Search friend..." />
 		{#if $user}
 			<Dialog.Root>
 				<Dialog.Trigger>
 					<Button
-						class="flex-shrink-0 h-12 w-12 px-0 py-0 bg-zinc-925 hover:bg-zinc-900 rounded-lg"
+						class="flex-shrink-0 h-10 w-10 px-0 py-0 bg-zinc-925 hover:bg-zinc-900 rounded-lg"
 					>
 						<Icon
 							icon="ph:user-plus-duotone"
-							height={22}
-							width={22}
+							height={18}
+							width={18}
 							class="text-muted-foreground"
 						/>
 					</Button>

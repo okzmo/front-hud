@@ -1,15 +1,33 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, beforeUpdate } from 'svelte';
 	import { Editor } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
 	import Placeholder from '@tiptap/extension-placeholder';
-	import { user } from '$lib/stores';
+	import { user, updateChatInputState, getChatInputState } from '$lib/stores';
 	import { page } from '$app/stores';
+	import { debounce } from '$lib/utils';
 
 	let element: Element | undefined;
 	let editor: Editor;
 
 	export let friend_chatbox: boolean;
+	let channelId = '';
+	let currentChannelId = '';
+
+	$: if ($page.params.id || $page.params.channelId) {
+		channelId = $page.params.id || $page.params.channelId;
+	}
+
+	beforeUpdate(() => {
+		if (currentChannelId !== channelId) {
+			if (editor) {
+				updateChatInputState(currentChannelId, editor.getHTML());
+				editor.destroy();
+			}
+			currentChannelId = channelId;
+			initializeEditor();
+		}
+	});
 
 	async function sendMessage(content: string) {
 		if (content.length <= 0) {
@@ -40,7 +58,11 @@
 		}
 	}
 
-	onMount(() => {
+	const debouncedInput = debounce((channelId, content) => {
+		updateChatInputState(channelId, content);
+	}, 300);
+
+	function initializeEditor() {
 		editor = new Editor({
 			element: element,
 			extensions: [
@@ -52,9 +74,9 @@
 					placeholder: 'Write something...'
 				})
 			],
-			content: '',
-			onTransaction: () => {
-				editor = editor;
+			content: getChatInputState(channelId),
+			onUpdate: ({ editor }) => {
+				debouncedInput(channelId, editor.getHTML());
 			},
 			editorProps: {
 				handleKeyDown: (view, event) => {
@@ -72,6 +94,10 @@
 				}
 			}
 		});
+	}
+
+	onMount(() => {
+		initializeEditor();
 	});
 
 	onDestroy(() => {
