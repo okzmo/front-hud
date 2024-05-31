@@ -16,12 +16,16 @@
 	align="start"
 >
 	<img
-		class="w-[calc(100%_+_2rem)] max-w-none h-[calc(100%_+_1rem)] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 object-cover rounded-2xl blur-xl opacity-100"
+		class="w-full max-w-none h-full absolute left-0 top-0 object-cover rounded-2xl blur-xl transform-gpu"
 		src={banner}
 		alt=""
 	/>
-	<div class="rounded-2xl flex relative px-5 py-4 overflow-hidden h-full">
-		<img class="w-full h-full absolute left-0 top-0 object-cover rounded-2xl" src={banner} alt="" />
+	<div class="rounded-2xl flex relative px-5 py-4 h-full">
+		<img
+			class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.1rem]"
+			src={banner}
+			alt=""
+		/>
 		<div class="flex flex-col justify-end gap-y-2 z-[2]">
 			<span class="flex gap-x-3">
 				<img class="w-14 h-14 object-cover rounded-2xl" src={avatar} alt="" />
@@ -32,7 +36,7 @@
 			</span>
 			<p class="text-sm leading-[1.10rem]">{about_me}</p>
 		</div>
-		<div class="w-full absolute bottom-0 h-full left-0 progressive-blur"></div>
+		<div class="w-full absolute h-full progressive-blur rounded-2xl"></div>
 	</div>
 </Popover.Content>
 
@@ -40,6 +44,7 @@
 	.progressive-blur {
 		backdrop-filter: blur(40px);
 		-webkit-backdrop-filter: blur(40px);
+		inset: 0;
 
 		mask-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1) 75%, rgb(0, 0, 0));
 		-webkit-mask-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1) 75%, rgb(0, 0, 0));
