@@ -1,5 +1,5 @@
 <script>
-	import { friends, user } from '$lib/stores';
+	import { friends, user, notifications } from '$lib/stores';
 	import Icon from '@iconify/svelte';
 	import { Button } from '../ui/button';
 	import { Input } from '../ui/input';

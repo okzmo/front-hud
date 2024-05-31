@@ -70,6 +70,11 @@
 				throw new Error(data.message);
 			}
 
+			servers.update((servers) => {
+				const newServers = servers.filter((server) => server.id !== id);
+				return newServers;
+			});
+
 			if ($page.url.pathname.includes(id.split(':')[1])) {
 				goto('/hudori/chat/friends');
 			}

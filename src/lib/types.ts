@@ -1,3 +1,5 @@
+import type { JSONContent } from '@tiptap/core';
+
 export interface User {
 	id: string;
 	email: string;
@@ -38,7 +40,7 @@ export interface Message {
 	id: string;
 	author: User;
 	channel_id: string;
-	content: string;
+	content: JSONContent;
 	edited: boolean;
 	updated_at: string;
 }
@@ -47,7 +49,7 @@ export interface MessageUI {
 	id: string;
 	author: User;
 	channel_id: string;
-	content: string;
+	content: JSONContent;
 	edited: boolean;
 	updated_at: string;
 	groupWithPrevious: boolean;
@@ -62,6 +64,8 @@ export interface Notification {
 	created_at: string;
 	initiator_id?: string;
 	request_id?: string;
+	friend_id?: string;
+	counter?: number;
 }
 
 export interface ServersState {

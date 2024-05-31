@@ -51,10 +51,9 @@
 		{#if groupedMessages.length > 0}
 			{#each groupedMessages as message}
 				<UserMessage
-					name={message.author.display_name}
+					author={message.author}
 					content={message.content}
 					sender={message.author.id === $user?.id}
-					avatar={message.author.avatar}
 					time={message.updated_at}
 					groupedWithPrevious={message.groupWithPrevious}
 					groupedWithAfter={message.groupWithAfter}

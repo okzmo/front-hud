@@ -28,11 +28,11 @@
 </script>
 
 <ContextMenu.Root>
-	<li>
+	<li class="first:mt-0 mt-3">
 		<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId)}>
 			<Button
 				variant="ghost"
-				class="p-0 text-zinc-500 w-full justify-start hover:bg-transparent hover:text-zinc-400 uppercase text-xs"
+				class="p-0 text-zinc-500 w-full justify-start hover:bg-transparent hover:text-zinc-400 uppercase text-[0.68rem] leading-4"
 				on:click={() => toggleCategory()}
 			>
 				<Icon

@@ -38,6 +38,7 @@
 
 	let openAlert: Writable<boolean> = writable<boolean>(false);
 	let openChannel: Writable<boolean> = writable<boolean>(false);
+	let canDelete: boolean;
 
 	let isOwner: boolean;
 	$: if ($server) {
@@ -46,6 +47,8 @@
 		} else {
 			isOwner = false;
 		}
+
+		canDelete = $server.categories.length > 1;
 	}
 </script>
 
@@ -59,14 +62,16 @@
 			<Icon icon="ph:plus-circle-duotone" height={16} width={16} class="" />
 			Create channel
 		</ContextMenu.Item>
-		<Separator class="my-2 max-w-[10rem] bg-zinc-700 mx-auto" />
-		<ContextMenu.Item
-			class="gap-x-2 items-center text-destructive data-[highlighted]:bg-destructive data-[highlighted]:text-zinc-50 text-sm"
-			on:click={() => openAlert.set(true)}
-		>
-			<Icon icon="ph:trash-duotone" height={16} width={16} />
-			Delete category
-		</ContextMenu.Item>
+		{#if canDelete}
+			<Separator class="my-2 max-w-[10rem] bg-zinc-700 mx-auto" />
+			<ContextMenu.Item
+				class="gap-x-2 items-center text-destructive data-[highlighted]:bg-destructive data-[highlighted]:text-zinc-50 text-sm"
+				on:click={() => openAlert.set(true)}
+			>
+				<Icon icon="ph:trash-duotone" height={16} width={16} />
+				Delete category
+			</ContextMenu.Item>
+		{/if}
 	</ContextMenu.Content>
 {/if}
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy, beforeUpdate } from 'svelte';
-	import { Editor } from '@tiptap/core';
+	import { Editor, type JSONContent } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
 	import Placeholder from '@tiptap/extension-placeholder';
 	import { user, updateChatInputState, getChatInputState } from '$lib/stores';
@@ -29,14 +29,20 @@
 		}
 	});
 
-	async function sendMessage(content: string) {
-		if (content.length <= 0) {
+	async function sendMessage(richInputContent: JSONContent) {
+		if (
+			!richInputContent.content ||
+			!richInputContent.content[0] ||
+			!richInputContent.content[0].content ||
+			richInputContent.content[0].content.length <= 0
+		) {
 			return;
 		}
+
 		const body = {
 			author: $user,
 			channel_id: $page.params.id || $page.params.channelId,
-			content: content,
+			content: richInputContent,
 			private_message: friend_chatbox
 		};
 
@@ -68,7 +74,11 @@
 			extensions: [
 				StarterKit.configure({
 					gapcursor: false,
-					dropcursor: false
+					dropcursor: false,
+					heading: false,
+					orderedList: false,
+					bulletList: false,
+					blockquote: false
 				}),
 				Placeholder.configure({
 					placeholder: 'Write something...'
@@ -79,11 +89,11 @@
 				debouncedInput(channelId, editor.getHTML());
 			},
 			editorProps: {
-				handleKeyDown: (view, event) => {
+				handleKeyDown: (_, event) => {
 					if (event.key === 'Enter' && !event.shiftKey) {
 						event.preventDefault();
 
-						sendMessage(view.state.doc.textContent);
+						sendMessage(editor.getJSON());
 
 						editor.commands.clearContent();
 

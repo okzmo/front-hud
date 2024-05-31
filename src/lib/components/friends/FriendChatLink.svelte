@@ -5,6 +5,7 @@
 	import { contextMenuInfo } from '$lib/stores';
 	import FriendsContextMenu from './FriendsContextMenu.svelte';
 	import { generateRandomId, handleContextMenu } from '$lib/utils';
+	import { notifications } from '$lib/stores';
 
 	export let id: string;
 	export let href: string = '';
@@ -15,8 +16,10 @@
 
 	let openContextMenuId = `context-menu-${generateRandomId()}`;
 	let isOpen: boolean = false;
+	let notification;
 
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
+	$: notification = $notifications.filter((notification) => notification.friend_id === id)[0];
 </script>
 
 <ContextMenu.Root>
@@ -35,6 +38,14 @@
 				class:before:bg-absent={status === 'absent'}
 				class:before:bg-offline={status === 'offline'}
 			>
+				{#if notification}
+					<div
+						class="absolute -top-2 -right-2 h-4 w-4 bg-destructive rounded-full flex justify-center items-center text-[0.65rem] leading-[0.5rem]"
+					>
+						{notification.counter}
+					</div>
+					<div class="absolute top-0 left-0 h-full w-full notif-shadow rounded-xl"></div>
+				{/if}
 				<img class="w-full rounded-xl h-full object-cover" src={avatar} alt="" />
 			</div>
 			<div class="text-left">
@@ -68,5 +79,9 @@
 		transition:
 			transform 75ms ease-out,
 			background-color 75ms ease-out;
+	}
+
+	.notif-shadow {
+		box-shadow: inset -4px 4px 10px rgba(226, 68, 77, 0.65);
 	}
 </style>
