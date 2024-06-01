@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as ContextMenu from '$lib/components/ui/context-menu';
-	import Separator from '../separator/separator.svelte';
+	import { Separator } from '$lib/components/ui/separator';
 	import Icon from '@iconify/svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { server, servers, user } from '$lib/stores';

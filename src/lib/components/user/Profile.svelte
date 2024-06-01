@@ -22,7 +22,7 @@
 	/>
 	<div class="rounded-2xl flex relative px-5 py-4 h-full">
 		<img
-			class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.1rem]"
+			class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.1rem] transform-gpu"
 			src={banner}
 			alt=""
 		/>

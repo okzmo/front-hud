@@ -7,10 +7,16 @@
 </script>
 
 <aside class="border-r border-zinc-850 bg-zinc-900 relative flex-shrink-0 w-[17rem]">
-	{#if $page.url.pathname.includes('friends')}
-		<FriendsChannelsList />
-	{:else}
-		<ChannelsList />
+	{#if $page.url.pathname.includes('chat')}
+		{#if $page.url.pathname.includes('friends')}
+			<FriendsChannelsList />
+		{:else}
+			<ChannelsList />
+		{/if}
+	{:else if $page.url.pathname.includes('videos')}
+		hello
+	{:else if $page.url.pathname.includes('thoughts')}
+		hello
 	{/if}
 
 	<Userbar />

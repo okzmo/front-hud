@@ -2,8 +2,8 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as RadioGroup from '$lib/components/ui/radio-group/index.js';
 	import Icon from '@iconify/svelte';
-	import Label from '../label/label.svelte';
-	import Input from '../input/input.svelte';
+	import { Label } from '$lib/components/ui/label';
+	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
 	import { defaults, stringProxy, superForm, type Infer } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';

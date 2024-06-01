@@ -4,10 +4,10 @@
 	import Button from '../button/button.svelte';
 	import Separator from '../separator/separator.svelte';
 	import { servers } from '$lib/stores';
-	import ServerActionsButton from './ServerActionsButton.svelte';
-	import GlobalButton from './GlobalButton.svelte';
+	import ServerActionsButton from './ServerActions/ServerActionsButton.svelte';
+	import GlobalButton from './GlobalButton/GlobalButton.svelte';
 	import FriendsButton from './FriendsButton.svelte';
-	import ServerAccessButton from './ServerAccessButton.svelte';
+	import ServerAccessButton from './ServerAccess/ServerAccessButton.svelte';
 	import NotificationsButton from './NotificationsButton.svelte';
 </script>
 

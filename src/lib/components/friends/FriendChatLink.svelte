@@ -19,7 +19,9 @@
 	let notification;
 
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
-	$: notification = $notifications.filter((notification) => notification.friend_id === id)[0];
+	$: notification = $notifications.filter(
+		(notification) => notification.channel_id?.split(':')[1] === id.split(':')[1]
+	)[0];
 </script>
 
 <ContextMenu.Root>
@@ -42,7 +44,7 @@
 					<div
 						class="absolute -top-2 -right-2 h-4 w-4 bg-destructive rounded-full flex justify-center items-center text-[0.65rem] leading-[0.5rem]"
 					>
-						{notification.counter}
+						{notification.counter > 9 ? '9+' : notification.counter}
 					</div>
 					<div class="absolute top-0 left-0 h-full w-full notif-shadow rounded-xl"></div>
 				{/if}
@@ -51,7 +53,11 @@
 			<div class="text-left">
 				<p class="leading-none font-medium text-sm">{username}</p>
 				{#if about_me}
-					<p class="text-zinc-500 leading-none mt-1 font-light text-sm">{about_me}</p>
+					<p
+						class="text-zinc-500 leading-none mt-1 font-light text-sm w-[15ch] overflow-hidden text-ellipsis whitespace-nowrap"
+					>
+						{about_me}
+					</p>
 				{/if}
 			</div>
 		</button>

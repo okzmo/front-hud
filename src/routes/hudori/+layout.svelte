@@ -36,7 +36,7 @@
 	<!-- ></div> -->
 	<Navbar />
 	<Sidebar />
-	<main class="w-full relative">
+	<main class="flex-grow max-w-[calc(100%_-_17rem_-_4.6rem)] relative">
 		<slot />
 	</main>
 </div>

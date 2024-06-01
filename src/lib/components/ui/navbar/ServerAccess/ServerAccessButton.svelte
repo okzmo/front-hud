@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '../button/button.svelte';
+	import { Button } from '$lib/components/ui/button';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import ServerAccessContextMenu from './ServerAccessContextMenu.svelte';
 	import { contextMenuInfo, serversStateStore } from '$lib/stores';

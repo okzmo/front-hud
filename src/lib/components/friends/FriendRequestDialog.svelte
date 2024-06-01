@@ -56,6 +56,7 @@
 			<div class=" flex gap-x-2">
 				<Form.Control let:attrs>
 					<Input
+						autocomplete="off"
 						{...attrs}
 						bind:value={$formData.username}
 						class={`!mt-0 data-[fs-error]:border-destructive data-[fs-error]:ring-destructive 

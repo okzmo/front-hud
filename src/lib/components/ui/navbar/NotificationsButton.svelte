@@ -20,13 +20,15 @@
 		<div class="flex flex-col-reverse overflow-y-auto h-full pb-6 gap-y-3">
 			{#if $notifications.length > 0}
 				{#each $notifications as notif}
-					<Notification
-						type={notif.type}
-						message={notif.message}
-						time={notif.created_at}
-						request_id={notif.request_id}
-						notif_id={notif.id}
-					/>
+					{#if notif.type !== 'new_message'}
+						<Notification
+							type={notif.type}
+							message={notif.message}
+							time={notif.created_at}
+							request_id={notif.request_id}
+							notif_id={notif.id}
+						/>
+					{/if}
 				{/each}
 			{/if}
 		</div>

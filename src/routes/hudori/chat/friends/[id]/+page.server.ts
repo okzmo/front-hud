@@ -27,4 +27,3 @@ export const load: PageServerLoad = async ({ cookies, params, locals }) => {
 		console.log(error);
 	}
 };
-

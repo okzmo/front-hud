@@ -59,12 +59,12 @@ export interface MessageUI {
 export interface Notification {
 	id: string;
 	user_id: string;
-	type: 'friend_request' | 'new_video';
+	type: 'friend_request' | 'new_video' | 'new_message';
 	message: string;
 	created_at: string;
 	initiator_id?: string;
 	request_id?: string;
-	friend_id?: string;
+	channel_id?: string;
 	counter?: number;
 }
 
