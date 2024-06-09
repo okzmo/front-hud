@@ -48,6 +48,7 @@
     "clsx": "^2.1.1",
     "cmdk-sv": "^0.0.17",
     "formsnap": "^1.0.0",
+    "livekit-client": "^2.2.0",
     "lucide-svelte": "^0.378.0",
     "mode-watcher": "^0.3.0",
     "svelte-sonner": "^0.3.24",

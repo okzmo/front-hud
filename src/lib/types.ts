@@ -11,6 +11,9 @@ export interface User {
 	status: string;
 	about_me: string;
 	created_at: string;
+	deafen: boolean;
+	muted: boolean;
+	talking: boolean;
 }
 
 export interface Server {
@@ -34,6 +37,7 @@ export interface Channel {
 	type: string;
 	private: boolean;
 	created_at: string;
+	participants: User[];
 }
 
 export interface Message {

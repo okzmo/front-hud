@@ -4,14 +4,18 @@
 	import Icon from '@iconify/svelte';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import ChannelContextMenu from './ChannelContextMenu.svelte';
-	import { contextMenuInfo, server, updateLastVisited, notifications } from '$lib/stores';
+	import { contextMenuInfo, server, updateLastVisited, notifications, user } from '$lib/stores';
 	import { generateRandomId, handleContextMenu } from '$lib/utils';
+	import { joinRoom } from '$lib/rtc';
+	import type { User } from '$lib/types';
+	import UserVcNode from './UserVCNode.svelte';
 
 	export let href: string = '';
 	export let type: string = 'text';
 	export let channelName: string = 'Channel';
 	export let channelId: string;
 	export let categoryName: string;
+	export let participants: User[];
 
 	let openContextMenuId = `context-menu-${generateRandomId()}`;
 	let isOpen: boolean = false;
@@ -28,19 +32,42 @@
 
 <ContextMenu.Root>
 	<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId)}>
-		<button
-			class="flex gap-x-3 hover:bg-zinc-800/75 py-[0.45rem] text-zinc-500 px-3 rounded-[0.6rem] transition duration-75 active:scale-[0.97] items-center w-full"
-			class:active={$page.url.pathname.includes(href)}
-			class:notify={notification}
-			on:click={() => goto(href)}
-		>
-			{#if type === 'textual'}
-				<Icon icon="ph:chat-teardrop-text-duotone" height="20" width="20" />
-			{:else if type === 'voice'}
-				<Icon icon="ph:speaker-simple-low-duotone" height="20" width="20" />
+		<div class="flex flex-col">
+			<button
+				class="flex gap-x-3 hover:bg-zinc-800/75 py-[0.45rem] text-zinc-500 px-3 rounded-[0.6rem] transition duration-75 active:scale-[0.97] items-center w-full"
+				class:active={$page.url.pathname.includes(href)}
+				class:notify={notification}
+				on:click={() => {
+					if (type === 'textual') {
+						goto(href);
+					} else {
+						joinRoom(channelId, $user?.id, $server?.id);
+					}
+				}}
+			>
+				{#if type === 'textual'}
+					<Icon
+						icon="ph:chat-teardrop-text-duotone"
+						class="pointer-events-none"
+						height="20"
+						width="20"
+					/>
+				{:else if type === 'voice'}
+					<Icon
+						icon="ph:speaker-simple-low-duotone"
+						class="pointer-events-none"
+						height="20"
+						width="20"
+					/>
+				{/if}
+				<p class="leading-none pointer-events-none">{channelName}</p>
+			</button>
+			{#if participants}
+				{#each participants as participant}
+					<UserVcNode user={participant} />
+				{/each}
 			{/if}
-			<p class="leading-none">{channelName}</p>
-		</button>
+		</div>
 	</ContextMenu.Trigger>
 	{#if isOpen}
 		<ChannelContextMenu {channelId} {categoryName} {channelName} />

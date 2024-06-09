@@ -1,10 +1,8 @@
 <script lang="ts">
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import type { Writable } from 'svelte/store';
 
 	export let id: string = '';
-	export let open: Writable<boolean>;
 </script>
 
 <Dialog.Content>

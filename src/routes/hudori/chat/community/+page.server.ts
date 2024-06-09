@@ -3,14 +3,11 @@ import type { Actions } from '@sveltejs/kit';
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
 		// const sessionId = cookies.get('session');
-		console.log(request);
-
 		// const body = {
 		// 	receiver_username,
 		// 	initiator_username,
 		// 	initiator_id
 		// };
-
 		// try {
 		// 	const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/friends/add`, {
 		// 		method: 'POST',

@@ -8,7 +8,7 @@
 	import FriendRequestDialog from './FriendRequestDialog.svelte';
 </script>
 
-<div class="px-4 pt-4">
+<div class="flex-grow">
 	<div class="relative flex gap-x-2">
 		<Input class="py-2 text-sm" placeholder="Search friend..." />
 		{#if $user}

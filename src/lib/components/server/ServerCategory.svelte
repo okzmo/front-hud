@@ -49,6 +49,7 @@
 						categoryName={category.name}
 						channelId={channel.id}
 						channelName={channel.name}
+						participants={channel.participants}
 						type={channel.type}
 						href={`/hudori/chat/community/${$server?.id.split(':')[1]}/channels/${channel.id.split(':')[1]}`}
 					/>

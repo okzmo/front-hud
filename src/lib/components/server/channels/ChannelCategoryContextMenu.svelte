@@ -1,10 +1,19 @@
 <script lang="ts">
-	import * as ContextMenu from '$lib/components/ui/context-menu';
+	import { ContextMenuContent, ContextMenuItem } from '$lib/components/ui/context-menu';
+	import { Dialog } from '$lib/components/ui/dialog';
 	import { Separator } from '$lib/components/ui/separator';
 	import Icon from '@iconify/svelte';
 	import { server } from '$lib/stores';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import * as Dialog from '$lib/components/ui/dialog';
+	import {
+		AlertDialog,
+		AlertDialogHeader,
+		AlertDialogTitle,
+		AlertDialogDescription,
+		AlertDialogFooter,
+		AlertDialogAction,
+		AlertDialogCancel,
+		AlertDialogContent
+	} from '$lib/components/ui/alert-dialog';
 	import { writable, type Writable } from 'svelte/store';
 	import ChannelDialog from './ChannelDialog.svelte';
 
@@ -53,49 +62,49 @@
 </script>
 
 {#if isOwner}
-	<ContextMenu.Content id="context-menu-category">
-		<ContextMenu.Item class="gap-x-2 items-center text-sm">
+	<ContextMenuContent id="context-menu-category">
+		<ContextMenuItem class="gap-x-2 items-center text-sm">
 			<Icon icon="ph:pencil-simple-duotone" height={16} width={16} class="" />
 			Edit category
-		</ContextMenu.Item>
-		<ContextMenu.Item class="gap-x-2 items-center text-sm" on:click={() => openChannel.set(true)}>
+		</ContextMenuItem>
+		<ContextMenuItem class="gap-x-2 items-center text-sm" on:click={() => openChannel.set(true)}>
 			<Icon icon="ph:plus-circle-duotone" height={16} width={16} class="" />
 			Create channel
-		</ContextMenu.Item>
+		</ContextMenuItem>
 		{#if canDelete}
 			<Separator class="my-2 max-w-[10rem] bg-zinc-700 mx-auto" />
-			<ContextMenu.Item
+			<ContextMenuItem
 				class="gap-x-2 items-center text-destructive data-[highlighted]:bg-destructive data-[highlighted]:text-zinc-50 text-sm"
 				on:click={() => openAlert.set(true)}
 			>
 				<Icon icon="ph:trash-duotone" height={16} width={16} />
 				Delete category
-			</ContextMenu.Item>
+			</ContextMenuItem>
 		{/if}
-	</ContextMenu.Content>
+	</ContextMenuContent>
 {/if}
 
-<Dialog.Root open={$openChannel} onOpenChange={() => openChannel.set(!$openChannel)}>
+<Dialog open={$openChannel} onOpenChange={() => openChannel.set(!$openChannel)}>
 	<ChannelDialog {categoryName} open={openChannel} />
-</Dialog.Root>
+</Dialog>
 
-<AlertDialog.Root open={$openAlert} onOpenChange={() => openAlert.set(!$openAlert)}>
-	<AlertDialog.Content>
-		<AlertDialog.Header>
-			<AlertDialog.Title>Are you absolutely sure ?</AlertDialog.Title>
-			<AlertDialog.Description>
+<AlertDialog open={$openAlert} onOpenChange={() => openAlert.set(!$openAlert)}>
+	<AlertDialogContent>
+		<AlertDialogHeader>
+			<AlertDialogTitle>Are you absolutely sure ?</AlertDialogTitle>
+			<AlertDialogDescription>
 				This action will permanently delete <span class="font-bold">{categoryName}</span> as well as
 				all the messages in it if any.
-			</AlertDialog.Description>
-		</AlertDialog.Header>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action
+			</AlertDialogDescription>
+		</AlertDialogHeader>
+		<AlertDialogFooter>
+			<AlertDialogCancel>Cancel</AlertDialogCancel>
+			<AlertDialogAction
 				on:click={() => deleteChannel()}
 				class="bg-destructive border-none hover:bg-destructive/80"
 			>
 				Remove
-			</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+			</AlertDialogAction>
+		</AlertDialogFooter>
+	</AlertDialogContent>
+</AlertDialog>

@@ -59,6 +59,8 @@
 			if (!response.ok) {
 				throw new Error(`error when sending message ${response.status}`);
 			}
+
+			debouncedInput(channelId, null);
 		} catch (err) {
 			console.log(err);
 		}

@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { server } from '$lib/stores';
 	import type { Server } from '$lib/types';
+	import { redirect } from '@sveltejs/kit';
 
 	export let data: { server: Server };
 	$: server.set(data.server);

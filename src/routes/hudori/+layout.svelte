@@ -2,7 +2,7 @@
 	import Navbar from '$lib/components/ui/navbar/Navbar.svelte';
 	import Sidebar from '$lib/components/ui/sidebar/Sidebar.svelte';
 	import { treatMessage } from '$lib/websocket';
-	import { notifications, friendRequest, friends, servers, user } from '$lib/stores';
+	import { notifications, friendRequest, friends, servers, user, wsConn } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
 
@@ -16,7 +16,8 @@
 	let ws;
 
 	onMount(() => {
-		ws = new WebSocket(`ws://localhost:3000/api/v1/ws/${data.props?.user.id.split(':')[1]}`);
+		ws = new WebSocket(`wss://localhost:3000/ws/${data.props?.user.id.split(':')[1]}`);
+		wsConn.set(ws);
 
 		ws.onmessage = (event) => {
 			treatMessage(event.data);

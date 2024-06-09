@@ -75,7 +75,7 @@
 </ContextMenu.Content>
 
 <Dialog.Root open={$openInvite} onOpenChange={() => openInvite.set(!$openInvite)}>
-	<ServerInviteDialog id={inviteId} open={openInvite} />
+	<ServerInviteDialog id={inviteId} />
 </Dialog.Root>
 
 <Dialog.Root open={$openCategory} onOpenChange={() => openCategory.set(!$openCategory)}>
