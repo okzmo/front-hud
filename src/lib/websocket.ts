@@ -8,12 +8,14 @@ import {
 	servers,
 	addParticipant,
 	removeParticipant,
-	updateParticipantStatus
+	updateParticipantStatus,
+	vcRoom
 } from './stores';
 import type { Message } from './types';
 
 export function treatMessage(message: any) {
 	const wsMessage = JSON.parse(message);
+	const room = get(vcRoom);
 	switch (wsMessage.type) {
 		case 'text_message':
 			const newMessage: Message = wsMessage.content;
@@ -124,9 +126,17 @@ export function treatMessage(message: any) {
 			break;
 		case 'new_participant':
 			addParticipant(wsMessage.content.channelId, wsMessage.content.user);
+			if (room?.name === wsMessage.content.channelId) {
+				const audio = document.getElementById('audio_join_channel') as HTMLMediaElement;
+				audio.play();
+			}
 			break;
 		case 'quit_participant':
 			removeParticipant(wsMessage.content.channelId, wsMessage.content.user_id);
+			if (room?.name === wsMessage.content.channelId) {
+				const audio = document.getElementById('audio_quit_channel') as HTMLMediaElement;
+				audio.play();
+			}
 			break;
 		case 'participant_status':
 			updateParticipantStatus(

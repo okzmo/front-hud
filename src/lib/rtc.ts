@@ -81,6 +81,8 @@ export async function quitRoom(serverId: string) {
 	const room = get(vcRoom);
 	await room?.disconnect();
 	vcRoom.set(undefined);
+	const audio = document.getElementById('audio_quit_channel') as HTMLMediaElement;
+	audio.play();
 
 	const pageInfos = get(page);
 
@@ -109,6 +111,9 @@ function handleTrackSubscribed(
 		// attach it to a new HTMLVideoElement or HTMLAudioElement
 		const element = track.attach();
 		document.body.appendChild(element);
+
+		const audioPos = document.getElementById('audio_join_channel') as HTMLMediaElement;
+		audioPos.play();
 	}
 }
 

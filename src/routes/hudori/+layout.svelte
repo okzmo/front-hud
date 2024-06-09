@@ -40,6 +40,10 @@
 	<main class="flex-grow max-w-[calc(100%_-_17rem_-_4.6rem)] relative">
 		<slot />
 	</main>
+
+	<audio volume={0.5} id="audio_join_channel" src="/src/assets/audio/join_channel_pos.mp3"></audio>
+	<audio volume={0.5} id="audio_quit_channel" src="/src/assets/audio/join_channel_neg.mp3"></audio>
+	<audio volume={0.5} id="audio_ringtone" src="/src/assets/audio/ringtone.mp3"></audio>
 </div>
 
 <style>
