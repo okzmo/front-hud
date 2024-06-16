@@ -47,7 +47,7 @@ export const actions: Actions = {
 				cookies.set(name, value, {
 					path: '/',
 					httpOnly: true,
-					expires: new Date(options[1].split('=')[1]),
+					expires: new Date(options[2].split('=')[1]),
 					domain: 'hudori.app',
 					sameSite: 'none',
 					secure: true,

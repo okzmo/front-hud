@@ -42,7 +42,6 @@ export const actions: Actions = {
 				const cookieParts = setCookieHeader.split(';').map((part) => part.trim());
 				const [cookieNameValue, ...options] = cookieParts;
 				const [name, value] = cookieNameValue.split('=');
-				console.log(options);
 
 				cookies.set(name, value, {
 					path: '/',
