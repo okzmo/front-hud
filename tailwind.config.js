@@ -55,7 +55,7 @@ const config = {
 					925: '#161619'
 				},
 				accent: {
-					DEFAULT: '#7174D6'
+					DEFAULT: '#4299EA'
 				},
 				online: {
 					DEFAULT: '#6AE855'
@@ -69,7 +69,6 @@ const config = {
 				absent: {
 					DEFAULT: '#F7B14A'
 				}
-				
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -82,7 +81,7 @@ const config = {
 			},
 			transitionTimingFunction: {
 				'bounce-hard': 'cubic-bezier(0.34, 2.2, 0.64, 1)',
-				'bounce': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+				bounce: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
 			}
 		}
 	}

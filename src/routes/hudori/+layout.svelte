@@ -5,6 +5,7 @@
 	import { notifications, friendRequest, friends, servers, user, wsConn } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
+	import { page } from '$app/stores';
 
 	export let data: LayoutData;
 	user.set(data.props?.user);
@@ -29,21 +30,25 @@
 			ev.preventDefault();
 		};
 	});
+
+	const hideSidebar = ['/hudori/settings'];
 </script>
 
 <div class="h-full w-full flex">
 	<!-- <div -->
 	<!-- 	class="absolute -top-14 left-1/2 -translate-x-1/2 rounded-[50%] w-5/6 h-28 bg-zinc-500 z-[1] bg-gradient-to-b from-[#B693FF] to-[#9397FF] blur-3xl opacity-15 pointer-events-none" -->
 	<!-- ></div> -->
-	<Navbar />
-	<Sidebar />
+	{#if !hideSidebar.includes($page.url.pathname)}
+		<Navbar />
+		<Sidebar />
+	{/if}
 	<main class="flex-grow max-w-[calc(100%_-_17rem_-_4.6rem)] relative">
 		<slot />
 	</main>
 
-	<audio volume={0.5} id="audio_join_channel" src="/src/assets/audio/join_channel_pos.mp3"></audio>
-	<audio volume={0.5} id="audio_quit_channel" src="/src/assets/audio/join_channel_neg.mp3"></audio>
-	<audio volume={0.5} id="audio_ringtone" src="/src/assets/audio/ringtone.mp3"></audio>
+	<audio volume={0.35} id="audio_join_channel" src="/src/assets/audio/join_channel_pos.mp3"></audio>
+	<audio volume={0.35} id="audio_quit_channel" src="/src/assets/audio/join_channel_neg.mp3"></audio>
+	<audio volume={0.35} id="audio_ringtone" src="/src/assets/audio/ringtone.mp3"></audio>
 </div>
 
 <style>

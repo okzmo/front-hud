@@ -11,9 +11,7 @@
 		let friendNotif = $notifications.findIndex(
 			(notification) => notification.channel_id?.split(':')[1] === $page.params.id
 		);
-		console.log(friendNotif);
 		if (friendNotif > -1) {
-			console.log($notifications.length);
 			if ($notifications.length > 1) {
 				notifications.update((notifications) => {
 					notifications.splice(friendNotif, 1);

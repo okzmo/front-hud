@@ -17,7 +17,7 @@ import { page } from '$app/stores';
 const wsURL = 'ws://localhost:7880';
 
 export async function joinRoom(channelId: string, userId: string, serverId: string) {
-	const resp = await fetch(`https://localhost:3000/api/v1/rtc/${channelId}/${userId}`, {
+	const resp = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/rtc/${channelId}/${userId}`, {
 		credentials: 'include'
 	});
 	const data = await resp.json();

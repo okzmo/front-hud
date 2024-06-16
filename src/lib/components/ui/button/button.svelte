@@ -56,6 +56,12 @@
 		border: 1px solid theme(colors.zinc.50);
 	}
 
+	.activeAccent {
+		color: theme(colors.zinc.50);
+		border: 1px solid theme(colors.accent.DEFAULT);
+		background-color: theme(colors.accent.DEFAULT);
+	}
+
 	.active:has(> img) {
 		border: 3px solid theme(colors.zinc.50);
 	}

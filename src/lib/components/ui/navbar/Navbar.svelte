@@ -37,7 +37,7 @@
 		<div class="flex flex-col bg-zinc-925 gap-y-2">
 			<NotificationsButton />
 
-			<Button class="h-12 w-12 rounded-xl text-zinc-500" size="icon">
+			<Button href="/hudori/settings" class="h-12 w-12 rounded-xl text-zinc-500" size="icon">
 				<Icon icon="ph:gear-duotone" height="24" width="24" />
 			</Button>
 		</div>

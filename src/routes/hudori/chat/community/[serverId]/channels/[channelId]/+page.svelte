@@ -16,7 +16,6 @@
 			(notification) => notification.channel_id?.split(':')[1] === $page.params.channelId
 		);
 		if (channelNotif > -1) {
-			console.log($notifications.length);
 			if ($notifications.length > 1) {
 				notifications.update((notifications) => {
 					notifications.splice(channelNotif, 1);
