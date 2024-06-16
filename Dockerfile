@@ -8,7 +8,7 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_API_URL=https://api.hudori.app
 RUN pnpm build
 
 EXPOSE 3000
