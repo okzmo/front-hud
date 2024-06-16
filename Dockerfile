@@ -8,7 +8,7 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-ENV VITE_API_URL=http://s48ok4w.128.140.68.17.sslip.io
+ENV VITE_API_URL=https://api.hudori.app
 RUN pnpm build
 
 EXPOSE 3000
