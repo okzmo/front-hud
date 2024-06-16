@@ -47,6 +47,8 @@ export const actions: Actions = {
 					path: '/',
 					httpOnly: true,
 					expires: new Date(options[1].split('=')[1]),
+					sameSite: 'none',
+					secure: true,
 					encode: (val) => val
 				});
 			}
