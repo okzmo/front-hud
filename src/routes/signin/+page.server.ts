@@ -42,12 +42,13 @@ export const actions: Actions = {
 				const cookieParts = setCookieHeader.split(';').map((part) => part.trim());
 				const [cookieNameValue, ...options] = cookieParts;
 				const [name, value] = cookieNameValue.split('=');
+				console.log(options);
 
 				cookies.set(name, value, {
 					path: '/',
 					httpOnly: true,
-					expires: new Date(options[1].split('=')[1]),
-					domain: 'api.hudori.app',
+					expires: new Date(options[2].split('=')[1]),
+					domain: 'hudori.app',
 					sameSite: 'none',
 					secure: true,
 					encode: (val) => val
