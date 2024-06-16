@@ -17,7 +17,7 @@
 	let ws;
 
 	onMount(() => {
-		ws = new WebSocket(`wss://localhost:3000/ws/${data.props?.user.id.split(':')[1]}`);
+		ws = new WebSocket(`wss://api.hudori.app/ws/${data.props?.user.id.split(':')[1]}`);
 		wsConn.set(ws);
 
 		ws.onmessage = (event) => {
