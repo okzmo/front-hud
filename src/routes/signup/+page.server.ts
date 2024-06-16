@@ -48,6 +48,9 @@ export const actions: Actions = {
 					path: '/',
 					httpOnly: true,
 					expires: new Date(options[1].split('=')[1]),
+					domain: 'api.hudori.app',
+					sameSite: 'none',
+					secure: true,
 					encode: (val) => val
 				});
 			}
