@@ -16,6 +16,7 @@ import { page } from '$app/stores';
 
 export async function joinRoom(channelId: string, userId: string, serverId: string) {
 	const existingRoom = get(vcRoom);
+	if (existingRoom && existingRoom.name === channelId) return;
 	if (existingRoom) {
 		quitRoom(serverId);
 	}
