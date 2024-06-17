@@ -26,11 +26,11 @@
 
 <ContextMenu.Root>
 	<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId)}>
-		<button
-			on:click={() => goto(href)}
+		<a
 			class="flex gap-x-3 hover:bg-zinc-800/75 p-3 rounded-2xl active:scale-[0.97] items-center w-full"
 			class:active={$page.url.pathname.includes(href)}
 			id="friend-link"
+			{href}
 		>
 			<div
 				id="friend-avatar"
@@ -60,7 +60,7 @@
 					</p>
 				{/if}
 			</div>
-		</button>
+		</a>
 	</ContextMenu.Trigger>
 	{#if isOpen}
 		<FriendsContextMenu {id} {username} />

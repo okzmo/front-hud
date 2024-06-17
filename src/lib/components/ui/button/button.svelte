@@ -34,7 +34,7 @@
 		<slot />
 	</ButtonPrimitive.Root>
 {:else if href}
-	<button
+	<a
 		class={cn(
 			buttonVariants({
 				variant,
@@ -44,10 +44,10 @@
 		)}
 		class:active={$page.url.pathname.includes(href)}
 		{...$$restProps}
-		on:click={() => goto(href)}
+		{href}
 	>
 		<slot />
-	</button>
+	</a>
 {/if}
 
 <style lang="postcss">
