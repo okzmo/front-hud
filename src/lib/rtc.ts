@@ -15,6 +15,11 @@ import { get } from 'svelte/store';
 import { page } from '$app/stores';
 
 export async function joinRoom(channelId: string, userId: string, serverId: string) {
+	const existingRoom = get(vcRoom);
+	if (existingRoom) {
+		quitRoom(serverId);
+	}
+
 	const resp = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/rtc/${channelId}/${userId}`, {
 		credentials: 'include'
 	});
