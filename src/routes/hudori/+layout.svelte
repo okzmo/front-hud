@@ -31,6 +31,11 @@
 		body.oncontextmenu = (ev) => {
 			ev.preventDefault();
 		};
+
+		const audios = document.getElementsByTagName('audio');
+		for (const audio of audios) {
+			audio.volume = 0.25;
+		}
 	});
 
 	const hideSidebar = ['/hudori/settings'];
@@ -48,9 +53,9 @@
 		<slot />
 	</main>
 
-	<audio volume={0.35} id="audio_join_channel" src="/src/assets/audio/join_channel_pos.mp3"></audio>
-	<audio volume={0.35} id="audio_quit_channel" src="/src/assets/audio/join_channel_neg.mp3"></audio>
-	<audio volume={0.35} id="audio_ringtone" src="/src/assets/audio/ringtone.mp3"></audio>
+	<audio id="audio_join_channel" src="/audio/join_channel_pos.mp3"></audio>
+	<audio id="audio_quit_channel" src="/audio/join_channel_neg.mp3"></audio>
+	<audio id="audio_ringtone" src="/audio/ringtone.mp3"></audio>
 </div>
 
 <style>

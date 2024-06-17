@@ -1,14 +1,15 @@
 <script lang="ts">
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
-	import { messages, notifications, server, serversStateStore } from '$lib/stores';
+	import { notifications, server, serversStateStore } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import { page } from '$app/stores';
+	import { afterNavigate, onNavigate } from '$app/navigation';
+	import type { Message, MessageUI } from '$lib/types';
 
 	export let data: PageData;
 	$: {
-		messages.set(data.props?.messages);
-		server.set(data.props?.server);
+		server.set(data.server);
 	}
 
 	$: if ($notifications) {
@@ -27,11 +28,52 @@
 		}
 	}
 
-	onMount(() => {
+	let messages: MessageUI[] | undefined;
+
+	async function fetchMessages(channelId: string): Promise<MessageUI[] | undefined> {
+		try {
+			const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}`, {
+				method: 'GET',
+				credentials: 'include'
+			});
+			const data = await response.json();
+			let groupedMessages;
+
+			if (data.messages.length > 0) {
+				const threshold = 10000; // 10 seconds
+				groupedMessages = data.messages.map((msg, index) => {
+					const prevMsg = data.messages[index - 1];
+					const nextMsg = data.messages[index + 1];
+					const groupWithPrevious =
+						index > 0 &&
+						new Date(msg.updated_at).getTime() - new Date(prevMsg.updated_at).getTime() <
+							threshold &&
+						msg.author.id === prevMsg.author.id;
+					const groupWithAfter =
+						index < data.messages.length - 1 &&
+						new Date(nextMsg.updated_at).getTime() - new Date(msg.updated_at).getTime() <
+							threshold &&
+						msg.author.id === nextMsg.author.id;
+
+					return { ...msg, groupWithPrevious, groupWithAfter };
+				});
+			}
+
+			return groupedMessages;
+		} catch (error) {
+			console.error('Error fetching messages:', error);
+		}
+	}
+
+	afterNavigate(async () => {
+		messages = await fetchMessages($page.params.channelId);
+	});
+	onMount(async () => {
+		messages = await fetchMessages($page.params.channelId);
 		window.addEventListener('beforeunload', () => {
 			localStorage.setItem('states', JSON.stringify($serversStateStore));
 		});
 	});
 </script>
 
-<Chatbox friend_chatbox={false} />
+<Chatbox {messages} friend_chatbox={false} />
