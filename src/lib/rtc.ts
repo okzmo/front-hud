@@ -14,8 +14,6 @@ import { mutedState, participantExist, server, user, vcRoom, wsConn } from './st
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
 
-const wsURL = 'ws://localhost:7880';
-
 export async function joinRoom(channelId: string, userId: string, serverId: string) {
 	const resp = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/rtc/${channelId}/${userId}`, {
 		credentials: 'include'
@@ -41,7 +39,7 @@ export async function joinRoom(channelId: string, userId: string, serverId: stri
 		.on(RoomEvent.Disconnected, handleDisconnect)
 		.on(RoomEvent.LocalTrackUnpublished, handleLocalTrackUnpublished);
 
-	await room.connect(wsURL, token);
+	await room.connect(import.meta.env.VITE_LIVEKIT_URL, token);
 	const mutedParticipant = get(mutedState);
 
 	try {

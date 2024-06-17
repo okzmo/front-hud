@@ -47,7 +47,7 @@ export const actions: Actions = {
 					path: '/',
 					httpOnly: true,
 					expires: new Date(options[2].split('=')[1]),
-					domain: 'hudori.app',
+					domain: import.meta.env.VITE_COOKIE_DOMAIN,
 					sameSite: 'none',
 					secure: true,
 					encode: (val) => val
