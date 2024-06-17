@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
 	import { contextMenuInfo } from '$lib/stores';
 	import FriendsContextMenu from './FriendsContextMenu.svelte';
 	import { generateRandomId, handleContextMenu } from '$lib/utils';
