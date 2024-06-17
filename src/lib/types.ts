@@ -70,6 +70,7 @@ export interface Notification {
 	request_id?: string;
 	channel_id?: string;
 	counter?: number;
+	server_id?: string;
 }
 
 export interface ServersState {

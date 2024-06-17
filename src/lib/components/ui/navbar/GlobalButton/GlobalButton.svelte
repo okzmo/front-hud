@@ -11,7 +11,7 @@
 
 <Popover.Root>
 	<Popover.Trigger>
-		<li>
+		<li class="flex justify-center">
 			<Button class="h-12 w-12 rounded-xl" size="icon">
 				{#if activeApp === 'chat'}
 					<Icon icon="ph:chat-circle-duotone" height="24" width="24" class="text-zinc-500" />

@@ -3,7 +3,7 @@
 	import { Editor, type JSONContent } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
 	import Placeholder from '@tiptap/extension-placeholder';
-	import { user, updateChatInputState, getChatInputState } from '$lib/stores';
+	import { user, updateChatInputState, getChatInputState, server } from '$lib/stores';
 	import { page } from '$app/stores';
 	import { debounce } from '$lib/utils';
 
@@ -45,6 +45,10 @@
 			content: richInputContent,
 			private_message: friend_chatbox
 		};
+
+		if (!friend_chatbox) {
+			body.server_id = $server?.id;
+		}
 
 		try {
 			const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/messages/create`, {

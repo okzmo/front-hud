@@ -11,11 +11,11 @@
 	import NotificationsButton from './NotificationsButton.svelte';
 </script>
 
-<nav class="p-3 border-r border-zinc-850 w-fit h-full">
-	<ul class="flex flex-col relative h-full">
+<nav class="py-3 border-r border-zinc-850 w-[4.15rem] h-full flex flex-col">
+	<ul class="flex flex-col relative flex-grow overflow-y-auto">
 		<GlobalButton />
 		<Separator class="mt-3 bg-zinc-700" />
-		<div class="pt-3 overflow-y-auto h-full flex flex-col gap-y-2 pb-36 scrollbar-hide relative">
+		<div class="pt-3 flex flex-col gap-y-2 scrollbar-hide relative items-center">
 			<FriendsButton />
 			{#if $servers}
 				{#each $servers as server}
@@ -32,12 +32,12 @@
 	</ul>
 
 	<!-- settings/notifications -->
-	<div class="fixed bottom-3 rounded-md">
+	<div class="flex flex-col items-center">
 		<span class="block w-full h-4 bg-gradient-to-t from-zinc-925" />
 		<div class="flex flex-col bg-zinc-925 gap-y-2">
 			<NotificationsButton />
 
-			<Button href="/hudori/settings" class="h-12 w-12 rounded-xl text-zinc-500" size="icon">
+			<Button href="/settings" class="h-12 w-12 rounded-xl text-zinc-500" size="icon">
 				<Icon icon="ph:gear-duotone" height="24" width="24" />
 			</Button>
 		</div>
