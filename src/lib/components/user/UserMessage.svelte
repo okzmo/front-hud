@@ -8,7 +8,6 @@
 	import { browser } from '$app/environment';
 
 	export let author: User;
-	export let sender: boolean = false;
 	export let content: JSONContent;
 	export let time: string;
 	export let groupedWithPrevious: boolean;
@@ -16,11 +15,11 @@
 </script>
 
 {#if browser}
-	<div class="flex gap-x-3 items-start" class:mt-6={!groupedWithPrevious}>
-		{#if !groupedWithPrevious}
+	<div class="flex gap-x-2 items-end" class:mt-6={!groupedWithPrevious}>
+		{#if !groupedWithAfter}
 			<Popover.Root>
 				<Popover.Trigger>
-					<div class="flex-shrink-0 h-12 w-12 rounded-2xl overflow-hidden">
+					<div class="flex-shrink-0 h-10 w-10 rounded-xl overflow-hidden">
 						<img class="w-full h-full object-cover" src={author.avatar} alt="" />
 					</div>
 				</Popover.Trigger>
@@ -35,30 +34,33 @@
 			</Popover.Root>
 		{/if}
 		<div class="flex flex-col w-fit">
-			{#if !groupedWithPrevious}
-				<span class="flex items-end gap-x-2 w-fit">
-					<p class="text-sm leading-0">{author.display_name}</p>
-					<time class="text-zinc-650 leading-2 text-xs">{formatISODate(time)}</time>
-				</span>
-			{/if}
-			<p
-				class="bg-zinc-800 rounded-3xl rounded-tl-sm px-5 py-2 mt-1 w-fit text-sm [&>p]:break-all"
-				class:!bg-accent={sender}
+			<div
+				class="bg-zinc-850 rounded-xl rounded-bl-sm px-5 py-3 mt-1 w-fit text-sm [&>p]:break-all flex flex-col gap-y-1 max-w-[45rem]"
 				class:groupMessagePrevious={groupedWithPrevious}
 				class:groupMessageAfter={groupedWithAfter}
 			>
+				{#if !groupedWithPrevious}
+					<span class="flex items-end gap-x-2 w-fit">
+						<p class={`text-sm leading-0`} style="color: {author.username_color || '#fff'};">
+							{author.display_name}
+						</p>
+						<time class="text-zinc-400 leading-[1.08rem] text-xs">{formatISODate(time)}</time>
+					</span>
+				{/if}
 				{@html generateHTML(content, [StarterKit])}
-			</p>
+			</div>
 		</div>
 	</div>
 {/if}
 
+<!-- margin-left: calc(theme(margin.10) + theme(margin.2)); -->
+
 <style lang="postcss">
 	.groupMessagePrevious {
-		margin-left: calc(theme(margin.12) + theme(margin.3));
+		border-top-left-radius: theme(borderRadius.sm);
 	}
 
 	.groupMessageAfter {
-		border-bottom-left-radius: theme(borderRadius.sm);
+		margin-left: calc(theme(margin.10) + theme(margin.2));
 	}
 </style>

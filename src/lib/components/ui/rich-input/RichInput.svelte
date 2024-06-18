@@ -55,7 +55,9 @@
 				method: 'POST',
 				credentials: 'include',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
+					'X-User-ID': $user?.id,
+					'X-User-Agent': navigator.userAgent
 				},
 				body: JSON.stringify(body)
 			});

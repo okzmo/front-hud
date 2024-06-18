@@ -1,6 +1,6 @@
 <script lang="ts">
 	import UserMessage from '$lib/components/user/UserMessage.svelte';
-	import { messages, user } from '$lib/stores';
+	import { messages } from '$lib/stores';
 	import RichInput from '../rich-input/RichInput.svelte';
 	import type { Message, MessageUI } from '$lib/types';
 	import Icon from '@iconify/svelte';
@@ -47,7 +47,6 @@
 				<UserMessage
 					author={message.author}
 					content={message.content}
-					sender={message.author.id === $user?.id}
 					time={message.updated_at}
 					groupedWithPrevious={message.groupWithPrevious}
 					groupedWithAfter={message.groupWithAfter}

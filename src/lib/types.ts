@@ -6,6 +6,7 @@ export interface User {
 	password: string;
 	username: string;
 	display_name: string;
+	username_color?: string;
 	avatar: string;
 	banner: string;
 	status: string;
