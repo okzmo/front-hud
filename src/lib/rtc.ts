@@ -22,7 +22,11 @@ export async function joinRoom(channelId: string, userId: string, serverId: stri
 	}
 
 	const resp = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/rtc/${channelId}/${userId}`, {
-		credentials: 'include'
+		credentials: 'include',
+		headers: {
+			'X-User-Agent': navigator.userAgent,
+			'X-User-ID': userId
+		}
 	});
 	const data = await resp.json();
 	const token = data.token;
