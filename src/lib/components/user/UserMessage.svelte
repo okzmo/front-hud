@@ -36,8 +36,8 @@
 		{/if}
 		<div class="flex flex-col w-fit">
 			{#if !groupedWithPrevious}
-				<span class="flex gap-x-2 w-fit">
-					<p class="text-sm">{author.display_name}</p>
+				<span class="flex items-end gap-x-2 w-fit">
+					<p class="text-sm leading-0">{author.display_name}</p>
 					<time class="text-zinc-650 leading-2 text-xs">{formatISODate(time)}</time>
 				</span>
 			{/if}
@@ -54,7 +54,6 @@
 {/if}
 
 <style lang="postcss">
-
 	.groupMessagePrevious {
 		margin-left: calc(theme(margin.12) + theme(margin.3));
 	}

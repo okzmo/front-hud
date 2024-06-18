@@ -28,7 +28,11 @@
 				`${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}/private/${$user?.id.split(':')[1]}`,
 				{
 					method: 'GET',
-					credentials: 'include'
+					credentials: 'include',
+					headers: {
+						'X-User-Agent': navigator.userAgent,
+						'X-User-ID': $user?.id
+					}
 				}
 			);
 			const data = await response.json();

@@ -3,12 +3,19 @@
 
 	import Button from '../button/button.svelte';
 	import Separator from '../separator/separator.svelte';
-	import { servers } from '$lib/stores';
+	import { servers, settingsLastPage } from '$lib/stores';
 	import ServerActionsButton from './ServerActions/ServerActionsButton.svelte';
 	import GlobalButton from './GlobalButton/GlobalButton.svelte';
 	import FriendsButton from './FriendsButton.svelte';
 	import ServerAccessButton from './ServerAccess/ServerAccessButton.svelte';
 	import NotificationsButton from './NotificationsButton.svelte';
+	import { beforeNavigate } from '$app/navigation';
+
+	beforeNavigate(({ from, to }) => {
+		if (from && to?.url.pathname.includes('settings')) {
+			settingsLastPage.set(from.url.href);
+		}
+	});
 </script>
 
 <nav class="py-3 border-r border-zinc-850 w-[4.15rem] h-full flex flex-col">
@@ -37,7 +44,11 @@
 		<div class="flex flex-col bg-zinc-925 gap-y-2">
 			<NotificationsButton />
 
-			<Button href="/settings" class="h-12 w-12 rounded-xl text-zinc-500" size="icon">
+			<Button
+				href="/hudori/settings/account"
+				class="h-12 w-12 rounded-xl text-zinc-500"
+				size="icon"
+			>
 				<Icon icon="ph:gear-duotone" height="24" width="24" />
 			</Button>
 		</div>

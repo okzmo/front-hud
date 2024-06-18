@@ -45,11 +45,11 @@
 	<!-- <div -->
 	<!-- 	class="absolute -top-14 left-1/2 -translate-x-1/2 rounded-[50%] w-5/6 h-28 bg-zinc-500 z-[1] bg-gradient-to-b from-[#B693FF] to-[#9397FF] blur-3xl opacity-15 pointer-events-none" -->
 	<!-- ></div> -->
-	{#if !hideSidebar.includes($page.url.pathname)}
+	{#if !$page.url.pathname.includes('settings')}
 		<Navbar />
 		<Sidebar />
 	{/if}
-	<main class="flex-grow max-w-[calc(100%_-_17rem_-_4.6rem)] relative">
+	<main class="flex-grow max-w-[calc(100%)] relative">
 		<slot />
 	</main>
 

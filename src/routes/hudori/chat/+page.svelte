@@ -1,1 +1,7 @@
-<h1>chat</h1>
+<script>
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		history.back();
+	});
+</script>

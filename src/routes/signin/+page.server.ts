@@ -6,7 +6,7 @@ import { signinFormSchema } from '$lib/components/connection/schema-signin';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
-		redirect(303, '/hudori/chat');
+		redirect(303, '/hudori/chat/friends');
 	}
 
 	return {
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, cookies, locals }) => {
+	default: async ({ request, cookies }) => {
 		const form = await superValidate(request, zod(signinFormSchema));
 		if (!form.valid) {
 			return fail(400, {
@@ -28,7 +28,7 @@ export const actions: Actions = {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-User-Agent': locals.userAgent
+					'X-User-Agent': request.headers.get('user-agent')
 				},
 				body: JSON.stringify(form.data)
 			});

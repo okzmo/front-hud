@@ -44,6 +44,7 @@
 		class:active={$page.url.pathname.includes(href)}
 		{...$$restProps}
 		{href}
+		referrerpolicy="origin"
 	>
 		<slot />
 	</a>

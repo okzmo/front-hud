@@ -6,7 +6,7 @@ import { redirect, type Actions } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
-		redirect(303, '/hudori/chat');
+		redirect(303, '/hudori/chat/friends');
 	}
 
 	return {
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ request, cookies, locals }) => {
 		const form = await superValidate(request, zod(registerFormSchema));
 		if (!form.valid) {
 			return fail(400, {
@@ -27,7 +27,8 @@ export const actions: Actions = {
 			const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
+					'X-User-Agent': locals.userAgent
 				},
 				body: JSON.stringify(form.data)
 			});
@@ -48,7 +49,7 @@ export const actions: Actions = {
 					path: '/',
 					httpOnly: true,
 					expires: new Date(options[2].split('=')[1]),
-					domain: 'hudori.app',
+					domain: import.meta.env.VITE_COOKIE_DOMAIN,
 					sameSite: 'none',
 					secure: true,
 					encode: (val) => val
@@ -59,6 +60,6 @@ export const actions: Actions = {
 			return fail(500, { error: 'An unexpected error occured.' });
 		}
 
-		throw redirect(303, '/hudori/chat');
+		throw redirect(303, '/hudori/chat/friends');
 	}
 };

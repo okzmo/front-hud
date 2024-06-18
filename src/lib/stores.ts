@@ -20,6 +20,7 @@ export const contextMenuInfo = writable<ContextMenuServer | undefined>();
 export const wsConn = writable<WebSocket | undefined>();
 export const vcRoom = writable<Room | undefined>();
 export const mutedState = writable({ muteHead: false, muteMic: false });
+export const settingsLastPage = writable<string | undefined>();
 
 export const friendRequest = writable<SuperValidated<Infer<FriendRequestFormSchema>>>();
 
