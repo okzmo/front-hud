@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
 import { friendRequestSchema } from '$lib/components/friends/schema-friend-request';
 
-export const load: LayoutServerLoad = async ({ cookies, locals }) => {
+export const load: LayoutServerLoad = async ({ cookies, locals, fetch }) => {
 	const user = locals.user;
 	const userId = user.id.split(':')[1];
 

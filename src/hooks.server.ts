@@ -1,9 +1,11 @@
-import { redirect, type Handle } from '@sveltejs/kit';
+import { redirect, type Handle, type HandleFetch } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const sessionId = event.cookies.get('session');
 	const isAuthPage = event.url.pathname === '/signin' || event.url.pathname === '/signup';
 	const isHudoriPage = event.url.pathname.startsWith('/hudori');
+
+	event.locals.userAgent = event.request.headers.get('user-agent');
 
 	if (isAuthPage || isHudoriPage) {
 		try {
@@ -31,4 +33,22 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	return resolve(event);
+};
+
+export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
+	const headers = new Headers(request.headers);
+
+	if (event.locals.userAgent) {
+		headers.set('X-User-Agent', event.locals.userAgent);
+	}
+
+	if (event.locals.user) {
+		headers.set('X-User-ID', event.locals.user.id);
+	}
+
+	const modifiedRequest = new Request(request, {
+		headers: headers
+	});
+
+	return fetch(modifiedRequest);
 };

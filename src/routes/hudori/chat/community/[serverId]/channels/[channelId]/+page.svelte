@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
-	import { messages, notifications, server, serversStateStore } from '$lib/stores';
+	import { messages, notifications, server, serversStateStore, user } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import { page } from '$app/stores';
@@ -32,7 +32,11 @@
 		try {
 			const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}`, {
 				method: 'GET',
-				credentials: 'include'
+				credentials: 'include',
+				headers: {
+					'X-User-Agent': navigator.userAgent,
+					'X-User-ID': $user?.id
+				}
 			});
 			const data = await response.json();
 			return data.messages;
@@ -45,7 +49,6 @@
 		messages.set(await fetchMessages($page.params.channelId));
 	});
 	onMount(async () => {
-		messages.set(await fetchMessages($page.params.channelId));
 		window.addEventListener('beforeunload', () => {
 			localStorage.setItem('states', JSON.stringify($serversStateStore));
 		});

@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ request, cookies, locals }) => {
 		const form = await superValidate(request, zod(signinFormSchema));
 		if (!form.valid) {
 			return fail(400, {
@@ -27,7 +27,8 @@ export const actions: Actions = {
 			const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signin`, {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
+					'X-User-Agent': locals.userAgent
 				},
 				body: JSON.stringify(form.data)
 			});

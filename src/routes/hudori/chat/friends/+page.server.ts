@@ -4,7 +4,7 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ request, cookies, fetch }) => {
 		const formData = await request.formData();
 		const form = await superValidate(formData, zod(friendRequestSchema));
 		if (!form.valid) {

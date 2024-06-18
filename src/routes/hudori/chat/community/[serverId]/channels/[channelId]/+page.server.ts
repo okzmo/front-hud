@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ cookies, locals, params }) => {
+export const load: PageServerLoad = async ({ cookies, locals, params, fetch }) => {
 	const sessionId = cookies.get('session');
 	const user = locals.user;
 	const userId = user.id.split(':')[1];
