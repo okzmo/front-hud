@@ -25,7 +25,7 @@
 	$: if ($server && $page.params.channelId) {
 		updateLastVisited($server.id, $page.params.channelId);
 	}
-	$: notification = $notifications.filter(
+	$: notification = $notifications?.filter(
 		(notification) => notification.channel_id === channelId
 	)[0];
 </script>
