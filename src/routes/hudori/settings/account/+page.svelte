@@ -87,8 +87,8 @@
 
 <section class="flex-grow bg-zinc-800 ml-5 p-6 rounded-lg flex">
 	<span class="flex-[60%_0_0]">
-		<h3>Basic Details</h3>
-		<p>Change your username, display name or email.</p>
+		<h3 class="text-xl font-semibold">Basic Details</h3>
+		<p class="text-zinc-500">Change your username, display name or email.</p>
 	</span>
 	<div class="flex-[40%_0_0] flex flex-col gap-y-3">
 		<form method="POST" action="?/display_name" use:displayNameEnhance>

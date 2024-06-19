@@ -3,6 +3,8 @@ import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
 import { contextMenuInfo } from './stores';
+import { get, type Writable } from 'svelte/store';
+import type { User } from './types';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -136,4 +138,52 @@ export function debounce<T extends (...args: any[]) => void>(
 		}
 		timeout = setTimeout(later, wait);
 	};
+}
+
+export async function getProfile(own_id: string | undefined, user_id: string) {
+	const cache = await caches.open('user_profile');
+	const cachedResponse = await cache.match(
+		`${import.meta.env.VITE_API_URL}/api/v1/user/${user_id}`
+	);
+
+	if (cachedResponse) {
+		const cacheTimestamp = cachedResponse.headers.get('X-Cache-Timestamp');
+		const expirationTime = 30 * 1000;
+		if (cacheTimestamp && Date.now() - parseInt(cacheTimestamp, 10) > expirationTime) {
+			await cache.delete(`${import.meta.env.VITE_API_URL}/api/v1/user/${user_id}`);
+		} else {
+			const data = await cachedResponse.json();
+			return data.user;
+		}
+	}
+	try {
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/${user_id}`, {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'X-User-Agent': navigator.userAgent,
+				'X-User-ID': own_id
+			}
+		});
+
+		if (!response.ok) {
+			throw new Error('Error occured when fetching profile.');
+		}
+
+		const data = await response.json();
+
+		const headers = new Headers({
+			'Content-Type': 'application/json',
+			'X-Cache-Timestamp': Date.now().toString()
+		});
+
+		await cache.put(
+			`${import.meta.env.VITE_API_URL}/api/v1/user/${user_id}`,
+			new Response(JSON.stringify(data), { headers })
+		);
+
+		return data.user;
+	} catch (error) {
+		console.error(error);
+	}
 }

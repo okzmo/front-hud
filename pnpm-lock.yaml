@@ -41,6 +41,12 @@ importers:
       mode-watcher:
         specifier: ^0.3.0
         version: 0.3.0(svelte@4.2.18)
+      svelte-easy-crop:
+        specifier: ^2.0.3
+        version: 2.0.3(svelte@4.2.18)
+      svelte-file-dropzone:
+        specifier: ^2.0.7
+        version: 2.0.7(svelte@4.2.18)
       svelte-sonner:
         specifier: ^0.3.24
         version: 0.3.24(svelte@4.2.18)
@@ -1202,6 +1208,10 @@ packages:
     resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
     engines: {node: '>=16.0.0'}
 
+  file-selector@0.6.0:
+    resolution: {integrity: sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw==}
+    engines: {node: '>= 12'}
+
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
@@ -2007,6 +2017,11 @@ packages:
     peerDependencies:
       svelte: ^3.55.0 || ^4.0.0-next.0 || ^4.0.0 || ^5.0.0-next.0
 
+  svelte-easy-crop@2.0.3:
+    resolution: {integrity: sha512-hB4CK4JOcnNdXPtaHyI2lFoFYxs2lGrjPvT1/A8Rp5m9aBC2RV0MHCJ0VjNrlSEWjTOEexcBIXCC5RW8QhF4zQ==}
+    peerDependencies:
+      svelte: ^4.0.0
+
   svelte-eslint-parser@0.37.0:
     resolution: {integrity: sha512-AXd5ar7dcOK+H86JomxcSaWevhs2J7o/xOwg+kDQu98uuATpm+tE5Twp7u8UQCdbWKB34Idu/CZyHmTOxfSQMw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -2015,6 +2030,11 @@ packages:
     peerDependenciesMeta:
       svelte:
         optional: true
+
+  svelte-file-dropzone@2.0.7:
+    resolution: {integrity: sha512-sykRq+Q8rXM9yqsD3T9yzb3syLe21Go01cxb5NTfKA9RgMWHT/gnjS8g36YFWw3jIdC7vbbmuwwgYdA0mlcMqw==}
+    peerDependencies:
+      svelte: ^3.54.0 || ^4.0.0
 
   svelte-hmr@0.16.0:
     resolution: {integrity: sha512-Gyc7cOS3VJzLlfj7wKS0ZnzDVdv3Pn2IuVeJPk9m2skfhcu5bq3wtIZyQGggr7/Iim5rH5cncyQft/kRLupcnA==}
@@ -3444,6 +3464,10 @@ snapshots:
     dependencies:
       flat-cache: 4.0.1
 
+  file-selector@0.6.0:
+    dependencies:
+      tslib: 2.6.3
+
   fill-range@7.1.1:
     dependencies:
       to-regex-range: 5.0.1
@@ -4246,6 +4270,10 @@ snapshots:
       - stylus
       - sugarss
 
+  svelte-easy-crop@2.0.3(svelte@4.2.18):
+    dependencies:
+      svelte: 4.2.18
+
   svelte-eslint-parser@0.37.0(svelte@4.2.18):
     dependencies:
       eslint-scope: 7.2.2
@@ -4254,6 +4282,11 @@ snapshots:
       postcss: 8.4.38
       postcss-scss: 4.0.9(postcss@8.4.38)
     optionalDependencies:
+      svelte: 4.2.18
+
+  svelte-file-dropzone@2.0.7(svelte@4.2.18):
+    dependencies:
+      file-selector: 0.6.0
       svelte: 4.2.18
 
   svelte-hmr@0.16.0(svelte@4.2.18):

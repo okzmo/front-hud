@@ -7,6 +7,9 @@
 	import { quitRoom } from '$lib/rtc';
 	import { Track } from 'livekit-client';
 	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import type { User } from '$lib/types';
+	import { getProfile } from '$lib/utils';
 
 	function muteMicrophone() {
 		mutedState.update((state) => {
@@ -69,6 +72,16 @@
 			}
 		});
 	});
+
+	let open = writable<boolean>(false);
+	let user_profile: User | undefined;
+
+	async function getUserProfile() {
+		open.set(!$open);
+		if (!$open) return;
+
+		user_profile = await getProfile($user?.id, $user!.id);
+	}
 </script>
 
 <div class="flex flex-col flex-shrink-0 gap-y-2">
@@ -95,7 +108,7 @@
 	{/if}
 	<div class="flex gap-x-2 justify-between">
 		{#if $user}
-			<Popover.Root>
+			<Popover.Root onOpenChange={getUserProfile}>
 				<Popover.Trigger class="max-w-[9rem]">
 					<Button class="h-12 p-0 rounded-xl overflow-hidden pr-4 text-sm gap-x-3 ">
 						<img
@@ -106,14 +119,7 @@
 						<span class="text-left truncate w-full">{$user.display_name || 'User'}</span>
 					</Button>
 				</Popover.Trigger>
-				<Profile
-					username={$user.username}
-					display_name={$user.display_name}
-					side="top"
-					banner={$user.banner}
-					about_me={$user.about_me}
-					avatar={$user.avatar}
-				/>
+				<Profile user={user_profile} side="top" />
 			</Popover.Root>
 		{/if}
 		<Button class="h-12 w-12 rounded-xl px-3" on:click={muteMicrophone}>

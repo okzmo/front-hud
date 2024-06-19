@@ -6,31 +6,37 @@
 	import { generateHTML, type JSONContent } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
 	import { browser } from '$app/environment';
+	import { writable, type Writable } from 'svelte/store';
+	import { user } from '$lib/stores';
+	import { getProfile } from '$lib/utils';
 
 	export let author: User;
 	export let content: JSONContent;
 	export let time: string;
 	export let groupedWithPrevious: boolean;
 	export let groupedWithAfter: boolean;
+
+	let open = writable<boolean>(false);
+	let user_profile: User | undefined;
+
+	async function getUserProfile() {
+		open.set(!$open);
+		if (!$open) return;
+
+		user_profile = await getProfile($user?.id, author.id);
+	}
 </script>
 
 {#if browser}
 	<div class="flex gap-x-2 items-end" class:mt-6={!groupedWithPrevious}>
 		{#if !groupedWithAfter}
-			<Popover.Root>
+			<Popover.Root onOpenChange={() => getUserProfile()}>
 				<Popover.Trigger>
 					<div class="flex-shrink-0 h-10 w-10 rounded-xl overflow-hidden">
 						<img class="w-full h-full object-cover" src={author.avatar} alt="" />
 					</div>
 				</Popover.Trigger>
-				<Profile
-					display_name={author.display_name}
-					username={author.username}
-					banner={author.banner}
-					avatar={author.avatar}
-					about_me={author.about_me}
-					side="right"
-				/>
+				<Profile user={user_profile} side="right" />
 			</Popover.Root>
 		{/if}
 		<div class="flex flex-col w-fit">

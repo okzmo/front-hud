@@ -64,7 +64,7 @@
 			</button>
 			{#if participants}
 				{#each participants as participant}
-					<UserVcNode user={participant} />
+					<UserVcNode connected_user={participant} />
 				{/each}
 			{/if}
 		</div>
