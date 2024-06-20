@@ -43,6 +43,7 @@
   "dependencies": {
     "@sveltejs/adapter-node": "^5.1.0",
     "@tiptap/core": "^2.4.0",
+    "@tiptap/extension-link": "^2.4.0",
     "@tiptap/extension-placeholder": "^2.4.0",
     "@tiptap/starter-kit": "^2.4.0",
     "bits-ui": "^0.21.5",

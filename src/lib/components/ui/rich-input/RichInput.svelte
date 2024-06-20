@@ -3,6 +3,7 @@
 	import { Editor, type JSONContent } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
 	import Placeholder from '@tiptap/extension-placeholder';
+	import Link from '@tiptap/extension-link';
 	import { user, updateChatInputState, getChatInputState, server } from '$lib/stores';
 	import { page } from '$app/stores';
 	import { debounce } from '$lib/utils';
@@ -80,6 +81,12 @@
 		editor = new Editor({
 			element: element,
 			extensions: [
+				Link.configure({
+					openOnClick: true,
+					defaultProtocol: 'https',
+					autolink: true,
+					protocols: ['https']
+				}),
 				StarterKit.configure({
 					gapcursor: false,
 					dropcursor: false,
@@ -150,6 +157,16 @@
 		scroll-padding-block: 0.685rem;
 		overflow: auto;
 		margin: 0rem 0.75rem 0.75rem;
+		white-space: pre-wrap;
+	}
+
+	:global(.ProseMirror a) {
+		color: theme(colors.blue.400);
+	}
+
+	:global(.ProseMirror a:hover) {
+		cursor: pointer;
+		text-decoration: underline;
 	}
 
 	:global(.is-editor-empty:first-child::before) {

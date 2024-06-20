@@ -5,6 +5,7 @@
 	import type { User } from '$lib/types';
 	import { generateHTML, type JSONContent } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
+	import Link from '@tiptap/extension-link';
 	import { browser } from '$app/environment';
 	import { writable, type Writable } from 'svelte/store';
 	import { user } from '$lib/stores';
@@ -53,7 +54,9 @@
 						<time class="text-zinc-400 leading-[1.08rem] text-xs">{formatISODate(time)}</time>
 					</span>
 				{/if}
-				{@html generateHTML(content, [StarterKit])}
+				<span class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline">
+					{@html generateHTML(content, [StarterKit, Link])}
+				</span>
 			</div>
 		</div>
 	</div>
