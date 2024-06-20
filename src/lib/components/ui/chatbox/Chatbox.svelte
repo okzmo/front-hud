@@ -4,8 +4,11 @@
 	import RichInput from '../rich-input/RichInput.svelte';
 	import type { Message, MessageUI } from '$lib/types';
 	import Icon from '@iconify/svelte';
-	import { afterUpdate, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { page } from '$app/stores';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import { browser } from '$app/environment';
 
 	export let friend_chatbox: boolean;
 
@@ -37,12 +40,24 @@
 		return groupedMessages;
 	};
 
-	$: if ($messages) {
-		groupedMessages = groupMessages($messages);
+	$: if ($messages[$page.params.id] || $messages[$page.params.channelId]) {
+		const channelContent = $messages[$page.params.id || $page.params.channelId];
+		groupedMessages = groupMessages(channelContent.messages);
 	}
 
-	afterUpdate(() => {
-		chatbox.scrollTop = chatbox.scrollHeight;
+	afterNavigate(() => {
+		const channelContent = $messages[$page.params.id || $page.params.channelId];
+		console.log(channelContent);
+		chatbox.scrollTop = channelContent?.scrollPosition || chatbox.scrollHeight;
+	});
+
+	beforeNavigate(() => {
+		const channelId = $page.params.id || $page.params.channelId;
+		messages.update((cache) => {
+			cache[channelId].scrollPosition = chatbox.scrollTop;
+			return cache;
+		});
+		console.log($messages[channelId]);
 	});
 
 	onMount(() => {

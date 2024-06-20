@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store';
-import type { User, Server, Message, Notification, ServersState } from './types';
+import type { User, Server, Notification, ServersState, MessageCache } from './types';
 import { type SuperValidated, type Infer } from 'sveltekit-superforms';
 import type { FriendRequestFormSchema } from './components/friends/schema-friend-request';
 import { browser } from '$app/environment';
@@ -13,7 +13,7 @@ type ContextMenuServer = {
 export const server = writable<Server | undefined>();
 export const servers = writable<Server[]>();
 export const user = writable<User | undefined>();
-export const messages = writable<Message[] | undefined>();
+export const messages = writable<MessageCache>({});
 export const notifications = writable<Notification[]>();
 export const friends = writable<User[]>();
 export const contextMenuInfo = writable<ContextMenuServer | undefined>();

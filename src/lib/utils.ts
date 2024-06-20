@@ -216,3 +216,31 @@ export async function getMessagesCache(channel_id: string) {
 		}
 	}
 }
+
+export async function addMessageToCache(channel_id: string) {
+	const cache = await caches.open('user_profile');
+	const cachedResponse = await cache.match(
+		`${import.meta.env.VITE_API_URL}/api/v1/messages/${channel_id}`
+	);
+
+	if (cachedResponse) {
+		const cacheTimestamp = cachedResponse.headers.get('X-Cache-Timestamp');
+		const expirationTime = 2 * 60 * 60 * 1000;
+		if (cacheTimestamp && Date.now() - parseInt(cacheTimestamp, 10) > expirationTime) {
+			await cache.delete(`${import.meta.env.VITE_API_URL}/api/v1/messages/${channel_id}`);
+		} else {
+			const data = await cachedResponse.json();
+
+			const headers = new Headers({
+				'Content-Type': 'application/json',
+				'X-Cache-Timestamp': Date.now().toString()
+			});
+
+			await cache.put(
+				`${import.meta.env.VITE_API_URL}/api/v1/messages/${channel_id}`,
+				new Response(JSON.stringify(data), { headers })
+			);
+			return data.messages;
+		}
+	}
+}

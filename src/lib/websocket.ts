@@ -20,13 +20,13 @@ export function treatMessage(message: any) {
 		case 'text_message':
 			const newMessage: Message = wsMessage.content;
 			const pathname = window.location.pathname;
-			if (
-				pathname.includes(newMessage.channel_id.split(':')[1]) ||
-				pathname.includes(newMessage.author.id.split(':')[1])
-			) {
-				messages.update((messages) => {
-					messages.push(newMessage);
-					return messages;
+			const channelId = newMessage.channel_id.split(':')[1];
+			const authorId = newMessage.author.id.split(':')[1];
+
+			if (pathname.includes(channelId) || pathname.includes(authorId)) {
+				messages.update((cache) => {
+					cache[channelId || authorId].messages.push(newMessage);
+					return cache;
 				});
 				const chatbox = document.getElementById('chatbox');
 				setTimeout(() => {
@@ -44,6 +44,7 @@ export function treatMessage(message: any) {
 					} else {
 						notif.counter += 1;
 					}
+
 					return notifications;
 				});
 			}

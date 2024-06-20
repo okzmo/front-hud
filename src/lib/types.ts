@@ -76,6 +76,14 @@ export interface Notification {
 	server_id?: string;
 }
 
+export interface MessageCache {
+	[channelId: string]: {
+		messages: Message[];
+		scrollPosition: number;
+		date: number;
+	};
+}
+
 export interface ServersState {
 	[serverId: string]: ServerState;
 }

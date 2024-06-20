@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { afterNavigate } from '$app/navigation';
+	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
 	import { messages, notifications, user } from '$lib/stores';
 	import type { Message } from '$lib/types';
-	import { getMessagesCache } from '$lib/utils';
 	import { onMount } from 'svelte';
 
 	$: if ($notifications) {
@@ -23,9 +22,10 @@
 		}
 	}
 
-	async function fetchFriendMessages(channelId: string): Promise<Message[] | undefined> {
-		const cachedMessages = await getMessagesCache(channelId);
-		if (cachedMessages) return cachedMessages;
+	async function getFriendMessages(channelId: string): Promise<Message[] | undefined> {
+		if ($messages && $messages[channelId]) {
+			return $messages[channelId].messages;
+		}
 
 		try {
 			const response = await fetch(
@@ -41,16 +41,14 @@
 			);
 			const data = await response.json();
 
-			const headers = new Headers({
-				'Content-Type': 'application/json',
-				'X-Cache-Timestamp': Date.now().toString()
+			messages.update((cache) => {
+				cache[channelId] = {
+					messages: data.messages,
+					date: Date.now(),
+					scrollPosition: undefined
+				};
+				return cache;
 			});
-
-			const cache = await caches.open('message-cache');
-			await cache.put(
-				`${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}`,
-				new Response(JSON.stringify(data), { headers })
-			);
 
 			return data.messages;
 		} catch (error) {
@@ -58,11 +56,12 @@
 		}
 	}
 
-	afterNavigate(async () => {
-		messages.set(await fetchFriendMessages($page.params.id));
+	onNavigate(async () => {
+		await getFriendMessages($page.params.id);
 	});
+
 	onMount(async () => {
-		messages.set(await fetchFriendMessages($page.params.id));
+		await getFriendMessages($page.params.id);
 	});
 </script>
 
