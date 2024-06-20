@@ -140,6 +140,17 @@ export function debounce<T extends (...args: any[]) => void>(
 	};
 }
 
+export async function removeCachedProfile(user_id: string) {
+	const cache = await caches.open('user_profile');
+	const cachedResponse = await cache.match(
+		`${import.meta.env.VITE_API_URL}/api/v1/user/${user_id}`
+	);
+
+	if (cachedResponse) {
+		await cache.delete(`${import.meta.env.VITE_API_URL}/api/v1/user/${user_id}`);
+	}
+}
+
 export async function getProfile(own_id: string | undefined, user_id: string) {
 	const cache = await caches.open('user_profile');
 	const cachedResponse = await cache.match(

@@ -6,6 +6,7 @@
 	import Icon from '@iconify/svelte';
 	import { user } from '$lib/stores';
 	import type { Writable } from 'svelte/store';
+	import { removeCachedProfile } from '$lib/utils';
 	let crop = { x: 0, y: 0 };
 	let zoom = 1;
 	let image: string | undefined = undefined;
@@ -13,6 +14,8 @@
 	let croppingElements: any;
 
 	export let dialogState: Writable<boolean>;
+
+	let uploading = false;
 
 	function handleFilesSelect(e) {
 		const { acceptedFiles } = e.detail;
@@ -33,6 +36,7 @@
 	async function submitBanner() {
 		if (!image || !file) return;
 
+		uploading = true;
 		const form = new FormData();
 		const old_banner = $user?.banner.split('/').at(-1);
 		form.append('banner', file);
@@ -57,12 +61,19 @@
 		}
 
 		const data = await response.json();
+		uploading = false;
 		user.update((user) => {
 			user.banner = data.banner;
 			return user;
 		});
 
 		dialogState.set(false);
+		image = undefined;
+		crop = { x: 0, y: 0 };
+		zoom = 1;
+		file = undefined;
+
+		await removeCachedProfile($user?.id);
 	}
 </script>
 
@@ -107,6 +118,8 @@
 				<Icon icon="ph:trash-duotone" height={20} width={20} />
 			</Button>
 		{/if}
-		<Button class="flex-1" disabled={!image} on:click={submitBanner}>Save</Button>
+		<Button class="flex-1" disabled={!image || uploading} on:click={submitBanner}
+			>{uploading ? 'Uploading...' : 'Save'}</Button
+		>
 	</div>
 </Dialog.Content>
