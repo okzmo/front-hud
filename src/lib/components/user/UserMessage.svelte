@@ -10,9 +10,11 @@
 	import { writable, type Writable } from 'svelte/store';
 	import { user } from '$lib/stores';
 	import { getProfile } from '$lib/utils';
+	import GridImages from './GridImages.svelte';
 
 	export let author: User;
 	export let content: JSONContent;
+	export let images: string[];
 	export let time: string;
 	export let groupedWithPrevious: boolean;
 	export let groupedWithAfter: boolean;
@@ -41,6 +43,13 @@
 			</Popover.Root>
 		{/if}
 		<div class="flex flex-col w-fit">
+			{#if images && images.length > 0}
+				<div
+					class="flex gap-2 max-w-[25rem] [&+div]:min-w-full [&+div]:mt-2 overflow-hidden flex-wrap"
+				>
+					<GridImages {images} />
+				</div>
+			{/if}
 			<div
 				class="bg-zinc-850 rounded-xl rounded-bl-sm px-5 py-3 mt-1 w-fit text-sm [&>p]:break-all flex flex-col gap-y-1 max-w-[45rem]"
 				class:groupMessagePrevious={groupedWithPrevious}
@@ -54,7 +63,7 @@
 						<time class="text-zinc-400 leading-[1.08rem] text-xs">{formatISODate(time)}</time>
 					</span>
 				{/if}
-				<span class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline">
+				<span class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline break-all">
 					{@html generateHTML(content, [StarterKit, Link])}
 				</span>
 			</div>

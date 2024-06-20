@@ -47,6 +47,7 @@ export interface Message {
 	channel_id: string;
 	content: JSONContent;
 	edited: boolean;
+	images: string[];
 	updated_at: string;
 }
 
@@ -58,6 +59,7 @@ export interface MessageUI {
 	edited: boolean;
 	updated_at: string;
 	groupWithPrevious: boolean;
+	images: string[];
 	groupWithAfter: boolean;
 }
 

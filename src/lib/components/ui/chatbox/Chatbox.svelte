@@ -4,12 +4,18 @@
 	import RichInput from '../rich-input/RichInput.svelte';
 	import type { Message, MessageUI } from '$lib/types';
 	import Icon from '@iconify/svelte';
-	import { afterUpdate } from 'svelte';
+	import { afterUpdate, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	export let friend_chatbox: boolean;
 
 	let chatbox: HTMLDivElement;
 	let groupedMessages: MessageUI[] = [];
+	let dropzone: HTMLLabelElement;
+	let dropzone_indicator: HTMLDivElement;
+	let dropzone_opacity = 0;
+	let dropzone_zindex = 1;
+	let files = writable<File[]>([]);
 
 	const groupMessages = (messages: Message[]) => {
 		const threshold = 10000; // 2 seconds
@@ -38,9 +44,60 @@
 	afterUpdate(() => {
 		chatbox.scrollTop = chatbox.scrollHeight;
 	});
+
+	onMount(() => {
+		dropzone.addEventListener('click', (e) => {
+			if (e.target.id !== 'image-upload-icon' && e.target.id !== 'dropzone-file') {
+				e.preventDefault();
+				return;
+			}
+		});
+
+		dropzone.addEventListener('change', (e) => {
+			const filesUploaded = Array.from(e.target.files);
+			files.update((state) => {
+				state.push(...filesUploaded);
+				return state;
+			});
+		});
+
+		dropzone.addEventListener('dragover', (e) => {
+			e.preventDefault();
+			if (dropzone_opacity === 1) return;
+			dropzone_zindex = 4;
+			dropzone_opacity = 1;
+		});
+
+		dropzone.addEventListener('dragleave', (e) => {
+			dropzone_opacity = 0;
+		});
+
+		dropzone.addEventListener('drop', (e) => {
+			e.preventDefault();
+			const filesUploaded = Array.from(e.dataTransfer?.files);
+			files.update((state) => {
+				state.push(...filesUploaded);
+				return state;
+			});
+			dropzone_zindex = 2;
+			dropzone_opacity = 0;
+		});
+	});
 </script>
 
-<div class="flex flex-col h-full max-w-full">
+<label
+	bind:this={dropzone}
+	for="dropzone-file"
+	class="flex flex-col h-full max-w-full cursor-auto relative"
+>
+	<div
+		bind:this={dropzone_indicator}
+		class="absolute h-full w-full left-0 top-0 bg-zinc-950/85 z-[4] backdrop-blur-sm flex justify-center items-center text-zinc-600 flex-col transition-opacity duration-75 pointer-events-none"
+		style="opacity: {dropzone_opacity}; z-index: {dropzone_zindex};"
+	>
+		<Icon icon="ph:images-duotone" height={100} width={100} />
+		<p>Drop your file for it to be uploaded!</p>
+	</div>
 	<div id="chatbox" bind:this={chatbox} class="flex flex-col p-6 overflow-y-auto h-full">
 		{#if groupedMessages.length > 0}
 			{#each groupedMessages as message}
@@ -50,6 +107,7 @@
 					time={message.updated_at}
 					groupedWithPrevious={message.groupWithPrevious}
 					groupedWithAfter={message.groupWithAfter}
+					images={message.images}
 				/>
 			{/each}
 		{:else}
@@ -61,5 +119,6 @@
 			</div>
 		{/if}
 	</div>
-	<RichInput {friend_chatbox} />
-</div>
+	<input type="file" class="hidden" id="dropzone-file" />
+	<RichInput {files} {friend_chatbox} />
+</label>

@@ -8,11 +8,14 @@
 	import { page } from '$app/stores';
 	import { debounce } from '$lib/utils';
 	import Icon from '@iconify/svelte';
+	import type { Writable } from 'svelte/store';
 
 	let element: Element | undefined;
 	let editor: Editor;
 
 	export let friend_chatbox: boolean;
+	export let files: Writable<File[]>;
+
 	let channelId = '';
 	let currentChannelId = '';
 
@@ -52,16 +55,25 @@
 			body.server_id = $server?.id;
 		}
 
+		const formData = new FormData();
+
+		if (files) {
+			$files.forEach((file, idx) => {
+				formData.append(`file-${idx}`, file);
+			});
+		}
+
+		formData.append('body', JSON.stringify(body));
+
 		try {
 			const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/messages/create`, {
 				method: 'POST',
 				credentials: 'include',
+				body: formData,
 				headers: {
-					'Content-Type': 'application/json',
 					'X-User-ID': $user?.id,
 					'X-User-Agent': navigator.userAgent
-				},
-				body: JSON.stringify(body)
+				}
 			});
 
 			if (!response.ok) {
@@ -69,6 +81,7 @@
 			}
 
 			debouncedInput(channelId, null);
+			files.set([]);
 		} catch (err) {
 			console.log(err);
 		}
@@ -135,12 +148,17 @@
 
 <div class="rich-input bg-zinc-925">
 	<div bind:this={element} class="relative">
-		<Icon
-			icon="ph:images-duotone"
-			class="absolute top-1/2 -translate-y-1/2 left-[1.5rem] z-[2] text-zinc-600 hover:text-zinc-400"
-			height={20}
-			width={20}
-		/>
+		<label
+			for="dropzone-file"
+			id="image-upload-icon"
+			class="absolute top-1/2 -translate-y-1/2 left-[1.5rem] z-[2] w-[1.25rem] h-[1.25rem] flex justify-center items-center text-zinc-600 hover:text-zinc-400"
+		>
+			{#if $files.length > 0}
+				<span class="text-xs">{$files.length}</span>
+			{:else}
+				<Icon icon="ph:images-duotone" class="pointer-events-none" height={20} width={20} />
+			{/if}
+		</label>
 		<Icon
 			icon="ph:smiley-melting-duotone"
 			class="absolute top-1/2 -translate-y-1/2 right-[1.5rem] z-[2] text-zinc-600 hover:text-zinc-400"
@@ -153,6 +171,7 @@
 <style lang="postcss">
 	.rich-input {
 		width: 100%;
+		z-index: 2;
 	}
 
 	:global(.ProseMirror:focus) {
