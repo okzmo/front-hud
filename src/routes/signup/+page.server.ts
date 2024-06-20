@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, cookies, locals }) => {
+	default: async ({ request, cookies }) => {
 		const form = await superValidate(request, zod(registerFormSchema));
 		if (!form.valid) {
 			return fail(400, {
@@ -28,7 +28,7 @@ export const actions: Actions = {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-User-Agent': locals.userAgent
+					'X-User-Agent': request.headers.get('user-agent')
 				},
 				body: JSON.stringify(form.data)
 			});

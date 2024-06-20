@@ -1,4 +1,6 @@
+import { user } from '$lib/stores';
 import type { User } from '$lib/types';
+import { get } from 'svelte/store';
 
 export async function addFriend(
 	ev: Event,
@@ -18,7 +20,9 @@ export async function addFriend(
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/friends/add`, {
 			credentials: 'include',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'X-User-Agent': navigator.userAgent,
+				'X-User-ID': initiator_id
 			},
 			body: JSON.stringify(body)
 		});
@@ -44,12 +48,16 @@ export async function acceptFriendRequest(
 		id: notif_id
 	};
 
+	const userId = get(user)?.id;
+
 	try {
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/friends/accept`, {
 			method: 'POST',
 			credentials: 'include',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'X-User-Agent': navigator.userAgent,
+				'X-User-ID': userId
 			},
 			body: JSON.stringify(body)
 		});
@@ -72,12 +80,15 @@ export async function refuseFriendRequest(request_id: string, notif_id: string):
 		id: notif_id
 	};
 
+	const userId = get(user)?.id;
 	try {
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/friends/refuse`, {
 			method: 'POST',
 			credentials: 'include',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'X-User-Agent': navigator.userAgent,
+				'X-User-ID': userId
 			},
 			body: JSON.stringify(body)
 		});
