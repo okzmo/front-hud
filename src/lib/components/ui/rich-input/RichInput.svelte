@@ -7,6 +7,7 @@
 	import { user, updateChatInputState, getChatInputState, server } from '$lib/stores';
 	import { page } from '$app/stores';
 	import { debounce } from '$lib/utils';
+	import Icon from '@iconify/svelte';
 
 	let element: Element | undefined;
 	let editor: Editor;
@@ -132,8 +133,21 @@
 	});
 </script>
 
-<div class="rich-input left-0 bg-zinc-925">
-	<div bind:this={element} />
+<div class="rich-input bg-zinc-925">
+	<div bind:this={element} class="relative">
+		<Icon
+			icon="ph:images-duotone"
+			class="absolute top-1/2 -translate-y-1/2 left-[1.5rem] z-[2] text-zinc-600 hover:text-zinc-400"
+			height={20}
+			width={20}
+		/>
+		<Icon
+			icon="ph:smiley-melting-duotone"
+			class="absolute top-1/2 -translate-y-1/2 right-[1.5rem] z-[2] text-zinc-600 hover:text-zinc-400"
+			height={20}
+			width={20}
+		/>
+	</div>
 </div>
 
 <style lang="postcss">
@@ -152,12 +166,11 @@
 		border: 1px solid theme(colors.zinc.750);
 		background-color: theme(colors.zinc.850);
 		font-size: theme(fontSize.sm);
-		padding: 0.685rem 1rem;
+		padding: 0.685rem 2.5rem;
 		border-radius: 0.75rem;
 		scroll-padding-block: 0.685rem;
 		overflow: auto;
 		margin: 0rem 0.75rem 0.75rem;
-		white-space: pre-wrap;
 	}
 
 	:global(.ProseMirror a) {

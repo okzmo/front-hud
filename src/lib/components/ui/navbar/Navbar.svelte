@@ -18,10 +18,10 @@
 	});
 </script>
 
-<nav class="py-3 border-r border-zinc-850 w-[4.15rem] h-full flex flex-col">
+<nav class="py-3 border-r border-zinc-850 min-w-[4.15rem] h-full flex flex-col">
 	<ul class="flex flex-col relative flex-grow overflow-y-auto">
 		<GlobalButton />
-		<Separator class="mt-3 bg-zinc-700" />
+		<Separator class="mt-3 bg-zinc-700 w-[3rem] mx-auto" />
 		<div class="pt-3 flex flex-col gap-y-2 scrollbar-hide relative items-center">
 			<FriendsButton />
 			{#if $servers}

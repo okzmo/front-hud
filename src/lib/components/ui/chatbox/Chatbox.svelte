@@ -40,7 +40,7 @@
 	});
 </script>
 
-<div class="flex flex-col h-full w-full">
+<div class="flex flex-col h-full max-w-full">
 	<div id="chatbox" bind:this={chatbox} class="flex flex-col p-6 overflow-y-auto h-full">
 		{#if groupedMessages.length > 0}
 			{#each groupedMessages as message}

@@ -3,7 +3,7 @@
 	import { Dialog } from '$lib/components/ui/dialog';
 	import { Separator } from '$lib/components/ui/separator';
 	import Icon from '@iconify/svelte';
-	import { server } from '$lib/stores';
+	import { server, user } from '$lib/stores';
 	import {
 		AlertDialog,
 		AlertDialogHeader,
@@ -31,7 +31,9 @@
 				method: 'POST',
 				credentials: 'include',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
+					'X-User-Agent': navigator.userAgent,
+					'X-User-ID': $user?.id
 				},
 				body: JSON.stringify(body)
 			});

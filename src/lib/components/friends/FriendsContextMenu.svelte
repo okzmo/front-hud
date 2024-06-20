@@ -22,7 +22,9 @@
 				method: 'POST',
 				credentials: 'include',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
+					'X-User-Agent': navigator.userAgent,
+					'X-User-ID': $user?.id
 				},
 				body: JSON.stringify(body)
 			});

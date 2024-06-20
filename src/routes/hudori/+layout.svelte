@@ -49,7 +49,7 @@
 		<Navbar />
 		<Sidebar />
 	{/if}
-	<main class="flex-grow max-w-[calc(100%)] relative">
+	<main class="flex-grow max-w-[calc(100%-17rem-4.15rem)] relative">
 		<slot />
 	</main>
 

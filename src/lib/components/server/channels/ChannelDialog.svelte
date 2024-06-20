@@ -8,7 +8,7 @@
 	import { defaults, stringProxy, superForm, type Infer } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { channelCreationSchema } from '$lib/components/server/channels/schema-channel-request';
-	import { server, servers } from '$lib/stores';
+	import { server, servers, user } from '$lib/stores';
 	import type { Channel, Server } from '$lib/types';
 	import type { Writable } from 'svelte/store';
 	import { formatError } from '$lib/utils';
@@ -41,7 +41,9 @@
 					method: 'POST',
 					credentials: 'include',
 					headers: {
-						'Content-Type': 'application/json'
+						'Content-Type': 'application/json',
+						'X-User-Agent': navigator.userAgent,
+						'X-User-ID': $user?.id
 					},
 					body: JSON.stringify(body)
 				});
