@@ -46,6 +46,7 @@
 			{#if images && images.length > 0}
 				<div
 					class="flex gap-2 max-w-[25rem] [&+div]:min-w-full [&+div]:mt-2 overflow-hidden flex-wrap"
+					class:ml-[3rem]={groupedWithAfter}
 				>
 					<GridImages {images} />
 				</div>
