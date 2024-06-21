@@ -33,20 +33,20 @@
 		reader.readAsDataURL(imageFile);
 	}
 
-	async function submitBanner() {
+	async function submitAvatar() {
 		if (!image || !file) return;
 
 		uploading = true;
 		const form = new FormData();
-		const old_banner = $user?.banner.split('/').at(-1);
-		form.append('banner', file);
+		const old_avatar = $user?.avatar.split('/').at(-1);
+		form.append('avatar', file);
 		form.append('cropY', croppingElements.pixels.y);
 		form.append('cropX', croppingElements.pixels.x);
 		form.append('cropWidth', croppingElements.pixels.width);
 		form.append('cropHeight', croppingElements.pixels.height);
-		form.append('old_banner', old_banner!);
+		form.append('old_avatar', old_avatar!);
 
-		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_banner`, {
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_avatar`, {
 			method: 'POST',
 			credentials: 'include',
 			body: form,
@@ -63,7 +63,7 @@
 		const data = await response.json();
 		uploading = false;
 		user.update((user) => {
-			user.banner = data.banner;
+			user.avatar = data.avatar;
 			return user;
 		});
 
@@ -77,9 +77,9 @@
 	}
 </script>
 
-<Dialog.Content class="max-w-[40rem]">
+<Dialog.Content class="max-w-[30rem] aspect-square">
 	<Dialog.Header>
-		<Dialog.Title>Change your banner</Dialog.Title>
+		<Dialog.Title>Change your avatar</Dialog.Title>
 		<Dialog.Description
 			>Click to choose an image or drag and drop then crop it and save!</Dialog.Description
 		>
@@ -92,7 +92,7 @@
 				on:cropcomplete={(e) => (croppingElements = e.detail)}
 				{image}
 				showGrid={false}
-				aspect={40 / 25}
+				aspect={40 / 40}
 				bind:zoom
 				bind:crop
 				zoomSpeed={0.2}
@@ -118,7 +118,7 @@
 				<Icon icon="ph:trash-duotone" height={20} width={20} />
 			</Button>
 		{/if}
-		<Button class="flex-1" disabled={!image || uploading} on:click={submitBanner}
+		<Button class="flex-1" disabled={!image || uploading} on:click={submitAvatar}
 			>{uploading ? 'Uploading...' : 'Save'}</Button
 		>
 	</div>

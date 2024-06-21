@@ -5,8 +5,10 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import ProfileBannerDialog from '$lib/components/settings/ProfileBannerDialog.svelte';
 	import { writable } from 'svelte/store';
+	import ProfileAvatarDialog from '$lib/components/settings/ProfileAvatarDialog.svelte';
 
 	let openBanner = writable<boolean>(false);
+	let openAvatar = writable<boolean>(false);
 </script>
 
 <div class="flex flex-col w-fit mx-auto">
@@ -22,6 +24,7 @@
 			<Icon icon="ph:pencil-simple-duotone" height={20} width={20} />
 		</Button>
 		<div class="rounded-[1.5rem] flex relative px-[1.45rem] py-3 h-full">
+			<div class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.1rem] bg-zinc-700" />
 			<img
 				class="w-full h-full absolute left-0 top-0 object-contain rounded-[1.6rem] transform-gpu"
 				src={$user?.banner}
@@ -29,7 +32,9 @@
 			/>
 			<div class="flex flex-col justify-end gap-y-2 z-[2]">
 				<span class="flex gap-x-3">
-					<img class="w-20 h-20 object-cover rounded-2xl" src={$user?.avatar} alt="" />
+					<button on:click={() => openAvatar.set(true)}>
+						<img class="w-20 h-20 object-cover rounded-2xl" src={$user?.avatar} alt="" />
+					</button>
 					<span class="flex flex-col justify-end mb-2">
 						<p class="text-sm leading-3">{$user?.display_name}</p>
 						<p class="text-sm leading-5 text-zinc-400">{$user?.username}</p>
@@ -44,6 +49,10 @@
 
 <Dialog.Root open={$openBanner} onOpenChange={() => openBanner.set(!openBanner)}>
 	<ProfileBannerDialog dialogState={openBanner} />
+</Dialog.Root>
+
+<Dialog.Root open={$openAvatar} onOpenChange={() => openAvatar.set(!openAvatar)}>
+	<ProfileAvatarDialog dialogState={openAvatar} />
 </Dialog.Root>
 
 <style lang="postcss">
