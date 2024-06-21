@@ -88,6 +88,5 @@
 	.mentioned {
 		color: theme(colors.zinc.50);
 		background-color: rgba(223, 67, 67, 0.25);
-		border: 1px solid rgba(223, 67, 67, 1);
 	}
 </style>

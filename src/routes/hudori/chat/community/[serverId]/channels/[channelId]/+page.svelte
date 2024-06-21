@@ -1,13 +1,17 @@
 <script lang="ts">
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
-	import { messages, notifications, server, serversStateStore, user } from '$lib/stores';
+	import { notifications, server, serversStateStore, vcRoom } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import { page } from '$app/stores';
-	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
-	import type { Message } from '$lib/types';
+	import { onNavigate } from '$app/navigation';
+	import { getMessages } from '$lib/utils';
+	import VoiceChannel from '$lib/components/ui/voicechannel/VoiceChannel.svelte';
 
 	export let data: PageData;
+	let type = 'textual';
+	let participants = [];
+
 	$: {
 		server.set(data.server);
 	}
@@ -28,44 +32,31 @@
 		}
 	}
 
-	async function getChannelMessages(channelId: string): Promise<Message[] | undefined> {
-		if ($messages && $messages[channelId]) {
-			return $messages[channelId].messages;
+	$: if ($vcRoom && $vcRoom.name.split(':')[1] === $page.params.channelId) {
+		type = 'voice';
+
+		for (const category of $server?.categories) {
+			const channel = category.channels.find((channel) => channel.id === $vcRoom.name);
+			if (channel) {
+				participants = channel.participants;
+				break;
+			}
 		}
-
-		try {
-			const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}`, {
-				method: 'GET',
-				credentials: 'include',
-				headers: {
-					'X-User-Agent': navigator.userAgent,
-					'X-User-ID': $user?.id
-				}
-			});
-			const data = await response.json();
-
-			messages.update((cache) => {
-				cache[channelId] = {
-					messages: data.messages,
-					date: Date.now()
-				};
-				return cache;
-			});
-
-			return data.messages;
-		} catch (error) {
-			console.error('Error fetching messages:', error);
-		}
+	} else {
+		type = 'textual';
 	}
 
-	beforeNavigate(async ({ from, to }) => {
-		if (to) {
-			await getChannelMessages(to.params?.channelId);
+	onNavigate(async ({ to }) => {
+		if (to && to.params) {
+			await getMessages(to.params);
 		}
 	});
 
 	onMount(async () => {
-		await getChannelMessages($page.params.channelId);
+		const params = {
+			channelId: $page.params.channelId
+		};
+		await getMessages(params);
 	});
 
 	onMount(async () => {
@@ -75,4 +66,8 @@
 	});
 </script>
 
-<Chatbox friend_chatbox={false} />
+{#if type === 'textual'}
+	<Chatbox friend_chatbox={false} />
+{:else if type === 'voice'}
+	<VoiceChannel {participants} />
+{/if}

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { afterNavigate, onNavigate } from '$app/navigation';
+	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
-	import { messages, notifications, user, loadingMessages } from '$lib/stores';
-	import type { Message } from '$lib/types';
+	import { notifications, user } from '$lib/stores';
+	import { getMessages } from '$lib/utils';
 	import { onMount } from 'svelte';
 
 	$: if ($notifications) {
@@ -22,47 +22,17 @@
 		}
 	}
 
-	async function getFriendMessages(channelId: string): Promise<Message[] | undefined> {
-		if ($messages && $messages[channelId]) {
-			return $messages[channelId].messages;
+	onNavigate(async ({ to }) => {
+		if (to && to.params) {
+			await getMessages(to.params);
 		}
-
-		loadingMessages.set(true);
-		try {
-			const response = await fetch(
-				`${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}/private/${$user?.id.split(':')[1]}`,
-				{
-					method: 'GET',
-					credentials: 'include',
-					headers: {
-						'X-User-Agent': navigator.userAgent,
-						'X-User-ID': $user?.id
-					}
-				}
-			);
-			const data = await response.json();
-
-			messages.update((cache) => {
-				cache[channelId] = {
-					messages: data.messages,
-					date: Date.now()
-				};
-				return cache;
-			});
-		} catch (error) {
-			console.error('Error fetching messages:', error);
-		} finally {
-			console.log($loadingMessages);
-			loadingMessages.set(false);
-		}
-	}
-
-	onNavigate(async () => {
-		await getFriendMessages($page.params.id);
 	});
 
 	onMount(async () => {
-		await getFriendMessages($page.params.id);
+		const params = {
+			id: $page.params.id
+		};
+		await getMessages(params);
 	});
 </script>
 

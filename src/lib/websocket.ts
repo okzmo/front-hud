@@ -31,13 +31,14 @@ export function treatMessage(message: any) {
 			messages.update((cache) => {
 				if (cache[channelId]) {
 					cache[channelId].messages.push(newMessage);
+					cache[channelId].scrollPosition = undefined;
 				}
 				return cache;
 			});
 
 			if (pathname.includes(channelId)) {
 				setTimeout(() => {
-					chatbox?.scrollTo({ left: 0, top: chatbox.scrollHeight });
+					chatbox?.scrollTo({ left: 0, top: chatbox.scrollHeight, behavior: 'smooth' });
 				}, 100);
 			} else {
 				notifications.update((notifications) => {

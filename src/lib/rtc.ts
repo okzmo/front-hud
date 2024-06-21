@@ -8,15 +8,32 @@ import {
 	LocalTrackPublication,
 	LocalParticipant,
 	VideoPresets,
-	Track
+	Track,
+	TrackPublication
 } from 'livekit-client';
-import { mutedState, participantExist, server, user, vcRoom, wsConn } from './stores';
+import {
+	mutedState,
+	participantExist,
+	server,
+	sharingScreen,
+	user,
+	vcRoom,
+	wsConn
+} from './stores';
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
+import { goto } from '$app/navigation';
 
 export async function joinRoom(channelId: string, userId: string, serverId: string) {
 	const existingRoom = get(vcRoom);
-	if (existingRoom && existingRoom.name === channelId) return;
+	const pageInfos = get(page);
+
+	if (existingRoom && existingRoom.name === channelId && pageInfos.params.channelId === channelId)
+		return;
+	if (existingRoom && existingRoom.name === channelId && pageInfos.params.channelId !== channelId) {
+		goto(`/hudori/chat/community/${serverId.split(':')[1]}/channels/${channelId.split(':')[1]}`);
+		return;
+	}
 	if (existingRoom) {
 		quitRoom(serverId);
 	}
@@ -33,11 +50,23 @@ export async function joinRoom(channelId: string, userId: string, serverId: stri
 	await navigator.mediaDevices.getUserMedia({ audio: true });
 
 	const room = new Room({
+		audioCaptureDefaults: {
+			autoGainControl: true,
+			echoCancellation: true,
+			noiseSuppression: true
+		},
+
 		adaptiveStream: true,
 		dynacast: true,
-
 		videoCaptureDefaults: {
-			resolution: VideoPresets.h720.resolution
+			resolution: VideoPresets.h1080.resolution
+		},
+		publishDefaults: {
+			screenShareEncoding: {
+				maxBitrate: 1_500_000,
+				maxFramerate: 60
+			},
+			dtx: true
 		}
 	});
 
@@ -47,7 +76,9 @@ export async function joinRoom(channelId: string, userId: string, serverId: stri
 		.on(RoomEvent.TrackUnsubscribed, handleTrackUnsubscribed)
 		.on(RoomEvent.ActiveSpeakersChanged, handleActiveSpeakerChange)
 		.on(RoomEvent.Disconnected, handleDisconnect)
-		.on(RoomEvent.LocalTrackUnpublished, handleLocalTrackUnpublished);
+		.on(RoomEvent.LocalTrackUnpublished, handleLocalTrackUnpublished)
+		.on(RoomEvent.LocalTrackPublished, handleLocalTrackPublished);
+	// .on(RoomEvent.TrackPublished, handleTrackPublished);
 
 	await room.connect(import.meta.env.VITE_LIVEKIT_URL, token);
 	const mutedParticipant = get(mutedState);
@@ -68,6 +99,8 @@ export async function joinRoom(channelId: string, userId: string, serverId: stri
 	vcRoom.set(room);
 	const userInfos = get(user);
 	const exist = participantExist(channelId, userInfos?.id);
+
+	goto(`/hudori/chat/community/${serverId.split(':')[1]}/channels/${channelId.split(':')[1]}`);
 
 	if (!exist) {
 		const ws = get(wsConn);
@@ -115,13 +148,20 @@ function handleTrackSubscribed(
 	publication: RemoteTrackPublication,
 	participant: RemoteParticipant
 ) {
-	if (track.kind === Track.Kind.Video || track.kind === Track.Kind.Audio) {
-		// attach it to a new HTMLVideoElement or HTMLAudioElement
+	if (track.kind === Track.Kind.Audio) {
 		const element = track.attach();
 		document.body.appendChild(element);
 
 		const audioPos = document.getElementById('audio_join_channel') as HTMLMediaElement;
 		audioPos.play();
+	}
+	if (track.kind === Track.Kind.Video && track.source === 'screen_share') {
+		setTimeout(() => {
+			const vidElement = document.getElementById(
+				`${participant.identity}-video-element`
+			) as HTMLMediaElement;
+			track.attach(vidElement);
+		}, 200);
 	}
 }
 
@@ -140,6 +180,16 @@ function handleLocalTrackUnpublished(
 ) {
 	// when local tracks are ended, update UI to remove them from rendering
 	publication.track?.detach();
+}
+
+function handleLocalTrackPublished(publication: LocalTrackPublication) {
+	// when local tracks are ended, update UI to remove them from rendering
+	if (publication.track?.kind === 'video' && publication.track?.source === 'screen_share') {
+		const userId = get(user)?.id;
+		const vidElement = document.getElementById(`${userId}-video-element`) as HTMLMediaElement;
+
+		publication.track.attach(vidElement);
+	}
 }
 
 function handleActiveSpeakerChange(speakers: Participant[]) {
@@ -163,3 +213,32 @@ function handleActiveSpeakerChange(speakers: Participant[]) {
 }
 
 function handleDisconnect() {}
+
+export async function shareScreen() {
+	const currentRoom = get(vcRoom);
+	await currentRoom?.localParticipant.setScreenShareEnabled(true);
+	sharingScreen.set(true);
+}
+
+export async function stopShareScreen() {
+	const currentRoom = get(vcRoom);
+	await currentRoom?.localParticipant.setScreenShareEnabled(false);
+	sharingScreen.set(false);
+}
+
+// function handleTrackPublished(publication: TrackPublication, participant: Participant) {
+// 	if (publication.source === Track.Source.ScreenShare) {
+// 		subscribeToTrack(publication, participant);
+// 	}
+// }
+//
+// function subscribeToTrack(publication: TrackPublication, participant) {
+// 	const track = publication.track;
+// 	participant.subscribe(track);
+//
+// 	const vidElement = document.getElementById(
+// 		`${participant.identity}-video-element`
+// 	) as HTMLMediaElement;
+//
+// 	track?.attach(vidElement);
+// }

@@ -7,7 +7,6 @@ export default {
 	items: ({ query }) => {
 		const serverMembers = get(server);
 		const onlyDPName = serverMembers?.members.map((item) => item.username);
-		console.log(serverMembers);
 
 		return onlyDPName
 			.filter((item) => item.toLowerCase().startsWith(query.toLowerCase()))

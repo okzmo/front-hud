@@ -2,9 +2,9 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
-import { contextMenuInfo } from './stores';
+import { contextMenuInfo, messages, user } from './stores';
 import { get, type Writable } from 'svelte/store';
-import type { User } from './types';
+import type { Message, User } from './types';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -242,5 +242,39 @@ export async function addMessageToCache(channel_id: string) {
 			);
 			return data.messages;
 		}
+	}
+}
+
+export async function getMessages(params: any): Promise<Message[] | undefined> {
+	const messagesCache = get(messages);
+	const userStore = get(user);
+	const channelId = params.channelId ? params.channelId : params.id;
+	if (!channelId) return;
+	if (messagesCache && messagesCache[channelId]) {
+		return messagesCache[channelId].messages;
+	}
+
+	const channelUrl = `${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}`;
+	const friendUrl = `${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}/private/${userStore?.id.split(':')[1]}`;
+
+	try {
+		const response = await fetch(params.channelId ? channelUrl : friendUrl, {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'X-User-ID': userStore?.id
+			}
+		});
+		const data = await response.json();
+
+		messages.update((cache) => {
+			cache[channelId] = {
+				messages: data.messages,
+				date: Date.now()
+			};
+			return cache;
+		});
+	} catch (error) {
+		console.error('Error fetching messages:', error);
 	}
 }

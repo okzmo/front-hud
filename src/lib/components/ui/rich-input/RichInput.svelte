@@ -167,7 +167,7 @@
 										return true;
 									}
 
-									return mentionList.handleKeyDown(props);
+									return mentionList?.handleKeyDown(props);
 								}
 							};
 						}
