@@ -1,14 +1,13 @@
 <script lang="ts">
 	import UserMessage from '$lib/components/user/UserMessage.svelte';
-	import { messages } from '$lib/stores';
+	import { loadingMessages, messages } from '$lib/stores';
 	import RichInput from '../rich-input/RichInput.svelte';
 	import type { Message, MessageUI } from '$lib/types';
 	import Icon from '@iconify/svelte';
-	import { onMount } from 'svelte';
+	import { afterUpdate, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
-	import { afterNavigate, beforeNavigate } from '$app/navigation';
-	import { browser } from '$app/environment';
+	import { beforeNavigate } from '$app/navigation';
 
 	export let friend_chatbox: boolean;
 
@@ -45,22 +44,30 @@
 		groupedMessages = groupMessages(channelContent.messages);
 	}
 
-	afterNavigate(() => {
-		const channelContent = $messages[$page.params.id || $page.params.channelId];
-		console.log(channelContent);
-		chatbox.scrollTop = channelContent?.scrollPosition || chatbox.scrollHeight;
+	function scrollToPosition() {
+		const channelId = $page.params.id || $page.params.channelId;
+		const channelContent = $messages[channelId];
+		if (chatbox) {
+			chatbox.scrollTop = channelContent?.scrollPosition || chatbox.scrollHeight;
+		}
+	}
+
+	afterUpdate(() => {
+		scrollToPosition();
 	});
 
 	beforeNavigate(() => {
 		const channelId = $page.params.id || $page.params.channelId;
-		messages.update((cache) => {
-			cache[channelId].scrollPosition = chatbox.scrollTop;
-			return cache;
-		});
-		console.log($messages[channelId]);
+		if ($messages[channelId]) {
+			messages.update((cache) => {
+				cache[channelId].scrollPosition = chatbox.scrollTop;
+				return cache;
+			});
+		}
 	});
 
 	onMount(() => {
+		scrollToPosition();
 		dropzone.addEventListener('click', (e) => {
 			if (e.target.id !== 'image-upload-icon' && e.target.id !== 'dropzone-file') {
 				e.preventDefault();
@@ -114,7 +121,9 @@
 		<p>Drop your file for it to be uploaded!</p>
 	</div>
 	<div id="chatbox" bind:this={chatbox} class="flex flex-col p-6 overflow-y-auto h-full">
-		{#if groupedMessages.length > 0}
+		{#if $loadingMessages}
+			Loading...
+		{:else if groupedMessages.length > 0}
 			{#each groupedMessages as message}
 				<UserMessage
 					author={message.author}
@@ -133,7 +142,19 @@
 				</div>
 			</div>
 		{/if}
+		<div class="anchor-scroll"></div>
 	</div>
 	<input type="file" class="hidden" id="dropzone-file" />
 	<RichInput {files} {friend_chatbox} />
 </label>
+
+<style>
+	#chatbox * {
+		overflow-anchor: none;
+	}
+
+	.anchor-scroll {
+		overflow-anchor: auto;
+		height: 1px;
+	}
+</style>

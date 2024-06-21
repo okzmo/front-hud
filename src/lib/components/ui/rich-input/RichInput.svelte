@@ -18,6 +18,8 @@
 
 	let channelId = '';
 	let currentChannelId = '';
+	let showSlowRequest = false;
+	let requestTime = 0;
 
 	$: if ($page.params.id || $page.params.channelId) {
 		channelId = $page.params.id || $page.params.channelId;
@@ -36,10 +38,11 @@
 
 	async function sendMessage(richInputContent: JSONContent) {
 		if (
-			!richInputContent.content ||
-			!richInputContent.content[0] ||
-			!richInputContent.content[0].content ||
-			richInputContent.content[0].content.length <= 0
+			(!richInputContent.content ||
+				!richInputContent.content[0] ||
+				!richInputContent.content[0].content ||
+				richInputContent.content[0].content.length <= 0) &&
+			$files.length === 0
 		) {
 			return;
 		}
@@ -57,7 +60,8 @@
 
 		const formData = new FormData();
 
-		if (files) {
+		if ($files.length > 0) {
+			showSlowRequest = true;
 			$files.forEach((file, idx) => {
 				formData.append(`file-${idx}`, file);
 			});
@@ -81,6 +85,7 @@
 			}
 
 			debouncedInput(channelId, null);
+			showSlowRequest = false;
 			files.set([]);
 		} catch (err) {
 			console.log(err);
@@ -146,7 +151,14 @@
 	});
 </script>
 
-<div class="rich-input bg-zinc-925">
+<div class="rich-input bg-zinc-925 relative">
+	{#if showSlowRequest}
+		<div
+			class="absolute bg-zinc-850 left-3 -top-8 w-[calc(100%-1.5rem)] py-1 pb-3 px-3 rounded-tr-lg rounded-tl-lg"
+		>
+			Sending...
+		</div>
+	{/if}
 	<div bind:this={element} class="relative">
 		<label
 			for="dropzone-file"

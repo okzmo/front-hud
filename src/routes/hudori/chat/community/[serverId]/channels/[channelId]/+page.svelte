@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import { page } from '$app/stores';
-	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
 	import type { Message } from '$lib/types';
 	import { getMessagesCache } from '$lib/utils';
 
@@ -59,7 +59,11 @@
 		}
 	}
 
-	afterNavigate(async () => {
+	onNavigate(async () => {
+		await getChannelMessages($page.params.channelId);
+	});
+
+	onMount(async () => {
 		await getChannelMessages($page.params.channelId);
 	});
 

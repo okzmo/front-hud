@@ -8,9 +8,10 @@
 	import Link from '@tiptap/extension-link';
 	import { browser } from '$app/environment';
 	import { writable, type Writable } from 'svelte/store';
-	import { user } from '$lib/stores';
+	import { loadingMessages, user } from '$lib/stores';
 	import { getProfile } from '$lib/utils';
 	import GridImages from './GridImages.svelte';
+	import { Skeleton } from '../ui/skeleton';
 
 	export let author: User;
 	export let content: JSONContent;
@@ -36,6 +37,9 @@
 			<Popover.Root onOpenChange={() => getUserProfile()}>
 				<Popover.Trigger>
 					<div class="flex-shrink-0 h-10 w-10 rounded-xl overflow-hidden">
+						{#if $loadingMessages}
+							<Skeleton class="w-full h-full" />
+						{/if}
 						<img class="w-full h-full object-cover" src={author.avatar} alt="" />
 					</div>
 				</Popover.Trigger>
@@ -45,29 +49,32 @@
 		<div class="flex flex-col w-fit">
 			{#if images && images.length > 0}
 				<div
-					class="flex gap-2 max-w-[25rem] [&+div]:min-w-full [&+div]:mt-2 overflow-hidden flex-wrap"
+					class="flex gap-2 max-w-[30rem] [&+div]:rounded-tl-sm overflow-hidden flex-wrap"
 					class:ml-[3rem]={groupedWithAfter}
 				>
 					<GridImages {images} />
 				</div>
 			{/if}
-			<div
-				class="bg-zinc-850 rounded-xl rounded-bl-sm px-5 py-3 mt-1 w-fit text-sm [&>p]:break-all flex flex-col gap-y-1 max-w-[45rem]"
-				class:groupMessagePrevious={groupedWithPrevious}
-				class:groupMessageAfter={groupedWithAfter}
-			>
-				{#if !groupedWithPrevious}
-					<span class="flex items-end gap-x-2 w-fit">
-						<p class={`text-sm leading-0`} style="color: {author.username_color || '#fff'};">
-							{author.display_name}
-						</p>
-						<time class="text-zinc-400 leading-[1.08rem] text-xs">{formatISODate(time)}</time>
+
+			{#if content.content[0]?.content}
+				<div
+					class="bg-zinc-850 rounded-xl rounded-bl-sm px-5 py-3 mt-1 w-fit text-sm [&>p]:break-all flex flex-col gap-y-1 max-w-[45rem]"
+					class:groupMessagePrevious={groupedWithPrevious}
+					class:groupMessageAfter={groupedWithAfter}
+				>
+					{#if !groupedWithPrevious}
+						<span class="flex items-end gap-x-2 w-fit">
+							<p class={`text-sm leading-0`} style="color: {author.username_color || '#fff'};">
+								{author.display_name}
+							</p>
+							<time class="text-zinc-400 leading-[1.08rem] text-xs">{formatISODate(time)}</time>
+						</span>
+					{/if}
+					<span class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline break-all">
+						{@html generateHTML(content, [StarterKit, Link])}
 					</span>
-				{/if}
-				<span class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline break-all">
-					{@html generateHTML(content, [StarterKit, Link])}
-				</span>
-			</div>
+				</div>
+			{/if}
 		</div>
 	</div>
 {/if}

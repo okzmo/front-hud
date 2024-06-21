@@ -79,7 +79,7 @@ export interface Notification {
 export interface MessageCache {
 	[channelId: string]: {
 		messages: Message[];
-		scrollPosition: number;
+		scrollPosition?: number;
 		date: number;
 	};
 }

@@ -22,16 +22,21 @@ export function treatMessage(message: any) {
 			const pathname = window.location.pathname;
 			const channelId = newMessage.channel_id.split(':')[1];
 			const authorId = newMessage.author.id.split(':')[1];
+			const chatbox = document.getElementById('chatbox');
+
+			messages.update((cache) => {
+				if (cache[channelId]) {
+					cache[channelId]?.messages.push(newMessage);
+				} else {
+					cache[authorId]?.messages.push(newMessage);
+				}
+				return cache;
+			});
 
 			if (pathname.includes(channelId) || pathname.includes(authorId)) {
-				messages.update((cache) => {
-					cache[channelId || authorId].messages.push(newMessage);
-					return cache;
-				});
-				const chatbox = document.getElementById('chatbox');
 				setTimeout(() => {
 					chatbox?.scrollTo({ left: 0, top: chatbox.scrollHeight, behavior: 'smooth' });
-				}, 10);
+				}, 100);
 			} else {
 				notifications.update((notifications) => {
 					const notif = notifications.find(
@@ -44,6 +49,15 @@ export function treatMessage(message: any) {
 					} else {
 						notif.counter += 1;
 					}
+
+					messages.update((cache) => {
+						if (cache[channelId]) {
+							cache[channelId].scrollPosition = undefined;
+						} else {
+							cache[authorId].scrollPosition = undefined;
+						}
+						return cache;
+					});
 
 					return notifications;
 				});

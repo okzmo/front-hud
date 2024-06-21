@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { onNavigate } from '$app/navigation';
+	import { afterNavigate, onNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
-	import { messages, notifications, user } from '$lib/stores';
+	import { messages, notifications, user, loadingMessages } from '$lib/stores';
 	import type { Message } from '$lib/types';
 	import { onMount } from 'svelte';
 
@@ -27,6 +27,7 @@
 			return $messages[channelId].messages;
 		}
 
+		loadingMessages.set(true);
 		try {
 			const response = await fetch(
 				`${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}/private/${$user?.id.split(':')[1]}`,
@@ -44,15 +45,15 @@
 			messages.update((cache) => {
 				cache[channelId] = {
 					messages: data.messages,
-					date: Date.now(),
-					scrollPosition: undefined
+					date: Date.now()
 				};
 				return cache;
 			});
-
-			return data.messages;
 		} catch (error) {
 			console.error('Error fetching messages:', error);
+		} finally {
+			console.log($loadingMessages);
+			loadingMessages.set(false);
 		}
 	}
 

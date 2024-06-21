@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { loadingMessages } from '$lib/stores';
+	import { Skeleton } from '../ui/skeleton';
+
 	export let images: string[];
 
 	const columnNumber = {
@@ -18,8 +21,13 @@
 				+{images.length - 5} more
 			</div>
 		{:else}
-			<div class="gallery-item">
-				<img src={image} alt="Gallery" class="rounded-lg h-full object-cover" />
+			<div class="gallery-item rounded-lg">
+				<img
+					src={image}
+					alt="Gallery"
+					class="rounded-lg object-cover min-h-[15rem] max-h-[15rem]"
+					class:aspect-square={columnNumber[images.length] > 1}
+				/>
 			</div>
 		{/if}
 	{/each}
