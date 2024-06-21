@@ -24,6 +24,7 @@ export interface Server {
 	banner: string;
 	categories: Category[];
 	roles?: string[];
+	members: User[];
 	created_at: string;
 }
 
@@ -48,6 +49,7 @@ export interface Message {
 	content: JSONContent;
 	edited: boolean;
 	images: string[];
+	mentions: string[];
 	updated_at: string;
 }
 
@@ -60,6 +62,7 @@ export interface MessageUI {
 	updated_at: string;
 	groupWithPrevious: boolean;
 	images: string[];
+	mentions: string[];
 	groupWithAfter: boolean;
 }
 
@@ -73,6 +76,7 @@ export interface Notification {
 	request_id?: string;
 	channel_id?: string;
 	counter?: number;
+	mentions?: string[];
 	server_id?: string;
 }
 

@@ -37,6 +37,7 @@
 				class="flex gap-x-3 hover:bg-zinc-800/75 py-[0.45rem] text-zinc-500 px-3 rounded-[0.6rem] transition duration-75 active:scale-[0.97] items-center w-full"
 				class:active={$page.url.pathname.includes(href)}
 				class:notify={notification}
+				class:mentioned={notification?.mentions && notification?.mentions?.includes($user?.id)}
 				on:click={() => {
 					if (type === 'textual') {
 						goto(href);
@@ -82,5 +83,11 @@
 
 	.notify {
 		color: theme(colors.zinc.50);
+	}
+
+	.mentioned {
+		color: theme(colors.zinc.50);
+		background-color: rgba(223, 67, 67, 0.25);
+		border: 1px solid rgba(223, 67, 67, 1);
 	}
 </style>

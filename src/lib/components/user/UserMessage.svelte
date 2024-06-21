@@ -3,7 +3,7 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import Profile from './Profile.svelte';
 	import type { User } from '$lib/types';
-	import { generateHTML, type JSONContent } from '@tiptap/core';
+	import { generateHTML, mergeAttributes, type JSONContent } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
 	import Link from '@tiptap/extension-link';
 	import { browser } from '$app/environment';
@@ -12,10 +12,12 @@
 	import { getProfile } from '$lib/utils';
 	import GridImages from './GridImages.svelte';
 	import { Skeleton } from '../ui/skeleton';
+	import Mention from '@tiptap/extension-mention';
 
 	export let author: User;
 	export let content: JSONContent;
 	export let images: string[];
+	export let mentions: string[];
 	export let time: string;
 	export let groupedWithPrevious: boolean;
 	export let groupedWithAfter: boolean;
@@ -61,6 +63,7 @@
 					class="bg-zinc-850 rounded-xl rounded-bl-sm px-5 py-3 mt-1 w-fit text-sm [&>p]:break-all flex flex-col gap-y-1 max-w-[45rem]"
 					class:groupMessagePrevious={groupedWithPrevious}
 					class:groupMessageAfter={groupedWithAfter}
+					class:mentioned={mentions && mentions.includes($user?.id)}
 				>
 					{#if !groupedWithPrevious}
 						<span class="flex items-end gap-x-2 w-fit">
@@ -70,16 +73,28 @@
 							<time class="text-zinc-400 leading-[1.08rem] text-xs">{formatISODate(time)}</time>
 						</span>
 					{/if}
-					<span class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline break-all">
-						{@html generateHTML(content, [StarterKit, Link])}
+					<span
+						class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline break-all [&>p>span]:first:ml-0"
+					>
+						{@html generateHTML(content, [
+							StarterKit,
+							Link,
+							Mention.configure({
+								renderHTML({ options, node }) {
+									return [
+										'span',
+										options.HTMLAttributes,
+										`${options.suggestion.char}${node.attrs.label}`
+									];
+								}
+							})
+						])}
 					</span>
 				</div>
 			{/if}
 		</div>
 	</div>
 {/if}
-
-<!-- margin-left: calc(theme(margin.10) + theme(margin.2)); -->
 
 <style lang="postcss">
 	.groupMessagePrevious {
@@ -88,5 +103,16 @@
 
 	.groupMessageAfter {
 		margin-left: calc(theme(margin.10) + theme(margin.2));
+	}
+
+	:global([data-type='mention']) {
+		color: theme(colors.accent.DEFAULT);
+		margin: 0rem 0.2rem;
+		border-radius: theme(borderRadius.md);
+	}
+
+	.mentioned {
+		background-color: #f7b14a2a;
+		border: 1px solid #f7b14a;
 	}
 </style>

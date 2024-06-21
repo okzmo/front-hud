@@ -9,7 +9,8 @@ import {
 	addParticipant,
 	removeParticipant,
 	updateParticipantStatus,
-	vcRoom
+	vcRoom,
+	user
 } from './stores';
 import type { Message } from './types';
 
@@ -20,22 +21,23 @@ export function treatMessage(message: any) {
 		case 'text_message':
 			const newMessage: Message = wsMessage.content;
 			const pathname = window.location.pathname;
-			const channelId = newMessage.channel_id.split(':')[1];
-			const authorId = newMessage.author.id.split(':')[1];
+			const ownId = get(user);
+			const channelId =
+				newMessage.channel_id.split(':')[1] === ownId?.id.split(':')[1]
+					? newMessage.author.id.split(':')[1]
+					: newMessage.channel_id.split(':')[1];
 			const chatbox = document.getElementById('chatbox');
 
 			messages.update((cache) => {
 				if (cache[channelId]) {
-					cache[channelId]?.messages.push(newMessage);
-				} else {
-					cache[authorId]?.messages.push(newMessage);
+					cache[channelId].messages.push(newMessage);
 				}
 				return cache;
 			});
 
-			if (pathname.includes(channelId) || pathname.includes(authorId)) {
+			if (pathname.includes(channelId)) {
 				setTimeout(() => {
-					chatbox?.scrollTo({ left: 0, top: chatbox.scrollHeight, behavior: 'smooth' });
+					chatbox?.scrollTo({ left: 0, top: chatbox.scrollHeight });
 				}, 100);
 			} else {
 				notifications.update((notifications) => {
@@ -46,6 +48,9 @@ export function treatMessage(message: any) {
 					);
 					if (!notif) {
 						notifications.push(wsMessage.notification);
+					} else if (notif && wsMessage.notification.mentions) {
+						notif.mentions = wsMessage.notification.mentions;
+						notif.counter += 1;
 					} else {
 						notif.counter += 1;
 					}
@@ -53,8 +58,6 @@ export function treatMessage(message: any) {
 					messages.update((cache) => {
 						if (cache[channelId]) {
 							cache[channelId].scrollPosition = undefined;
-						} else {
-							cache[authorId].scrollPosition = undefined;
 						}
 						return cache;
 					});

@@ -9,9 +9,13 @@
 	import { debounce } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { Writable } from 'svelte/store';
+	import Mention from '@tiptap/extension-mention';
+	import suggestion from './suggestion';
+	import MentionList from './MentionList.svelte';
 
 	let element: Element | undefined;
 	let editor: Editor;
+	let mentionList;
 
 	export let friend_chatbox: boolean;
 	export let files: Writable<File[]>;
@@ -19,7 +23,8 @@
 	let channelId = '';
 	let currentChannelId = '';
 	let showSlowRequest = false;
-	let requestTime = 0;
+	let mentionProps;
+	let mentions: string[] = [];
 
 	$: if ($page.params.id || $page.params.channelId) {
 		channelId = $page.params.id || $page.params.channelId;
@@ -51,6 +56,7 @@
 			author: $user,
 			channel_id: $page.params.id || $page.params.channelId,
 			content: richInputContent,
+			mentions: mentions,
 			private_message: friend_chatbox
 		};
 
@@ -87,6 +93,7 @@
 			debouncedInput(channelId, null);
 			showSlowRequest = false;
 			files.set([]);
+			mentions = [];
 		} catch (err) {
 			console.log(err);
 		}
@@ -116,6 +123,55 @@
 				}),
 				Placeholder.configure({
 					placeholder: 'Write something...'
+				}),
+				Mention.configure({
+					HTMLAttributes: {
+						class: 'editor-mention'
+					},
+					renderHTML({ options, node }) {
+						return [
+							'span',
+							options.HTMLAttributes,
+							`${options.suggestion.char}${node.attrs.label}`
+						];
+					},
+					suggestion: {
+						items: async ({ query }) => {
+							const filteredMembers = $server?.members
+								.filter((item) => item.username.toLowerCase().startsWith(query.toLowerCase()))
+								.slice(0, 5);
+							return filteredMembers;
+						},
+						render: () => {
+							return {
+								onStart: (props) => {
+									if (!props.clientRect) {
+										return;
+									}
+
+									mentionProps = props;
+								},
+								onUpdate: (props) => {
+									if (!props.clientRect) {
+										return;
+									}
+
+									mentionProps = props;
+								},
+								onExit() {
+									mentionProps = null;
+								},
+								onKeyDown: (props) => {
+									if (props.event.key === 'Escape') {
+										mentionProps = null;
+										return true;
+									}
+
+									return mentionList.handleKeyDown(props);
+								}
+							};
+						}
+					}
 				})
 			],
 			content: getChatInputState(channelId),
@@ -124,7 +180,11 @@
 			},
 			editorProps: {
 				handleKeyDown: (_, event) => {
-					if (event.key === 'Enter' && !event.shiftKey) {
+					if (
+						event.key === 'Enter' &&
+						(!mentionProps || mentionProps.items.length === 0) &&
+						!event.shiftKey
+					) {
 						event.preventDefault();
 
 						sendMessage(editor.getJSON());
@@ -151,13 +211,16 @@
 	});
 </script>
 
-<div class="rich-input bg-zinc-925 relative">
+<div id="rich-input" class="rich-input bg-zinc-925 relative">
 	{#if showSlowRequest}
 		<div
 			class="absolute bg-zinc-850 left-3 -top-8 w-[calc(100%-1.5rem)] py-1 pb-3 px-3 rounded-tr-lg rounded-tl-lg"
 		>
 			Sending...
 		</div>
+	{/if}
+	{#if mentionProps}
+		<MentionList props={mentionProps} bind:this={mentionList} {mentions} />
 	{/if}
 	<div bind:this={element} class="relative">
 		<label

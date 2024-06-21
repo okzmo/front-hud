@@ -4,6 +4,7 @@
 	import ServerAccessContextMenu from './ServerAccessContextMenu.svelte';
 	import { contextMenuInfo, notifications, serversStateStore } from '$lib/stores';
 	import { generateRandomId, handleContextMenu } from '$lib/utils';
+	import { user } from '$lib/stores';
 
 	export let icon: string | undefined;
 	export let name: string;
@@ -14,6 +15,7 @@
 	let isOpen: boolean = false;
 	let href = `/hudori/chat/community/${id.split(':')[1]}`;
 	let serverNotif = false;
+	let mentioned = false;
 
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
 	$: if ($serversStateStore[id]) {
@@ -22,6 +24,7 @@
 
 	$: if ($notifications) {
 		serverNotif = $notifications.some((notif) => notif.server_id && notif.server_id === id);
+		mentioned = $notifications.some((notif) => serverNotif && notif.mentions?.includes($user?.id));
 	}
 </script>
 
@@ -36,6 +39,9 @@
 				{/if}
 				{#if serverNotif}
 					<div class="absolute h-2 w-2 bg-white -left-[32%] top-1/2 -translate-y-1/2 rounded-lg" />
+				{/if}
+				{#if mentioned}
+					<div class="absolute h-2 w-2 bg-destructive -right-[0.15rem] -top-[0.15rem] rounded-lg" />
 				{/if}
 			</Button>
 		</ContextMenu.Trigger>

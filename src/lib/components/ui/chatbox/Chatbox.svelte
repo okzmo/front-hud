@@ -40,7 +40,7 @@
 	};
 
 	$: if ($messages[$page.params.id] || $messages[$page.params.channelId]) {
-		const channelContent = $messages[$page.params.id || $page.params.channelId];
+		const channelContent = $messages[$page.params.id] || $messages[$page.params.channelId];
 		groupedMessages = groupMessages(channelContent.messages);
 	}
 
@@ -132,6 +132,7 @@
 					groupedWithPrevious={message.groupWithPrevious}
 					groupedWithAfter={message.groupWithAfter}
 					images={message.images}
+					mentions={message.mentions}
 				/>
 			{/each}
 		{:else}

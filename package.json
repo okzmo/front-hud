@@ -44,8 +44,10 @@
     "@sveltejs/adapter-node": "^5.1.0",
     "@tiptap/core": "^2.4.0",
     "@tiptap/extension-link": "^2.4.0",
+    "@tiptap/extension-mention": "^2.4.0",
     "@tiptap/extension-placeholder": "^2.4.0",
     "@tiptap/starter-kit": "^2.4.0",
+    "@tiptap/suggestion": "^2.4.0",
     "bits-ui": "^0.21.5",
     "clsx": "^2.1.1",
     "cmdk-sv": "^0.0.17",
@@ -59,6 +61,7 @@
     "sveltekit-superforms": "^2.12.6",
     "tailwind-merge": "^2.3.0",
     "tailwind-variants": "^0.2.1",
+    "tippy.js": "^6.3.7",
     "zod": "^3.23.4"
   },
   "packageManager": "pnpm@9.1.2+sha512.127dc83b9ea10c32be65d22a8efb4a65fb952e8fefbdfded39bdc3c97efc32d31b48b00420df2c1187ace28c921c902f0cb5a134a4d032b8b5295cbfa2c681e2"

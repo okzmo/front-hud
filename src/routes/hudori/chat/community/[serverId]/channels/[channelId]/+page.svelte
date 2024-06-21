@@ -6,7 +6,6 @@
 	import { page } from '$app/stores';
 	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
 	import type { Message } from '$lib/types';
-	import { getMessagesCache } from '$lib/utils';
 
 	export let data: PageData;
 	$: {
@@ -59,8 +58,10 @@
 		}
 	}
 
-	onNavigate(async () => {
-		await getChannelMessages($page.params.channelId);
+	beforeNavigate(async ({ from, to }) => {
+		if (to) {
+			await getChannelMessages(to.params?.channelId);
+		}
 	});
 
 	onMount(async () => {
