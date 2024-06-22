@@ -4,7 +4,7 @@
 	import Button from '../ui/button/button.svelte';
 	import Dropzone from 'svelte-file-dropzone';
 	import Icon from '@iconify/svelte';
-	import { user } from '$lib/stores';
+	import { friends, seenUsers, server, user } from '$lib/stores';
 	import type { Writable } from 'svelte/store';
 	import { removeCachedProfile } from '$lib/utils';
 	let crop = { x: 0, y: 0 };
@@ -45,6 +45,12 @@
 		form.append('cropWidth', croppingElements.pixels.width);
 		form.append('cropHeight', croppingElements.pixels.height);
 		form.append('old_avatar', old_avatar!);
+		if ($server) {
+			form.append('server_id', $server!.id);
+		}
+		if ($friends) {
+			form.append('friends', JSON.stringify($friends.map((friend) => friend.id)));
+		}
 
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_avatar`, {
 			method: 'POST',
@@ -65,6 +71,13 @@
 		user.update((user) => {
 			user.avatar = data.avatar;
 			return user;
+		});
+
+		seenUsers.update((cache) => {
+			if (cache[$user.id]) {
+				cache[$user.id].avatar = data.avatar;
+			}
+			return cache;
 		});
 
 		dialogState.set(false);

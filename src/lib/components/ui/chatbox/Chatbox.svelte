@@ -1,6 +1,6 @@
 <script lang="ts">
 	import UserMessage from '$lib/components/user/UserMessage.svelte';
-	import { loadingMessages, messages } from '$lib/stores';
+	import { loadingMessages, messages, seenUsers } from '$lib/stores';
 	import RichInput from '../rich-input/RichInput.svelte';
 	import type { Message, MessageUI } from '$lib/types';
 	import Icon from '@iconify/svelte';
@@ -19,7 +19,7 @@
 	let dropzone_zindex = 1;
 	let files = writable<File[]>([]);
 
-	const groupMessages = (messages: Message[]) => {
+	const groupMessages = (messages: MessageUI[]) => {
 		const threshold = 10000; // 2 seconds
 		const groupedMessages = messages.map((msg, index) => {
 			const prevMsg = messages[index - 1];
@@ -27,11 +27,11 @@
 			const groupWithPrevious =
 				index > 0 &&
 				new Date(msg.updated_at).getTime() - new Date(prevMsg.updated_at).getTime() < threshold &&
-				msg.author.id === prevMsg.author.id;
+				msg.author === prevMsg.author;
 			const groupWithAfter =
 				index < messages.length - 1 &&
 				new Date(nextMsg.updated_at).getTime() - new Date(msg.updated_at).getTime() < threshold &&
-				msg.author.id === nextMsg.author.id;
+				msg.author === nextMsg.author;
 
 			return { ...msg, groupWithPrevious, groupWithAfter };
 		});
@@ -126,7 +126,7 @@
 		{:else if groupedMessages.length > 0}
 			{#each groupedMessages as message}
 				<UserMessage
-					author={message.author}
+					author={$seenUsers[message.author]}
 					content={message.content}
 					time={message.updated_at}
 					groupedWithPrevious={message.groupWithPrevious}

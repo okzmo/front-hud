@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
-import { contextMenuInfo, messages, user } from './stores';
+import { contextMenuInfo, messages, seenUsers, user } from './stores';
 import { get, type Writable } from 'svelte/store';
 import type { Message, User } from './types';
 
@@ -269,10 +269,23 @@ export async function getMessages(params: any): Promise<Message[] | undefined> {
 
 		messages.update((cache) => {
 			cache[channelId] = {
-				messages: data.messages,
+				messages: data.messages.map((message) => ({
+					...message,
+					author: message.author.id
+				})),
 				date: Date.now()
 			};
 			return cache;
+		});
+
+		// Extract unique user information
+		const uniqueUsers = {};
+		data.messages.forEach((message) => {
+			uniqueUsers[message.author.id] = message.author;
+		});
+		// Update the seenUsers store
+		seenUsers.update((cache) => {
+			return { ...cache, ...uniqueUsers };
 		});
 	} catch (error) {
 		console.error('Error fetching messages:', error);

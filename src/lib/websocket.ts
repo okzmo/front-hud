@@ -10,16 +10,16 @@ import {
 	removeParticipant,
 	updateParticipantStatus,
 	vcRoom,
-	user
+	user,
+	seenUsers
 } from './stores';
-import type { Message } from './types';
 
 export function treatMessage(message: any) {
 	const wsMessage = JSON.parse(message);
 	const room = get(vcRoom);
 	switch (wsMessage.type) {
 		case 'text_message':
-			const newMessage: Message = wsMessage.content;
+			const newMessage = wsMessage.content;
 			const pathname = window.location.pathname;
 			const ownId = get(user);
 			const channelId =
@@ -28,8 +28,16 @@ export function treatMessage(message: any) {
 					: newMessage.channel_id.split(':')[1];
 			const chatbox = document.getElementById('chatbox');
 
+			seenUsers.update((cache) => {
+				if (!cache[newMessage.author.id]) {
+					cache[newMessage.author.id] = newMessage.author;
+				}
+				return cache;
+			});
+
 			messages.update((cache) => {
 				if (cache[channelId]) {
+					newMessage.author = newMessage.author.id;
 					cache[channelId].messages.push(newMessage);
 					cache[channelId].scrollPosition = undefined;
 				}
@@ -165,6 +173,21 @@ export function treatMessage(message: any) {
 				wsMessage.content.deafen
 			);
 			break;
+		case 'new_avatar':
+			seenUsers.update((cache) => {
+				if (cache['users:' + wsMessage.content.user_id]) {
+					cache['users:' + wsMessage.content.user_id].avatar = wsMessage.content.avatar;
+				}
+				return cache;
+			});
+
+			friends.update((friends) => {
+				const friend = friends.find((friend) => friend.id === 'users:' + wsMessage.content.user_id);
+				if (friend) {
+					friend.avatar = wsMessage.content.avatar;
+				}
+				return friends;
+			});
 		default:
 			break;
 	}

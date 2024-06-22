@@ -10,7 +10,6 @@
 	import Icon from '@iconify/svelte';
 	import type { Writable } from 'svelte/store';
 	import Mention from '@tiptap/extension-mention';
-	import suggestion from './suggestion';
 	import MentionList from './MentionList.svelte';
 
 	let element: Element | undefined;

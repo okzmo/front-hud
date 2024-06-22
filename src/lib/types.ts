@@ -55,7 +55,7 @@ export interface Message {
 
 export interface MessageUI {
 	id: string;
-	author: User;
+	author: string;
 	channel_id: string;
 	content: JSONContent;
 	edited: boolean;
@@ -86,6 +86,10 @@ export interface MessageCache {
 		scrollPosition?: number;
 		date: number;
 	};
+}
+
+export interface UsersCache {
+	[userId: string]: User;
 }
 
 export interface ServersState {
