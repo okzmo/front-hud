@@ -1,4 +1,4 @@
-import emojiData from '/src/assets/emojis/emoji_mapping.json';
+import emojiData from '$lib/emoji_mapping.json';
 
 export const loadEmojis = async (query = '') => {
 	const lowercaseQuery = query.toLowerCase();
@@ -12,7 +12,7 @@ export const loadEmojis = async (query = '') => {
 						...emoji.svgFileNames.map((svgFileName) => ({
 							shortcode: keyword,
 							name: emoji.name,
-							src: `/src/assets/emojis/${svgFileName}`,
+							src: `/assets/emojis/${svgFileName}`,
 							alt: emoji.name,
 							variation: variation
 						}))

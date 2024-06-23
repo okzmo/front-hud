@@ -6,7 +6,6 @@
 	import ProfileBannerDialog from '$lib/components/settings/ProfileBannerDialog.svelte';
 	import { writable } from 'svelte/store';
 	import ProfileAvatarDialog from '$lib/components/settings/ProfileAvatarDialog.svelte';
-	import { Input } from '$lib/components/ui/input';
 
 	let openBanner = writable<boolean>(false);
 	let openAvatar = writable<boolean>(false);
