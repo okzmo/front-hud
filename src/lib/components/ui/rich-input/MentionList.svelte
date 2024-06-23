@@ -2,6 +2,7 @@
 	export let props;
 	export let mentions: string[];
 	let selectedIndex = 0;
+	let scrollableMenu: HTMLDivElement;
 
 	export function handleKeyDown({ event }) {
 		if (event.key === 'ArrowUp') {
@@ -22,10 +23,30 @@
 
 	function handleArrowUp() {
 		selectedIndex = (selectedIndex + props.items.length - 1) % props.items.length;
+		scrollToSelectedItem();
 	}
 
 	function handleArrowDown() {
 		selectedIndex = (selectedIndex + 1) % props.items.length;
+		scrollToSelectedItem();
+	}
+
+	function scrollToSelectedItem() {
+		if (scrollableMenu) {
+			const selectedItem = scrollableMenu.children[selectedIndex] as HTMLElement;
+			if (selectedItem) {
+				const scrollTop = scrollableMenu.scrollTop;
+				const scrollBottom = scrollTop + scrollableMenu.clientHeight;
+				const elementTop = selectedItem.offsetTop;
+				const elementBottom = elementTop + selectedItem.offsetHeight;
+
+				if (elementTop < scrollTop) {
+					scrollableMenu.scrollTop = elementTop;
+				} else if (elementBottom > scrollBottom) {
+					scrollableMenu.scrollTop = elementBottom - scrollableMenu.clientHeight;
+				}
+			}
+		}
 	}
 
 	function handleEnter() {
@@ -44,7 +65,8 @@
 
 {#if props.items.length > 0}
 	<div
-		class="sticky bg-zinc-850 mx-3 top-3 w-[calc(100%-1.5rem)] min-h-12 !py-1 !px-1 rounded-tr-lg rounded-tl-lg !z-[-1] after:content-normal after:absolute after:-bottom-2 after:h-2 after:w-full after:bg-zinc-850 after:left-0"
+		bind:this={scrollableMenu}
+		class="sticky overflow-y-auto max-h-[20rem] bg-zinc-850 mx-3 top-3 w-[calc(100%-1.5rem)] mb-1 !py-1 !px-1 rounded-lg !z-[-1]"
 	>
 		{#each props.items as item, idx}
 			<button

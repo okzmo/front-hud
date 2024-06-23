@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy, beforeUpdate } from 'svelte';
-	import { Editor, type JSONContent } from '@tiptap/core';
+	import { Editor, mergeAttributes, type JSONContent } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
 	import Placeholder from '@tiptap/extension-placeholder';
 	import Link from '@tiptap/extension-link';
@@ -11,10 +11,15 @@
 	import type { Writable } from 'svelte/store';
 	import Mention from '@tiptap/extension-mention';
 	import MentionList from './MentionList.svelte';
+	import { Emoji } from './emojiNode';
+	import { EmojiSuggestion } from './emojiSuggestion';
+	import { loadEmojis } from './emojiSuggestionLogic';
+	import EmojiList from './EmojiList.svelte';
 
 	let element: Element | undefined;
 	let editor: Editor;
 	let mentionList;
+	let emojisList;
 
 	export let friend_chatbox: boolean;
 	export let files: Writable<File[]>;
@@ -23,6 +28,7 @@
 	let currentChannelId = '';
 	let showSlowRequest = false;
 	let mentionProps;
+	let emojiProps;
 	let mentions: string[] = [];
 
 	$: if ($page.params.id || $page.params.channelId) {
@@ -123,6 +129,49 @@
 				Placeholder.configure({
 					placeholder: 'Write something...'
 				}),
+				Emoji,
+				EmojiSuggestion.configure({
+					HTMLAttributes: {
+						class: 'editor-emojis'
+					},
+					suggestion: {
+						char: ':',
+						items: async ({ query }) => {
+							if (query.length === 0) return [];
+							const filteredEmojis = await loadEmojis(query);
+							return filteredEmojis;
+						},
+						render: () => {
+							return {
+								onStart: (props) => {
+									if (!props.clientRect) {
+										return;
+									}
+
+									emojiProps = props;
+								},
+								onUpdate: (props) => {
+									if (!props.clientRect) {
+										return;
+									}
+
+									emojiProps = props;
+								},
+								onExit() {
+									emojiProps = null;
+								},
+								onKeyDown: (props) => {
+									if (props.event.key === 'Escape') {
+										emojiProps = null;
+										return true;
+									}
+
+									return emojisList?.handleKeyDown(props);
+								}
+							};
+						}
+					}
+				}),
 				Mention.configure({
 					HTMLAttributes: {
 						class: 'editor-mention'
@@ -182,6 +231,7 @@
 					if (
 						event.key === 'Enter' &&
 						(!mentionProps || mentionProps.items.length === 0) &&
+						(!emojiProps || emojiProps.items.length === 0) &&
 						!event.shiftKey
 					) {
 						event.preventDefault();
@@ -220,6 +270,9 @@
 	{/if}
 	{#if mentionProps}
 		<MentionList props={mentionProps} bind:this={mentionList} {mentions} />
+	{/if}
+	{#if emojiProps}
+		<EmojiList props={emojiProps} bind:this={emojisList} />
 	{/if}
 	<div bind:this={element} class="relative">
 		<label
@@ -282,5 +335,12 @@
 		float: left;
 		height: 0;
 		pointer-events: none;
+	}
+	:global(img.emoji-editor) {
+		height: 1.2em;
+		width: 1.2em;
+		margin: 0 0.05em 0 0.1em;
+		vertical-align: -0.2em;
+		display: inline-block;
 	}
 </style>

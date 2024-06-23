@@ -13,6 +13,8 @@
 	import GridImages from './GridImages.svelte';
 	import { Skeleton } from '../ui/skeleton';
 	import Mention from '@tiptap/extension-mention';
+	import { Emoji } from '../ui/rich-input/emojiNode';
+	import { EmojiSuggestion } from '../ui/rich-input/emojiSuggestion';
 
 	export let author: User;
 	export let content: JSONContent;
@@ -79,6 +81,8 @@
 						{@html generateHTML(content, [
 							StarterKit,
 							Link,
+							Emoji,
+							EmojiSuggestion.configure({}),
 							Mention.configure({
 								renderHTML({ options, node }) {
 									return [
