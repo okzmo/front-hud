@@ -2,7 +2,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as Form from '$lib/components/ui/form';
 	import { Button } from '$lib/components/ui/button';
-	import { user } from '$lib/stores';
+	import { seenUsers, user } from '$lib/stores';
 	import Icon from '@iconify/svelte';
 	import { superForm } from 'sveltekit-superforms/client';
 	import type { PageData } from './$types';
@@ -56,6 +56,13 @@
 					user!.username = $usernameFormData.username;
 					return user;
 				});
+
+				seenUsers.update((cache) => {
+					if (cache[$user.id]) {
+						cache[$user.id].username = $usernameFormData.username;
+					}
+					return cache;
+				});
 			}
 		}
 	});
@@ -75,6 +82,13 @@
 				user.update((user) => {
 					user!.display_name = $displayNameFormData.display_name;
 					return user;
+				});
+
+				seenUsers.update((cache) => {
+					if (cache[$user.id]) {
+						cache[$user.id].display_name = $displayNameFormData.display_name;
+					}
+					return cache;
 				});
 			}
 		}

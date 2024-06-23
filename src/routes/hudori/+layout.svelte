@@ -49,9 +49,14 @@
 		<Navbar />
 		<Sidebar />
 	{/if}
-	<main class="flex-grow max-w-[calc(100%-17rem-4.15rem)] relative">
+	{#if !$page.url.pathname.includes('settings')}
+		<main class="flex-grow max-w-[calc(100%-17rem-4.15rem)] relative">
+			<slot />
+		</main>
+	{/if}
+	{#if $page.url.pathname.includes('settings')}
 		<slot />
-	</main>
+	{/if}
 
 	<audio id="audio_join_channel" src="/audio/join_channel_pos.mp3"></audio>
 	<audio id="audio_quit_channel" src="/audio/join_channel_neg.mp3"></audio>

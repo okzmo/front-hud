@@ -66,7 +66,7 @@
 			</Button>
 		</form>
 	</nav>
-	<div class="flex-grow pt-[4rem]">
+	<div class="flex-grow pt-[4rem] min-w-[40rem]">
 		<slot />
 	</div>
 </div>

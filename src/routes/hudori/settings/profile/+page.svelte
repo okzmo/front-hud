@@ -11,11 +11,8 @@
 	let openAvatar = writable<boolean>(false);
 </script>
 
-<div class="flex flex-col w-fit mx-auto">
-	<p class="w-fit text-zinc-400 max-w-[45rem]">
-		This is your profile, everybody will see your username, name, about me, banner and avatar.
-	</p>
-	<div class="relative aspect-[40/25] w-full h-full mt-4">
+<div class="ml-5 flex flex-col mx-auto">
+	<div class="relative aspect-[40/25] w-full h-full">
 		<Button
 			class="right-4 top-4 z-[2] absolute rounded-xl bg-zinc-800/50 hover:bg-zinc-800/75 border-none shadow-none backdrop-blur-lg"
 			size="icon"
@@ -24,7 +21,7 @@
 			<Icon icon="ph:pencil-simple-duotone" height={20} width={20} />
 		</Button>
 		<div class="rounded-[1.5rem] flex relative px-[1.45rem] py-3 h-full">
-			<div class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.1rem] bg-zinc-700" />
+			<div class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.5rem] bg-zinc-700" />
 			<img
 				class="w-full h-full absolute left-0 top-0 object-contain rounded-[1.6rem] transform-gpu"
 				src={$user?.banner}
