@@ -6,7 +6,6 @@
 	import Link from '@tiptap/extension-link';
 	import { user, updateChatInputState, getChatInputState, server } from '$lib/stores';
 	import { page } from '$app/stores';
-	import { debounce } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { Writable } from 'svelte/store';
 	import Mention from '@tiptap/extension-mention';
@@ -95,7 +94,7 @@
 				throw new Error(`error when sending message ${response.status}`);
 			}
 
-			debouncedInput(channelId, null);
+			updateChatInputState(channelId, null);
 			showSlowRequest = false;
 			files.set([]);
 			mentions = [];
@@ -103,10 +102,6 @@
 			console.log(err);
 		}
 	}
-
-	const debouncedInput = debounce((channelId, content) => {
-		updateChatInputState(channelId, content);
-	}, 300);
 
 	function initializeEditor() {
 		editor = new Editor({
@@ -137,7 +132,7 @@
 					suggestion: {
 						char: ':',
 						items: async ({ query }) => {
-							if (query.length === 0) return [];
+							if (query.length < 2) return [];
 							const filteredEmojis = await loadEmojis(query);
 							return filteredEmojis;
 						},
@@ -224,7 +219,7 @@
 			],
 			content: getChatInputState(channelId),
 			onUpdate: ({ editor }) => {
-				debouncedInput(channelId, editor.getHTML());
+				updateChatInputState(channelId, editor.getHTML());
 			},
 			editorProps: {
 				handleKeyDown: (_, event) => {

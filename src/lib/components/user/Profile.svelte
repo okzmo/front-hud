@@ -35,6 +35,9 @@
 			<p class="text-sm leading-[1.10rem]">{user?.about_me}</p>
 		</div>
 		<div class="w-full absolute h-full progressive-blur rounded-2xl"></div>
+		<div
+			class="w-[calc(100%+1px)] absolute h-full rounded-2xl bg-gradient-to-t from-black/15 to-transparent left-0 top-0"
+		></div>
 	</div>
 </Popover.Content>
 

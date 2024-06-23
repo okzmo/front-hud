@@ -69,7 +69,14 @@
 				>
 					{#if !groupedWithPrevious}
 						<span class="flex items-end gap-x-2 w-fit">
-							<p class={`text-sm leading-0`} style="color: {author.username_color || '#fff'};">
+							<p
+								style={`
+                  color: ${author.username_color?.includes('linear-gradient') ? 'transparent' : author.username_color};
+                  background: ${author.username_color?.includes('linear-gradient') ? author.username_color : ''};
+                  background-clip: ${author.username_color?.includes('linear-gradient') ? 'text' : ''};
+                `}
+								class={`text-sm leading-0`}
+							>
 								{author.display_name}
 							</p>
 							<time class="text-zinc-400 leading-[1.08rem] text-xs">{formatISODate(time)}</time>

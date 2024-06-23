@@ -1,7 +1,6 @@
-import { debounce } from '$lib/utils';
 import emojiData from '/src/assets/emojis/emoji_mapping.json';
 
-export const loadEmojis = async (query) => {
+export const loadEmojis = async (query = '') => {
 	const lowercaseQuery = query.toLowerCase();
 	const filteredEmojis = [];
 
@@ -28,44 +27,4 @@ export const loadEmojis = async (query) => {
 	}
 
 	return filteredEmojis;
-};
-
-export const emojiSuggestion = {
-	items: async ({ query }) => {
-		if (query.length === 0) return [];
-		return loadEmojis(query);
-	},
-
-	render: () => {
-		let component;
-		let popup;
-
-		return {
-			onStart: (props) => {
-				if (!props.clientRect) {
-					return;
-				}
-
-				mentionProps = props;
-			},
-			onUpdate: (props) => {
-				if (!props.clientRect) {
-					return;
-				}
-
-				mentionProps = props;
-			},
-			onExit() {
-				mentionProps = null;
-			},
-			onKeyDown: (props) => {
-				if (props.event.key === 'Escape') {
-					mentionProps = null;
-					return true;
-				}
-
-				return mentionList?.handleKeyDown(props);
-			}
-		};
-	}
 };

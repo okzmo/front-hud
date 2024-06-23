@@ -122,21 +122,34 @@ export function generateRandomId(length = 5): string {
 		.substring(2, 2 + length);
 }
 
-export function debounce<T extends (...args: any[]) => void>(
+export function debounce<T extends (...args: any[]) => Promise<any>>(
 	func: T,
 	wait: number
-): (...args: Parameters<T>) => void {
-	let timeout: ReturnType<typeof setTimeout> | null;
+): (...args: Parameters<T>) => Promise<ReturnType<T>> {
+	let timeout: ReturnType<typeof setTimeout> | null = null;
+	let pendingPromise: Promise<ReturnType<T>> | null = null;
 
-	return function (...args) {
-		const later = () => {
-			clearTimeout(timeout as ReturnType<typeof setTimeout>);
-			func(...args);
-		};
-		if (timeout !== null) {
-			clearTimeout(timeout);
+	return function (...args: Parameters<T>): Promise<ReturnType<T>> {
+		if (pendingPromise) {
+			return pendingPromise;
 		}
-		timeout = setTimeout(later, wait);
+
+		pendingPromise = new Promise((res, rej) => {
+			if (timeout !== null) {
+				clearTimeout(timeout);
+			}
+
+			timeout = setTimeout(() => {
+				func(...args)
+					.then(res)
+					.catch(rej)
+					.finally(() => {
+						pendingPromise = null;
+					});
+			}, wait);
+		});
+
+		return pendingPromise;
 	};
 }
 

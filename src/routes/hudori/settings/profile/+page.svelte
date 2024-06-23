@@ -6,6 +6,7 @@
 	import ProfileBannerDialog from '$lib/components/settings/ProfileBannerDialog.svelte';
 	import { writable } from 'svelte/store';
 	import ProfileAvatarDialog from '$lib/components/settings/ProfileAvatarDialog.svelte';
+	import { Input } from '$lib/components/ui/input';
 
 	let openBanner = writable<boolean>(false);
 	let openAvatar = writable<boolean>(false);
@@ -40,6 +41,9 @@
 				<p class="text-sm leading-[1.10rem]">{$user?.about_me}</p>
 			</div>
 			<div class="w-full absolute h-full progressive-blur rounded-[1.5rem]"></div>
+			<div
+				class="w-[calc(100%+1px)] absolute h-full rounded-2xl bg-gradient-to-t from-black/15 to-transparent left-0 top-0"
+			></div>
 		</div>
 	</div>
 </div>
