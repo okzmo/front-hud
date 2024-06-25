@@ -28,7 +28,16 @@
 			<span class="flex gap-x-3">
 				<img class="w-14 h-14 object-cover rounded-2xl" src={user?.avatar} alt="" />
 				<span class="flex flex-col justify-end mb-2">
-					<p class="text-sm leading-3">{user?.display_name}</p>
+					<p
+						style={`
+                color: ${user?.username_color?.includes('linear-gradient') ? 'transparent' : user?.username_color};
+                background: ${user?.username_color?.includes('linear-gradient') ? user?.username_color : ''};
+                background-clip: ${user?.username_color?.includes('linear-gradient') ? 'text' : ''};
+              `}
+						class="text-sm leading-3"
+					>
+						{user?.display_name}
+					</p>
 					<p class="text-sm leading-5 text-zinc-400">{user?.username}</p>
 				</span>
 			</span>

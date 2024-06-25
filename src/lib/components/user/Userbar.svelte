@@ -110,13 +110,19 @@
 		{#if $user}
 			<Popover.Root onOpenChange={getUserProfile}>
 				<Popover.Trigger class="max-w-[9rem]">
-					<Button class="h-12 p-0 rounded-xl overflow-hidden pr-4 text-sm gap-x-3 ">
+					<Button
+						class="h-12 p-0 rounded-xl overflow-hidden pr-4 text-sm gap-x-3 border-none relative"
+						style="background: {$user.username_color};"
+					>
 						<img
-							class="object-cover w-12 h-12 aspect-square rounded-xl"
+							class="object-cover w-12 h-12 aspect-square rounded-xl z-[1]"
 							src={$user.avatar}
 							alt=""
 						/>
-						<span class="text-left truncate w-full">{$user.display_name || 'User'}</span>
+						<span class="text-left truncate w-full z-[1]">{$user.display_name || 'User'}</span>
+						<div
+							class="absolute w-[calc(100%-2px)] h-[calc(100%-2px)] bg-zinc-925 left-1/2 -translate-x-1/2 rounded-xl opacity-75"
+						></div>
 					</Button>
 				</Popover.Trigger>
 				<Profile user={user_profile} side="top" />
