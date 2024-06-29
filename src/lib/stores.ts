@@ -14,7 +14,6 @@ export const server = writable<Server | undefined>();
 export const servers = writable<Server[]>();
 export const user = writable<User>();
 export const messages = writable<MessageCache>({});
-export const seenUsers = writable<UsersCache>({});
 export const notifications = writable<Notification[]>();
 export const friends = writable<User[]>();
 export const contextMenuInfo = writable<ContextMenuServer | undefined>();

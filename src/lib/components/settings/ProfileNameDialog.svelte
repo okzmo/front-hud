@@ -2,7 +2,7 @@
 	import { spring } from 'svelte/motion';
 	import { Button } from '../ui/button';
 	import { type Writable } from 'svelte/store';
-	import { seenUsers, user } from '$lib/stores';
+	import { user } from '$lib/stores';
 
 	interface ColorStop {
 		color: string;
@@ -228,13 +228,6 @@
 		user.update((user) => {
 			user.username_color = $selectedColor;
 			return user;
-		});
-
-		seenUsers.update((cache) => {
-			if (cache[$user.id]) {
-				cache[$user.id].username_color = $selectedColor;
-			}
-			return cache;
 		});
 	}
 </script>

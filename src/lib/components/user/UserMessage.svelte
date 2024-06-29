@@ -3,35 +3,36 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import Profile from './Profile.svelte';
 	import type { User } from '$lib/types';
-	import { generateHTML, mergeAttributes, type JSONContent } from '@tiptap/core';
-	import StarterKit from '@tiptap/starter-kit';
-	import Link from '@tiptap/extension-link';
+	import { type JSONContent } from '@tiptap/core';
 	import { browser } from '$app/environment';
 	import { writable, type Writable } from 'svelte/store';
-	import { loadingMessages, user } from '$lib/stores';
+	import { friends, loadingMessages, server, user } from '$lib/stores';
 	import { getProfile } from '$lib/utils';
 	import GridImages from './GridImages.svelte';
 	import { Skeleton } from '../ui/skeleton';
-	import Mention from '@tiptap/extension-mention';
-	import { Emoji } from '../ui/rich-input/emojiNode';
-	import { EmojiSuggestion } from '../ui/rich-input/emojiSuggestion';
 
-	export let author: User;
+	export let author: string;
 	export let content: JSONContent;
 	export let images: string[];
 	export let mentions: string[];
 	export let time: string;
 	export let groupedWithPrevious: boolean;
 	export let groupedWithAfter: boolean;
+	export let friend_chatbox: boolean;
 
 	let open = writable<boolean>(false);
 	let user_profile: User | undefined;
+	let user_informations: User = !friend_chatbox
+		? $server?.members.find((u) => u.id === author)
+		: author === $user.id
+			? $user
+			: $friends.find((u) => u.id === author);
 
 	async function getUserProfile() {
 		open.set(!$open);
 		if (!$open) return;
 
-		user_profile = await getProfile($user?.id, author.id);
+		user_profile = await getProfile($user?.id, author);
 	}
 </script>
 
@@ -44,7 +45,7 @@
 						{#if $loadingMessages}
 							<Skeleton class="w-full h-full" />
 						{/if}
-						<img class="w-full h-full object-cover" src={author.avatar} alt="" />
+						<img class="w-full h-full object-cover" src={user_informations.avatar} alt="" />
 					</div>
 				</Popover.Trigger>
 				<Profile user={user_profile} side="right" />
@@ -60,7 +61,7 @@
 				</div>
 			{/if}
 
-			{#if content.content[0]?.content}
+			{#if content}
 				<div
 					class="bg-zinc-850 rounded-xl rounded-bl-sm px-5 py-3 mt-1 w-fit text-sm [&>p]:break-all flex flex-col gap-y-1 max-w-[45rem]"
 					class:groupMessagePrevious={groupedWithPrevious}
@@ -71,13 +72,13 @@
 						<span class="flex items-end gap-x-2 w-fit">
 							<p
 								style={`
-                  color: ${author.username_color?.includes('linear-gradient') ? 'transparent' : author.username_color};
-                  background: ${author.username_color?.includes('linear-gradient') ? author.username_color : ''};
-                  background-clip: ${author.username_color?.includes('linear-gradient') ? 'text' : ''};
+                  color: ${user_informations.username_color?.includes('linear-gradient') ? 'transparent' : user_informations.username_color};
+                  background: ${user_informations.username_color?.includes('linear-gradient') ? user_informations.username_color : ''};
+                  background-clip: ${user_informations.username_color?.includes('linear-gradient') ? 'text' : ''};
                 `}
 								class={`text-sm leading-0`}
 							>
-								{author.display_name}
+								{user_informations.display_name}
 							</p>
 							<time class="text-zinc-400 leading-[1.08rem] text-xs">{formatISODate(time)}</time>
 						</span>
@@ -85,21 +86,7 @@
 					<span
 						class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline break-all [&>p>span]:first:ml-0"
 					>
-						{@html generateHTML(content, [
-							StarterKit,
-							Link,
-							Emoji,
-							EmojiSuggestion.configure({}),
-							Mention.configure({
-								renderHTML({ options, node }) {
-									return [
-										'span',
-										options.HTMLAttributes,
-										`${options.suggestion.char}${node.attrs.label}`
-									];
-								}
-							})
-						])}
+						{@html content}
 					</span>
 				</div>
 			{/if}

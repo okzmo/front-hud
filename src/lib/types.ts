@@ -55,7 +55,7 @@ export interface Message {
 
 export interface MessageUI {
 	id: string;
-	author: string;
+	author: User;
 	channel_id: string;
 	content: JSONContent;
 	edited: boolean;

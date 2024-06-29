@@ -2,7 +2,7 @@
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
-	import { notifications, user } from '$lib/stores';
+	import { notifications } from '$lib/stores';
 	import { getMessages } from '$lib/utils';
 	import { onMount } from 'svelte';
 

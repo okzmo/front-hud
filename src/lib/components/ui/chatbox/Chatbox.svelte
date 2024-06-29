@@ -1,6 +1,6 @@
 <script lang="ts">
 	import UserMessage from '$lib/components/user/UserMessage.svelte';
-	import { loadingMessages, messages, seenUsers } from '$lib/stores';
+	import { loadingMessages, messages } from '$lib/stores';
 	import RichInput from '../rich-input/RichInput.svelte';
 	import type { Message, MessageUI } from '$lib/types';
 	import Icon from '@iconify/svelte';
@@ -126,7 +126,8 @@
 		{:else if groupedMessages.length > 0}
 			{#each groupedMessages as message}
 				<UserMessage
-					author={$seenUsers[message.author]}
+					{friend_chatbox}
+					author={message.author.id}
 					content={message.content}
 					time={message.updated_at}
 					groupedWithPrevious={message.groupWithPrevious}

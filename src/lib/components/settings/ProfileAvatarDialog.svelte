@@ -4,7 +4,7 @@
 	import Button from '../ui/button/button.svelte';
 	import Dropzone from 'svelte-file-dropzone';
 	import Icon from '@iconify/svelte';
-	import { friends, seenUsers, server, user } from '$lib/stores';
+	import { friends, server, user } from '$lib/stores';
 	import type { Writable } from 'svelte/store';
 	import { removeCachedProfile } from '$lib/utils';
 	let crop = { x: 0, y: 0 };
@@ -71,13 +71,6 @@
 		user.update((user) => {
 			user.avatar = data.avatar;
 			return user;
-		});
-
-		seenUsers.update((cache) => {
-			if (cache[$user.id]) {
-				cache[$user.id].avatar = data.avatar;
-			}
-			return cache;
 		});
 
 		dialogState.set(false);

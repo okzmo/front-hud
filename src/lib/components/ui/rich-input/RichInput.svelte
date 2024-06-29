@@ -45,14 +45,8 @@
 		}
 	});
 
-	async function sendMessage(richInputContent: JSONContent) {
-		if (
-			(!richInputContent.content ||
-				!richInputContent.content[0] ||
-				!richInputContent.content[0].content ||
-				richInputContent.content[0].content.length <= 0) &&
-			$files.length === 0
-		) {
+	async function sendMessage(richInputContent: string) {
+		if (!richInputContent && $files.length === 0) {
 			return;
 		}
 
@@ -231,7 +225,7 @@
 					) {
 						event.preventDefault();
 
-						sendMessage(editor.getJSON());
+						sendMessage(editor.getHTML());
 
 						editor.commands.clearContent();
 
