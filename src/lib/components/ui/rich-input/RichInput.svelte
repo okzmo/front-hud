@@ -46,7 +46,7 @@
 	});
 
 	async function sendMessage(richInputContent: string) {
-		if (!richInputContent && $files.length === 0) {
+		if ((editor.getText().length <= 0 || editor.getText().length > 2500) && $files.length === 0) {
 			return;
 		}
 
@@ -99,6 +99,16 @@
 
 	function initializeEditor() {
 		editor = new Editor({
+			onTransaction: ({ editor }) => {
+				const currentMentions = editor
+					.getJSON()
+					.content.flatMap((node) => node.content || [])
+					.filter((node) => node.type === 'mention')
+					.map((node) => node.attrs.id);
+
+				// Update the mentions array to match the current state of the editor
+				mentions = currentMentions;
+			},
 			element: element,
 			extensions: [
 				Link.configure({
@@ -216,6 +226,20 @@
 				updateChatInputState(channelId, editor.getHTML());
 			},
 			editorProps: {
+				transformPastedHTML(html) {
+					const parser = new DOMParser();
+					const doc = parser.parseFromString(html, 'text/html');
+					const mentionNodes = doc.querySelectorAll('span[data-type="mention"]');
+
+					mentionNodes.forEach((node) => {
+						const id = node.getAttribute('data-id');
+						if (id && !mentions.includes(id)) {
+							mentions.push(id);
+						}
+					});
+
+					return html;
+				},
 				handleKeyDown: (_, event) => {
 					if (
 						event.key === 'Enter' &&
@@ -331,5 +355,6 @@
 		margin: 0 0.05em 0 0.1em;
 		vertical-align: -0.2em;
 		display: inline-block;
+		pointer-events: none;
 	}
 </style>

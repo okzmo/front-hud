@@ -18,6 +18,7 @@ export const load: PageServerLoad = async ({ cookies, locals, params, fetch }) =
 		);
 
 		const serverData = await serverPromise.json();
+		console.log(serverData);
 
 		if (!serverPromise.ok) {
 			throw new Error(`error on fetching server data: ${serverPromise.status}`);

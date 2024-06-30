@@ -49,7 +49,7 @@
 		const endpoint = `${import.meta.env.VITE_API_URL}/api/v1/server/leave`;
 		let body: any = {
 			user_id: $user?.id,
-			server_id: $server?.id
+			server_id: id
 		};
 
 		try {

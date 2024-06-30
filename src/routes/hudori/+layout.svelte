@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Navbar from '$lib/components/ui/navbar/Navbar.svelte';
 	import Sidebar from '$lib/components/ui/sidebar/Sidebar.svelte';
-	import { treatMessage } from '$lib/websocket';
+	import { treatMessage, treatMessageJSON } from '$lib/websocket';
 	import { notifications, friendRequest, friends, servers, user, wsConn } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
@@ -31,7 +31,12 @@
 
 		ws.onmessage = (event) => {
 			if (event.data === 'heartbeat') return;
-			treatMessage(event.data);
+
+			if (event.data instanceof ArrayBuffer) {
+				treatMessage(event.data);
+			} else if (typeof event.data === 'string') {
+				treatMessageJSON(event.data);
+			}
 		};
 
 		ws.onopen = async () => {

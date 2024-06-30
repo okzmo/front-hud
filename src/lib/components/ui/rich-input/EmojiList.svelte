@@ -56,7 +56,10 @@
 		const item = props.items[index];
 
 		if (item) {
-			props.command({ src: item.src, alt: item.alt });
+			props.command({
+				src: item.src,
+				alt: ':' + item.alt.replaceAll(' ', '_') + ':'
+			});
 		}
 	}
 </script>

@@ -127,7 +127,7 @@
 			{#each groupedMessages as message}
 				<UserMessage
 					{friend_chatbox}
-					author={message.author.id}
+					author={message.author}
 					content={message.content}
 					time={message.updated_at}
 					groupedWithPrevious={message.groupWithPrevious}

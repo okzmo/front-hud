@@ -28,13 +28,13 @@
 			if (!form.valid) return;
 
 			const endpoint = `${import.meta.env.VITE_API_URL}/api/v1/server/${form.data.type}`;
-			let body: any = {
-				user_id: $user?.id
-			};
+			let body: any = {};
 
 			if (form.data.type === 'create') {
+				body['user_id'] = $user.id;
 				body['name'] = form.data.id;
 			} else {
+				body['user'] = $user;
 				body['invite_id'] = form.data.id;
 			}
 

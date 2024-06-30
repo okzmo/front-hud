@@ -11,7 +11,7 @@
 	import GridImages from './GridImages.svelte';
 	import { Skeleton } from '../ui/skeleton';
 
-	export let author: string;
+	export let author: User;
 	export let content: JSONContent;
 	export let images: string[];
 	export let mentions: string[];
@@ -22,17 +22,12 @@
 
 	let open = writable<boolean>(false);
 	let user_profile: User | undefined;
-	let user_informations: User = !friend_chatbox
-		? $server?.members.find((u) => u.id === author)
-		: author === $user.id
-			? $user
-			: $friends.find((u) => u.id === author);
 
 	async function getUserProfile() {
 		open.set(!$open);
 		if (!$open) return;
 
-		user_profile = await getProfile($user?.id, author);
+		user_profile = await getProfile($user?.id, author.id);
 	}
 </script>
 
@@ -45,7 +40,7 @@
 						{#if $loadingMessages}
 							<Skeleton class="w-full h-full" />
 						{/if}
-						<img class="w-full h-full object-cover" src={user_informations.avatar} alt="" />
+						<img class="w-full h-full object-cover" src={author.avatar} alt="" />
 					</div>
 				</Popover.Trigger>
 				<Profile user={user_profile} side="right" />
@@ -72,13 +67,13 @@
 						<span class="flex items-end gap-x-2 w-fit">
 							<p
 								style={`
-                  color: ${user_informations.username_color?.includes('linear-gradient') ? 'transparent' : user_informations.username_color};
-                  background: ${user_informations.username_color?.includes('linear-gradient') ? user_informations.username_color : ''};
-                  background-clip: ${user_informations.username_color?.includes('linear-gradient') ? 'text' : ''};
+                  color: ${author.username_color?.includes('linear-gradient') ? 'transparent' : author.username_color};
+                  background: ${author.username_color?.includes('linear-gradient') ? author.username_color : ''};
+                  background-clip: ${author.username_color?.includes('linear-gradient') ? 'text' : ''};
                 `}
 								class={`text-sm leading-0`}
 							>
-								{user_informations.display_name}
+								{author.display_name}
 							</p>
 							<time class="text-zinc-400 leading-[1.08rem] text-xs">{formatISODate(time)}</time>
 						</span>

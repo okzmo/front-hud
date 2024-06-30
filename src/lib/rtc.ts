@@ -108,7 +108,12 @@ export async function joinRoom(channelId: string, userId: string, serverId: stri
 		const wsMessNew = {
 			type: 'new_participant',
 			content: {
-				user: userInfos,
+				user: {
+					id: userInfos.id,
+					display_name: userInfos.display_name,
+					avatar: userInfos.avatar,
+					username_color: userInfos.username_color
+				},
 				serverId: serverId,
 				channelId: channelId
 			}

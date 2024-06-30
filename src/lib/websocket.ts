@@ -29,7 +29,6 @@ export async function treatMessage(message: ArrayBuffer) {
 	const decoded = messProto.decode(decompressed);
 	const wsMessage = decoded.toJSON();
 
-	const room = get(vcRoom);
 	switch (wsMessage.type) {
 		case 'text_message':
 			const newMessage = wsMessage.mess;
@@ -148,14 +147,59 @@ export async function treatMessage(message: ArrayBuffer) {
 			break;
 		case 'delete_server':
 			servers.update((servers) => {
-				const serverIdx = servers.findIndex((server) => server.id === wsMessage.content)!;
+				const serverIdx = servers.findIndex((server) => server.id === wsMessage.server_id)!;
 				servers.splice(serverIdx, 1);
 				return servers;
 			});
-			if (window.location.pathname.includes(wsMessage.content.split(':')[1])) {
+			if (window.location.pathname.includes(wsMessage.server_id.split(':')[1])) {
 				goto('/hudori/chat/friends');
 			}
 			break;
+		case 'join_server':
+			if (window.location.pathname.includes(wsMessage.join_server.server_id.split(':')[1])) {
+				server.update((server) => {
+					server?.members.push(wsMessage.join_server.user);
+					return server;
+				});
+			}
+			break;
+		case 'leave_server':
+			if (window.location.pathname.includes(wsMessage.quit_server.server_id.split(':')[1])) {
+				server.update((server) => {
+					const memberIdx = server?.members.findIndex(
+						(server) => server.id === wsMessage.quit_server.user_id
+					)!;
+					server?.members.splice(memberIdx, 1);
+					return server;
+				});
+			}
+			break;
+		case 'new_avatar':
+			friends.update((friends) => {
+				const friend = friends.find((friend) => friend.id === 'users:' + wsMessage.content.user_id);
+				if (friend) {
+					friend.avatar = wsMessage.content.avatar;
+				}
+				return friends;
+			});
+		case 'change_status':
+			friends.update((friends) => {
+				const friend = friends.find((friend) => friend.id === wsMessage.change_status.user_id);
+				if (friend) {
+					friend.status = wsMessage.change_status.status;
+				}
+				return friends;
+			});
+		default:
+			break;
+	}
+}
+
+export function treatMessageJSON(message: any) {
+	const wsMessage = JSON.parse(message);
+
+	const room = get(vcRoom);
+	switch (wsMessage.type) {
 		case 'new_participant':
 			addParticipant(wsMessage.content.channelId, wsMessage.content.user);
 			if (room?.name === wsMessage.content.channelId) {
@@ -177,24 +221,6 @@ export async function treatMessage(message: ArrayBuffer) {
 				wsMessage.content.muted,
 				wsMessage.content.deafen
 			);
-			break;
-		case 'new_avatar':
-			friends.update((friends) => {
-				const friend = friends.find((friend) => friend.id === 'users:' + wsMessage.content.user_id);
-				if (friend) {
-					friend.avatar = wsMessage.content.avatar;
-				}
-				return friends;
-			});
-		case 'change_status':
-			friends.update((friends) => {
-				const friend = friends.find((friend) => friend.id === wsMessage.change_status.user_id);
-				if (friend) {
-					friend.status = wsMessage.change_status.status;
-				}
-				return friends;
-			});
-		default:
 			break;
 	}
 }

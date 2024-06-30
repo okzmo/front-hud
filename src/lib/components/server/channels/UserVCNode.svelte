@@ -34,7 +34,14 @@
 						: '0px 0px 11px rgba(69, 222, 94, 0)'};"
 					alt={`${connected_user.display_name}'s avatar`}
 				/>
-				<p class="overflow-hidden text-ellipsis w-full text-nowrap">
+				<p
+					class="overflow-hidden text-ellipsis w-full text-nowrap"
+					style={`
+            color: ${connected_user.username_color?.includes('linear-gradient') ? 'transparent' : connected_user.username_color};
+            background: ${connected_user.username_color?.includes('linear-gradient') ? connected_user.username_color : ''};
+            background-clip: ${connected_user.username_color?.includes('linear-gradient') ? 'text' : ''};
+          `}
+				>
 					{connected_user.display_name}
 				</p>
 			</div>

@@ -49,7 +49,6 @@
 	onNavigate(async ({ to }) => {
 		if (to && to.params) {
 			await getMessages(to.params);
-			server.set(undefined);
 		}
 	});
 

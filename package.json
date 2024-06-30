@@ -46,6 +46,7 @@
 		"@tiptap/extension-link": "^2.4.0",
 		"@tiptap/extension-mention": "^2.4.0",
 		"@tiptap/extension-placeholder": "^2.4.0",
+		"@tiptap/pm": "^2.4.0",
 		"@tiptap/starter-kit": "^2.4.0",
 		"@tiptap/suggestion": "^2.4.0",
 		"bits-ui": "^0.21.10",
