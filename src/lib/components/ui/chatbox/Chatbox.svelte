@@ -7,7 +7,7 @@
 	import { afterUpdate, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
-	import { beforeNavigate } from '$app/navigation';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
 
 	export let friend_chatbox: boolean;
 
@@ -41,7 +41,9 @@
 
 	$: if ($messages[$page.params.id] || $messages[$page.params.channelId]) {
 		const channelContent = $messages[$page.params.id] || $messages[$page.params.channelId];
-		groupedMessages = groupMessages(channelContent.messages);
+		if (channelContent.messages) {
+			groupedMessages = groupMessages(channelContent?.messages);
+		}
 	}
 
 	function scrollToPosition() {
@@ -49,12 +51,13 @@
 		const channelContent = $messages[channelId];
 		if (chatbox) {
 			chatbox.scrollTop = channelContent?.scrollPosition || chatbox.scrollHeight;
+			// chatbox?.scrollTo({
+			// 	left: 0,
+			// 	top: channelContent?.scrollPosition || chatbox.scrollHeight,
+			// 	behavior: 'smooth'
+			// });
 		}
 	}
-
-	afterUpdate(() => {
-		scrollToPosition();
-	});
 
 	beforeNavigate(() => {
 		const channelId = $page.params.id || $page.params.channelId;
@@ -66,8 +69,11 @@
 		}
 	});
 
-	onMount(() => {
+	afterUpdate(() => {
 		scrollToPosition();
+	});
+
+	onMount(() => {
 		dropzone.addEventListener('click', (e) => {
 			if (e.target.id !== 'image-upload-icon' && e.target.id !== 'dropzone-file') {
 				e.preventDefault();
@@ -104,6 +110,8 @@
 			dropzone_zindex = 2;
 			dropzone_opacity = 0;
 		});
+
+		scrollToPosition();
 	});
 </script>
 

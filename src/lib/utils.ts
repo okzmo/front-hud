@@ -279,7 +279,6 @@ export async function getMessages(params: any): Promise<Message[] | undefined> {
 			}
 		});
 		const data = await response.json();
-		console.log(data);
 
 		messages.update((cache) => {
 			cache[channelId] = {

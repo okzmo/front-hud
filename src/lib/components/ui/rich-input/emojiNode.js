@@ -56,16 +56,12 @@ export const Emoji = Node.create({
 	parseHTML() {
 		return [
 			{
-				tag: 'img[class=emoji-editor]'
-			},
-			{
-				// This will match text in the format :emoji_name:
-				regexp: /:([a-z_]+):/g,
-				getAttrs: async (match) => {
-					// You'll need to implement this function to convert shortcodes to emoji data
-					const emojiData = await loadEmojis(match[1]);
-					return emojiData ? { src: emojiData.src, alt: `:${match[1]}:` } : null;
-				}
+				tag: 'img[class=emoji-editor]',
+				getAttrs: (element) => ({
+					src: element.getAttribute('src'),
+					alt: element.getAttribute('alt'),
+					title: element.getAttribute('title')
+				})
 			}
 		];
 	},

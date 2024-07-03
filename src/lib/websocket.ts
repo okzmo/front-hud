@@ -38,21 +38,16 @@ export async function treatMessage(message: ArrayBuffer) {
 				newMessage.channel_id.split(':')[1] === ownId?.id.split(':')[1]
 					? newMessage.author.id.split(':')[1]
 					: newMessage.channel_id.split(':')[1];
-			const chatbox = document.getElementById('chatbox');
 
 			messages.update((cache) => {
-				if (cache[channelId]) {
+				if (cache[channelId] && cache[channelId].messages) {
 					cache[channelId].messages.push(newMessage);
 					cache[channelId].scrollPosition = undefined;
 				}
 				return cache;
 			});
 
-			if (pathname.includes(channelId)) {
-				setTimeout(() => {
-					chatbox?.scrollTo({ left: 0, top: chatbox.scrollHeight, behavior: 'smooth' });
-				}, 100);
-			} else {
+			if (!pathname.includes(channelId)) {
 				notifications.update((notifications) => {
 					const notif = notifications.find(
 						(notification) =>

@@ -350,10 +350,10 @@
 		pointer-events: none;
 	}
 	:global(img.emoji-editor) {
-		height: 1.2em;
-		width: 1.2em;
-		margin: 0 0.05em 0 0.1em;
-		vertical-align: -0.2em;
+		height: 1.6em;
+		width: 1.6em;
+		margin: 0 0.1em 0 0.1em;
+		vertical-align: -0.25em;
 		display: inline-block;
 		pointer-events: none;
 	}
