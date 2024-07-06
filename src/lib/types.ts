@@ -88,6 +88,19 @@ export interface MessageCache {
 	};
 }
 
+export interface ServersCache {
+	[serverId: string]: {
+		id: string;
+		name: string;
+		icon: string;
+		banner: string;
+		categories: Category[];
+		roles?: string[];
+		members: User[];
+		created_at: string;
+	};
+}
+
 export interface UsersCache {
 	[userId: string]: User;
 }
@@ -103,4 +116,9 @@ export interface ServerState {
 		};
 	};
 	lastVisited: string;
+}
+
+export interface TypingState {
+	user_id: string;
+	display_name: string;
 }

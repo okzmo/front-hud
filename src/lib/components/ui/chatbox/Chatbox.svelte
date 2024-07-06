@@ -1,6 +1,6 @@
 <script lang="ts">
 	import UserMessage from '$lib/components/user/UserMessage.svelte';
-	import { loadingMessages, messages } from '$lib/stores';
+	import { loadingMessages, messages, usersTyping } from '$lib/stores';
 	import RichInput from '../rich-input/RichInput.svelte';
 	import type { Message, MessageUI } from '$lib/types';
 	import Icon from '@iconify/svelte';
@@ -8,6 +8,7 @@
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
 	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import TypingMessage from '$lib/components/user/typingMessage.svelte';
 
 	export let friend_chatbox: boolean;
 
@@ -151,6 +152,9 @@
 					<p class="text-zinc-700 text-2xl mt-4">No messages were found.</p>
 				</div>
 			</div>
+		{/if}
+		{#if $usersTyping.length > 0}
+			<TypingMessage usersTyping={$usersTyping} />
 		{/if}
 		<div class="anchor-scroll"></div>
 	</div>

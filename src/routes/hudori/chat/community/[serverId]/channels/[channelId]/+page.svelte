@@ -1,20 +1,14 @@
 <script lang="ts">
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
-	import { notifications, server, serversStateStore, vcRoom } from '$lib/stores';
+	import { notifications, servers, serversStateStore, vcRoom } from '$lib/stores';
 	import { onMount } from 'svelte';
-	import type { PageData } from './$types';
 	import { page } from '$app/stores';
 	import { onNavigate } from '$app/navigation';
 	import { getMessages } from '$lib/utils';
 	import VoiceChannel from '$lib/components/ui/voicechannel/VoiceChannel.svelte';
 
-	export let data: PageData;
 	let type = 'textual';
 	let participants = [];
-
-	$: {
-		server.set(data.server);
-	}
 
 	$: if ($notifications) {
 		let channelNotif = $notifications.findIndex(
@@ -35,7 +29,7 @@
 	$: if ($vcRoom && $vcRoom.name.split(':')[1] === $page.params.channelId) {
 		type = 'voice';
 
-		for (const category of $server?.categories) {
+		for (const category of $servers[`servers:${$page.params.serverId}`].categories) {
 			const channel = category.channels.find((channel) => channel.id === $vcRoom.name);
 			if (channel) {
 				participants = channel.participants;

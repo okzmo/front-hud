@@ -6,7 +6,7 @@
 	import { type JSONContent } from '@tiptap/core';
 	import { browser } from '$app/environment';
 	import { writable, type Writable } from 'svelte/store';
-	import { friends, loadingMessages, server, user } from '$lib/stores';
+	import { friends, loadingMessages, user } from '$lib/stores';
 	import { getProfile } from '$lib/utils';
 	import GridImages from './GridImages.svelte';
 	import { Skeleton } from '../ui/skeleton';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { contextMenuInfo, getCategoryState, server, updateCategoryState } from '$lib/stores';
+	import { contextMenuInfo, getCategoryState, servers, updateCategoryState } from '$lib/stores';
 	import type { Category } from '$lib/types';
 	import Icon from '@iconify/svelte';
 	import Button from '../ui/button/button.svelte';
@@ -9,20 +9,22 @@
 	import ChannelCategoryContextMenu from './channels/ChannelCategoryContextMenu.svelte';
 
 	export let category: Category;
+	export let serverId: string;
+
 	let openContextMenuId = `context-menu-${generateRandomId()}`;
 	let contextMenuOpen: boolean = false;
 
 	$: contextMenuOpen = $contextMenuInfo?.id === openContextMenuId;
 
 	let isOpen: boolean;
-	$: if ($server) {
-		isOpen = getCategoryState($server?.id, category.name);
+	$: if ($servers[serverId]) {
+		isOpen = getCategoryState(serverId, category.name);
 	}
 
 	function toggleCategory() {
 		isOpen = !isOpen;
-		if ($server) {
-			updateCategoryState($server.id, category.name, isOpen);
+		if ($servers[serverId]) {
+			updateCategoryState(serverId, category.name, isOpen);
 		}
 	}
 </script>
@@ -51,7 +53,7 @@
 						channelName={channel.name}
 						participants={channel.participants}
 						type={channel.type}
-						href={`/hudori/chat/community/${$server?.id.split(':')[1]}/channels/${channel.id.split(':')[1]}`}
+						href={`/hudori/chat/community/${serverId.split(':')[1]}/channels/${channel.id.split(':')[1]}`}
 					/>
 				{/each}
 			</div>

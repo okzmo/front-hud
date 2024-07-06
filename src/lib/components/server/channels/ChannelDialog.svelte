@@ -8,10 +8,10 @@
 	import { defaults, stringProxy, superForm, type Infer } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { channelCreationSchema } from '$lib/components/server/channels/schema-channel-request';
-	import { server, servers, user } from '$lib/stores';
-	import type { Channel, Server } from '$lib/types';
+	import { user } from '$lib/stores';
 	import type { Writable } from 'svelte/store';
 	import { formatError } from '$lib/utils';
+	import { page } from '$app/stores';
 
 	export let open: Writable<boolean>;
 	export let categoryName: string | undefined;
@@ -33,7 +33,7 @@
 				name: form.data.channelName,
 				channel_type: form.data.type,
 				category_name: categoryName,
-				server_id: $server?.id
+				server_id: `servers:${$page.params.serverId}`
 			};
 
 			try {
@@ -42,7 +42,6 @@
 					credentials: 'include',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-User-Agent': navigator.userAgent,
 						'X-User-ID': $user?.id
 					},
 					body: JSON.stringify(body)

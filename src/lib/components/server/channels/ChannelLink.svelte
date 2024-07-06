@@ -4,7 +4,7 @@
 	import Icon from '@iconify/svelte';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import ChannelContextMenu from './ChannelContextMenu.svelte';
-	import { contextMenuInfo, server, updateLastVisited, notifications, user } from '$lib/stores';
+	import { contextMenuInfo, updateLastVisited, notifications, user, servers } from '$lib/stores';
 	import { generateRandomId, handleContextMenu } from '$lib/utils';
 	import { joinRoom } from '$lib/rtc';
 	import type { User } from '$lib/types';
@@ -22,8 +22,8 @@
 	let notification;
 
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
-	$: if ($server && $page.params.channelId) {
-		updateLastVisited($server.id, $page.params.channelId);
+	$: if ($servers[`servers:${$page.params.serverId}`] && $page.params.channelId) {
+		updateLastVisited(`servers:${$page.params.serverId}`, $page.params.channelId);
 	}
 	$: notification = $notifications?.filter(
 		(notification) => notification.channel_id === channelId
@@ -42,7 +42,7 @@
 					if (type === 'textual') {
 						goto(href);
 					} else {
-						joinRoom(channelId, $user?.id, $server?.id);
+						joinRoom(channelId, $user?.id, `servers:${$page.params.serverId}`);
 					}
 				}}
 			>

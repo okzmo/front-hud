@@ -14,7 +14,7 @@ import {
 import {
 	mutedState,
 	participantExist,
-	server,
+	servers,
 	sharingScreen,
 	user,
 	vcRoom,
@@ -98,7 +98,7 @@ export async function joinRoom(channelId: string, userId: string, serverId: stri
 
 	vcRoom.set(room);
 	const userInfos = get(user);
-	const exist = participantExist(channelId, userInfos?.id);
+	const exist = participantExist(serverId, channelId, userInfos?.id);
 
 	goto(`/hudori/chat/community/${serverId.split(':')[1]}/channels/${channelId.split(':')[1]}`);
 
@@ -132,6 +132,8 @@ export async function quitRoom(serverId: string) {
 
 	const pageInfos = get(page);
 
+	console.log(pageInfos.url.pathname, serverId);
+	console.log(pageInfos.url.pathname.includes(serverId.split(':')[1]));
 	if (pageInfos.url.pathname.includes(serverId.split(':')[1])) {
 		const ws = get(wsConn);
 		const userInfos = get(user);
@@ -202,7 +204,9 @@ function handleActiveSpeakerChange(speakers: Participant[]) {
 	const room = get(vcRoom);
 	const speakersMap = new Map(speakers.map((speaker) => [speaker.identity, true]));
 
-	server.update((server) => {
+	const pageInfo = get(page);
+	servers.update((cache) => {
+		const server = cache[`servers:${pageInfo.params.serverId}`];
 		for (const category of server?.categories) {
 			for (const channel of category.channels) {
 				if (channel.id === room?.name) {
@@ -213,7 +217,7 @@ function handleActiveSpeakerChange(speakers: Participant[]) {
 				}
 			}
 		}
-		return server;
+		return cache;
 	});
 }
 

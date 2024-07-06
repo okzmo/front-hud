@@ -2,16 +2,30 @@
 	import Navbar from '$lib/components/ui/navbar/Navbar.svelte';
 	import Sidebar from '$lib/components/ui/sidebar/Sidebar.svelte';
 	import { treatMessage, treatMessageJSON } from '$lib/websocket';
-	import { notifications, friendRequest, friends, servers, user, wsConn } from '$lib/stores';
+	import {
+		notifications,
+		friendRequest,
+		friends,
+		servers,
+		user,
+		wsConn,
+		messProto
+	} from '$lib/stores';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
 	import wasmUrl from 'brotli-dec-wasm/web/bg.wasm?url';
 	import { default as init } from 'brotli-dec-wasm/web';
+	import protobuf from 'protobufjs';
 
 	export let data: LayoutData;
 	user.set(data.props?.user);
-	servers.set(data.props?.servers);
+	servers.update((cache) => {
+		data.props?.servers.forEach((server) => {
+			cache[server.id] = { ...server };
+		});
+		return cache;
+	});
 	friends.set(data.props?.friends);
 	notifications.set(data.props?.notifications);
 	friendRequest.set(data.props?.formFriendRequest);
@@ -41,6 +55,14 @@
 
 		ws.onopen = async () => {
 			await init(wasmUrl);
+			const protoResponse = await fetch('/proto/message.proto');
+			if (!protoResponse.ok) {
+				throw new Error(`HTTP error! status: ${protoResponse.status}`);
+			}
+			const protoContent = await protoResponse.text();
+
+			const root = protobuf.parse(protoContent, { keepCase: true }).root;
+			messProto.set(root.lookupType('hudori.WSMessage'));
 		};
 
 		ws.onerror = (event) => {

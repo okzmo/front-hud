@@ -3,11 +3,10 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { Separator } from '$lib/components/ui/separator';
 	import Icon from '@iconify/svelte';
-	import { server, user } from '$lib/stores';
+	import { servers, user } from '$lib/stores';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { writable } from 'svelte/store';
-	import { handleContextMenu } from '$lib/utils';
 
 	export let channelId: string;
 	export let categoryName: string;
@@ -18,7 +17,7 @@
 		let body: any = {
 			channel_id: channelId,
 			category_name: categoryName,
-			server_id: $server?.id
+			server_id: 'servers:' + $page.params.serverId
 		};
 
 		try {
@@ -39,8 +38,9 @@
 			}
 
 			if ($page.url.pathname.includes(channelId.split(':')[1])) {
-				const serverId = $server?.id.split(':')[1];
-				const chanId = $server?.categories[0].channels[0].id.split(':')[1];
+				const serverId = $page.params.serverId;
+				const chanId =
+					$servers['servers:' + $page.params.serverId].categories[0].channels[0].id.split(':')[1];
 				goto(`/hudori/chat/community/${serverId}/channels/${chanId}`);
 			}
 		} catch (e) {
@@ -49,8 +49,8 @@
 	}
 
 	let isOwner: boolean;
-	$: if ($server) {
-		if ($server.roles?.some((role) => role === 'owner')) {
+	$: if ($servers['servers:' + $page.params.serverId]) {
+		if ($servers['servers:' + $page.params.serverId].roles?.some((role) => role === 'owner')) {
 			isOwner = true;
 		} else {
 			isOwner = false;

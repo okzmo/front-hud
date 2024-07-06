@@ -4,9 +4,10 @@
 	import Button from '../ui/button/button.svelte';
 	import Dropzone from 'svelte-file-dropzone';
 	import Icon from '@iconify/svelte';
-	import { friends, server, user } from '$lib/stores';
+	import { friends, servers, user } from '$lib/stores';
 	import type { Writable } from 'svelte/store';
 	import { removeCachedProfile } from '$lib/utils';
+	import { page } from '$app/stores';
 	let crop = { x: 0, y: 0 };
 	let zoom = 1;
 	let image: string | undefined = undefined;
@@ -45,8 +46,8 @@
 		form.append('cropWidth', croppingElements.pixels.width);
 		form.append('cropHeight', croppingElements.pixels.height);
 		form.append('old_avatar', old_avatar!);
-		if ($server) {
-			form.append('server_id', $server!.id);
+		if ($servers[`servers:${$page.params.serverId}`]) {
+			form.append('server_id', `servers:${$page.params.serverId}`);
 		}
 		if ($friends) {
 			form.append('friends', JSON.stringify($friends.map((friend) => friend.id)));

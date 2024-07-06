@@ -3,8 +3,9 @@ import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
 import { contextMenuInfo, messages, user } from './stores';
-import { get, type Writable } from 'svelte/store';
-import type { Message, User } from './types';
+import { get } from 'svelte/store';
+import type { Message } from './types';
+import { page } from '$app/stores';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -129,27 +130,28 @@ export function debounce<T extends (...args: any[]) => Promise<any>>(
 	let timeout: ReturnType<typeof setTimeout> | null = null;
 	let pendingPromise: Promise<ReturnType<T>> | null = null;
 
-	return function (...args: Parameters<T>): Promise<ReturnType<T>> {
+	return function (this: any, ...args: Parameters<T>): Promise<ReturnType<T>> {
 		if (pendingPromise) {
 			return pendingPromise;
 		}
 
-		pendingPromise = new Promise((res, rej) => {
-			if (timeout !== null) {
-				clearTimeout(timeout);
-			}
+		const executeFunction = () => {
+			const result = func.apply(this, args);
+			return result instanceof Promise ? result : Promise.resolve(result);
+		};
 
+		if (timeout !== null) {
+			clearTimeout(timeout);
+		}
+
+		return new Promise((resolve) => {
 			timeout = setTimeout(() => {
-				func(...args)
-					.then(res)
-					.catch(rej)
-					.finally(() => {
-						pendingPromise = null;
-					});
+				pendingPromise = executeFunction().finally(() => {
+					pendingPromise = null;
+				});
+				resolve(pendingPromise);
 			}, wait);
 		});
-
-		return pendingPromise;
 	};
 }
 
@@ -289,5 +291,47 @@ export async function getMessages(params: any): Promise<Message[] | undefined> {
 		});
 	} catch (error) {
 		console.error('Error fetching messages:', error);
+	}
+}
+
+export const mergeObj = (target: Object, source: Object) => {
+	for (let key in source) {
+		if (!target.hasOwnProperty(key)) {
+			target[key] = source[key];
+		}
+	}
+
+	return target;
+};
+
+export async function typing(status: string) {
+	const userInfos = get(user);
+	const pageInfos = get(page);
+
+	const body = {
+		user_id: userInfos.id,
+		channel_id: pageInfos.params.id || pageInfos.params.channelId,
+		display_name: userInfos.display_name,
+		status: status
+	};
+
+	try {
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/channels/typing`, {
+			method: 'POST',
+			credentials: 'include',
+			body: JSON.stringify(body),
+			headers: {
+				'Content-Type': 'application/json',
+				'X-User-ID': userInfos?.id
+			}
+		});
+
+		if (!response.ok) {
+			throw new Error(`typing error ${response.status}`);
+		}
+
+		return;
+	} catch (err) {
+		console.log(err);
 	}
 }

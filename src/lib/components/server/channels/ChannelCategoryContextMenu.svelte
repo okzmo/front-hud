@@ -3,7 +3,7 @@
 	import { Dialog } from '$lib/components/ui/dialog';
 	import { Separator } from '$lib/components/ui/separator';
 	import Icon from '@iconify/svelte';
-	import { server, user } from '$lib/stores';
+	import { servers, user } from '$lib/stores';
 	import {
 		AlertDialog,
 		AlertDialogHeader,
@@ -16,6 +16,7 @@
 	} from '$lib/components/ui/alert-dialog';
 	import { writable, type Writable } from 'svelte/store';
 	import ChannelDialog from './ChannelDialog.svelte';
+	import { page } from '$app/stores';
 
 	export let categoryName: string;
 
@@ -23,7 +24,7 @@
 		const endpoint = `${import.meta.env.VITE_API_URL}/api/v1/category/delete`;
 		let body: any = {
 			category_name: categoryName,
-			server_id: $server?.id
+			server_id: `servers:${$page.params.serverId}`
 		};
 
 		try {
@@ -52,14 +53,16 @@
 	let canDelete: boolean;
 
 	let isOwner: boolean;
-	$: if ($server) {
-		if ($server.roles?.some((role) => role === 'owner')) {
-			isOwner = true;
-		} else {
-			isOwner = false;
-		}
+	$: {
+		if ($servers[`servers:${$page.params.serverId}`]) {
+			if ($servers[`servers:${$page.params.serverId}`].roles?.some((role) => role === 'owner')) {
+				isOwner = true;
+			} else {
+				isOwner = false;
+			}
 
-		canDelete = $server.categories.length > 1;
+			canDelete = $servers[`servers:${$page.params.serverId}`].categories.length > 1;
+		}
 	}
 </script>
 

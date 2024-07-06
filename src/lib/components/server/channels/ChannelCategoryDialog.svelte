@@ -5,9 +5,10 @@
 	import { defaults, stringProxy, superForm, type Infer } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { categoryCreationSchema } from '$lib/components/server/channels/schema-category-request';
-	import { server, user } from '$lib/stores';
+	import { user } from '$lib/stores';
 	import type { Writable } from 'svelte/store';
 	import { formatError } from '$lib/utils';
+	import { page } from '$app/stores';
 
 	export let open: Writable<boolean>;
 	const data = defaults(zod(categoryCreationSchema));
@@ -25,7 +26,7 @@
 
 			const endpoint = `${import.meta.env.VITE_API_URL}/api/v1/category/create`;
 			let body: any = {
-				server_id: $server?.id,
+				server_id: `servers:${$page.params.serverId}`,
 				category_name: form.data.categoryName
 			};
 

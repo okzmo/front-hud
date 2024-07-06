@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import Button from '../ui/button/button.svelte';
-	import { server, user, vcRoom, wsConn, mutedState, updateParticipantStatus } from '$lib/stores';
+	import { user, vcRoom, wsConn, mutedState } from '$lib/stores';
 	import * as Popover from '$lib/components/ui/popover';
 	import Profile from './Profile.svelte';
 	import { quitRoom } from '$lib/rtc';
@@ -10,6 +10,7 @@
 	import { writable } from 'svelte/store';
 	import type { User } from '$lib/types';
 	import { getProfile } from '$lib/utils';
+	import { page } from '$app/stores';
 
 	function muteMicrophone() {
 		mutedState.update((state) => {
@@ -22,7 +23,7 @@
 				type: 'participant_status',
 				content: {
 					user_id: $user?.id,
-					serverId: $server?.id,
+					serverId: 'servers:' + $page.params.serverId,
 					channelId: $vcRoom.name,
 					muted: $mutedState.muteMic,
 					deafen: $mutedState.muteHead
@@ -46,7 +47,7 @@
 				type: 'participant_status',
 				content: {
 					user_id: $user?.id,
-					serverId: $server?.id,
+					serverId: 'servers:' + $page.params.serverId,
 					channelId: $vcRoom.name,
 					muted: $mutedState.muteMic,
 					deafen: $mutedState.muteHead
@@ -64,7 +65,7 @@
 					type: 'quit_participant',
 					content: {
 						user_id: $user?.id,
-						serverId: $server?.id,
+						serverId: 'servers:' + $page.params.serverId,
 						channelId: $vcRoom?.name
 					}
 				};
@@ -95,7 +96,7 @@
 			</div>
 			<Button
 				class="h-10 w-10 rounded-lg px-2 border-none shadow-none group hover:bg-red-500/20"
-				on:click={() => quitRoom($server?.id)}
+				on:click={() => quitRoom('servers:' + $page.params.serverId)}
 			>
 				<Icon
 					icon="ph:phone-slash-duotone"

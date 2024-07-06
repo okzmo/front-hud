@@ -3,7 +3,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import Icon from '@iconify/svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import { server, servers, user } from '$lib/stores';
+	import { servers, user } from '$lib/stores';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { writable } from 'svelte/store';

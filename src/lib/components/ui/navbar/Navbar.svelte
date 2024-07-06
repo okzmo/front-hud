@@ -25,7 +25,7 @@
 		<div class="pt-3 flex flex-col gap-y-2 scrollbar-hide relative items-center">
 			<FriendsButton />
 			{#if $servers}
-				{#each $servers as server}
+				{#each Object.values($servers) as server}
 					<ServerAccessButton
 						id={server.id}
 						icon={server.icon}

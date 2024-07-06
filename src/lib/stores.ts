@@ -1,5 +1,12 @@
 import { get, writable } from 'svelte/store';
-import type { User, Server, Notification, ServersState, MessageCache, UsersCache } from './types';
+import type {
+	User,
+	Notification,
+	ServersState,
+	MessageCache,
+	ServersCache,
+	TypingState
+} from './types';
 import { type SuperValidated, type Infer } from 'sveltekit-superforms';
 import type { FriendRequestFormSchema } from './components/friends/schema-friend-request';
 import { browser } from '$app/environment';
@@ -10,8 +17,7 @@ type ContextMenuServer = {
 	roles?: string[];
 };
 
-export const server = writable<Server | undefined>();
-export const servers = writable<Server[]>();
+export const servers = writable<ServersCache>({});
 export const user = writable<User>();
 export const messages = writable<MessageCache>({});
 export const notifications = writable<Notification[]>();
@@ -23,6 +29,8 @@ export const mutedState = writable({ muteHead: false, muteMic: false });
 export const settingsLastPage = writable<string | undefined>();
 export const loadingMessages = writable<boolean>(false);
 export const sharingScreen = writable<boolean>(false);
+export const usersTyping = writable<TypingState[]>([]);
+export const messProto = writable();
 
 export const friendRequest = writable<SuperValidated<Infer<FriendRequestFormSchema>>>();
 
@@ -86,8 +94,9 @@ export const getCategoryState = (serverId: string, categoryName: string) => {
 	return categoryState;
 };
 
-export const addParticipant = (channelId: string, user: User) => {
-	server.update((server) => {
+export const addParticipant = (serverId: string, channelId: string, user: User) => {
+	servers.update((cache) => {
+		const server = cache[serverId];
 		let channel;
 		for (const category of server?.categories) {
 			channel = category.channels.find((channel) => channel.id === channelId);
@@ -100,17 +109,16 @@ export const addParticipant = (channelId: string, user: User) => {
 				break;
 			}
 		}
-		return server;
+		return cache;
 	});
 
-	const serverInfos = get(server);
 	const states = get(mutedState);
 	const ws = get(wsConn);
 	const wsMessStatus = {
 		type: 'participant_status',
 		content: {
 			user_id: user?.id,
-			serverId: serverInfos?.id,
+			serverId: serverId,
 			channelId: channelId,
 			muted: states.muteMic,
 			deafen: states.muteHead
@@ -119,8 +127,9 @@ export const addParticipant = (channelId: string, user: User) => {
 	ws?.send(JSON.stringify(wsMessStatus));
 };
 
-export const removeParticipant = (channelId: string, userId: string) => {
-	server.update((server) => {
+export const removeParticipant = (serverId: string, channelId: string, userId: string) => {
+	servers.update((cache) => {
+		const server = cache[serverId];
 		let channel;
 		for (const category of server?.categories) {
 			channel = category.channels.find((channel) => channel.id === channelId);
@@ -137,15 +146,16 @@ export const removeParticipant = (channelId: string, userId: string) => {
 			}
 		}
 
-		return server;
+		return cache;
 	});
 };
 
-export const participantExist = (channelId: string, userId: string) => {
-	const serverInfos = get(server);
+export const participantExist = (serverId: string, channelId: string, userId: string) => {
 	let channel;
 	let idx;
-	for (const category of serverInfos?.categories) {
+	const serversInfos = get(servers);
+
+	for (const category of serversInfos[serverId]?.categories) {
 		channel = category.channels.find((channel) => channel.id === channelId);
 		if (channel) {
 			idx = channel.participants?.find((participant) => participant.id === userId);
@@ -156,12 +166,14 @@ export const participantExist = (channelId: string, userId: string) => {
 };
 
 export const updateParticipantStatus = (
+	serverId: string,
 	channelId: string,
 	userId: string,
 	muted: boolean,
 	deafen: boolean
 ) => {
-	server.update((server) => {
+	servers.update((cache) => {
+		const server = cache[serverId];
 		let channel;
 		for (const category of server?.categories) {
 			channel = category.channels.find((channel) => channel.id === channelId);
@@ -175,6 +187,6 @@ export const updateParticipantStatus = (
 			}
 		}
 
-		return server;
+		return cache;
 	});
 };

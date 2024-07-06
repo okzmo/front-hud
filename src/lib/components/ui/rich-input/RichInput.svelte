@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount, onDestroy, beforeUpdate } from 'svelte';
-	import { Editor, mergeAttributes, type JSONContent } from '@tiptap/core';
+	import { Editor } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
 	import Placeholder from '@tiptap/extension-placeholder';
 	import Link from '@tiptap/extension-link';
-	import { user, updateChatInputState, getChatInputState, server } from '$lib/stores';
+	import { user, updateChatInputState, getChatInputState, servers } from '$lib/stores';
 	import { page } from '$app/stores';
 	import Icon from '@iconify/svelte';
 	import type { Writable } from 'svelte/store';
@@ -14,6 +14,7 @@
 	import { EmojiSuggestion } from './emojiSuggestion';
 	import { loadEmojis } from './emojiSuggestionLogic';
 	import EmojiList from './EmojiList.svelte';
+	import { debounce, typing } from '$lib/utils';
 
 	let element: Element | undefined;
 	let editor: Editor;
@@ -29,6 +30,21 @@
 	let mentionProps;
 	let emojiProps;
 	let mentions: string[] = [];
+
+	let isTyping = false;
+
+	const debounceTypingStart = debounce(() => {
+		if (!isTyping) {
+			isTyping = true;
+			typing('start');
+		}
+	}, 100);
+	const debounceTypingEnd = debounce(() => {
+		if (isTyping) {
+			isTyping = false;
+			typing('end');
+		}
+	}, 1500);
 
 	$: if ($page.params.id || $page.params.channelId) {
 		channelId = $page.params.id || $page.params.channelId;
@@ -59,7 +75,7 @@
 		};
 
 		if (!friend_chatbox) {
-			body.server_id = $server?.id;
+			body.server_id = 'servers:' + $page.params.id;
 		}
 
 		const formData = new FormData();
@@ -184,7 +200,7 @@
 					},
 					suggestion: {
 						items: async ({ query }) => {
-							const filteredMembers = $server?.members
+							const filteredMembers = $servers['servers:' + $page.params.id].members
 								.filter((item) => item.username.toLowerCase().startsWith(query.toLowerCase()))
 								.slice(0, 5);
 							return filteredMembers;
@@ -254,6 +270,9 @@
 						editor.commands.clearContent();
 
 						return true;
+					} else if (event.key.match(/^[a-zA-Z0-9]$/)) {
+						debounceTypingStart();
+						debounceTypingEnd();
 					}
 
 					return false;
@@ -287,6 +306,17 @@
 	{#if emojiProps}
 		<EmojiList props={emojiProps} bind:this={emojisList} />
 	{/if}
+	<!-- {#if $usersTyping.length > 0} -->
+	<!-- 	<div class="text-xs absolute bottom-1 left-[0.75rem]"> -->
+	<!-- 		{#if $usersTyping.length < 2} -->
+	<!-- 			{$usersTyping[0]} is typing... -->
+	<!-- 		{:else if $usersTyping.length > 3} -->
+	<!-- 			{$usersTyping.length} people are typing... -->
+	<!-- 		{:else} -->
+	<!-- 			{$usersTyping.join(', ')} are typing... -->
+	<!-- 		{/if} -->
+	<!-- 	</div> -->
+	<!-- {/if} -->
 	<div bind:this={element} class="relative">
 		<label
 			for="dropzone-file"

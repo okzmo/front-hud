@@ -4,29 +4,22 @@ import {
 	notifications,
 	messages,
 	friends,
-	server,
 	servers,
 	addParticipant,
 	removeParticipant,
 	updateParticipantStatus,
 	vcRoom,
-	user
+	usersTyping,
+	user,
+	messProto
 } from './stores';
-import protobuf from 'protobufjs';
 import { decompress } from 'brotli-dec-wasm/web';
 
 export async function treatMessage(message: ArrayBuffer) {
-	const protoResponse = await fetch('/proto/message.proto');
-	if (!protoResponse.ok) {
-		throw new Error(`HTTP error! status: ${protoResponse.status}`);
-	}
-	const protoContent = await protoResponse.text();
-
-	const root = protobuf.parse(protoContent, { keepCase: true }).root;
-	const messProto = root.lookupType('hudori.WSMessage');
+	const proto = get(messProto);
 
 	const decompressed = decompress(new Uint8Array(message));
-	const decoded = messProto.decode(decompressed);
+	const decoded = proto.decode(decompressed);
 	const wsMessage = decoded.toJSON();
 
 	switch (wsMessage.type) {
@@ -72,6 +65,14 @@ export async function treatMessage(message: ArrayBuffer) {
 
 					return notifications;
 				});
+			} else {
+				usersTyping.update((users) => {
+					const exist = users.findIndex((user) => user.user_id === newMessage.author.id);
+					if (exist > -1) {
+						users.splice(exist, 1);
+					}
+					return users;
+				});
 			}
 			break;
 		case 'friend_request':
@@ -89,16 +90,18 @@ export async function treatMessage(message: ArrayBuffer) {
 
 			break;
 		case 'create_channel':
-			server.update((server) => {
+			servers.update((cache) => {
+				const server = cache[wsMessage.channel.server_id];
 				const category = server?.categories.find(
 					(category) => category.name === wsMessage.channel.category_name
 				);
 				category?.channels.push(wsMessage.channel.channel);
-				return server;
+				return cache;
 			});
 			break;
 		case 'delete_channel':
-			server.update((server) => {
+			servers.update((cache) => {
+				const server = cache[wsMessage.delchannel.server_id];
 				let category = server?.categories.find(
 					(category) => category.name === wsMessage.delchannel.category_name
 				);
@@ -106,29 +109,33 @@ export async function treatMessage(message: ArrayBuffer) {
 					(channel) => channel.id === wsMessage.delchannel.channel_id
 				)!;
 				category?.channels.splice(chanIdx, 1);
-				return server;
+				return cache;
 			});
 
 			if (window.location.pathname.includes(wsMessage.delchannel.channel_id.split(':')[1])) {
-				const serverInfos = get(server);
-				const serverId = serverInfos?.id.split(':')[1];
-				const chanId = serverInfos?.categories[0].channels[0].id.split(':')[1];
-				goto(`/hudori/chat/community/${serverId}/channels/${chanId}`);
+				const serversInfos = get(servers);
+				const chanId =
+					serversInfos[wsMessage.delchannel.server_id].categories[0].channels[0].id.split(':')[1];
+				goto(
+					`/hudori/chat/community/${wsMessage.delchannel.server_id.split(':')[1]}/channels/${chanId}`
+				);
 			}
 			break;
 		case 'create_category':
-			server.update((server) => {
-				server?.categories.push({ name: wsMessage.category_name, channels: [] });
-				return server;
+			servers.update((cache) => {
+				const server = cache[wsMessage.create_category.server_id];
+				server?.categories.push({ name: wsMessage.create_category.category_name, channels: [] });
+				return cache;
 			});
 			break;
 		case 'delete_category':
-			server.update((server) => {
+			servers.update((cache) => {
+				const server = cache[wsMessage.delete_category.server_id];
 				let catIdx = server?.categories.findIndex(
-					(category) => category.name === wsMessage.category_name
+					(category) => category.name === wsMessage.delete_category.category_name
 				)!;
 				server?.categories.splice(catIdx, 1);
-				return server;
+				return cache;
 			});
 			break;
 		case 'friend_remove':
@@ -141,9 +148,9 @@ export async function treatMessage(message: ArrayBuffer) {
 			}
 			break;
 		case 'delete_server':
+			console.log(wsMessage);
 			servers.update((servers) => {
-				const serverIdx = servers.findIndex((server) => server.id === wsMessage.server_id)!;
-				servers.splice(serverIdx, 1);
+				delete servers[wsMessage.server_id];
 				return servers;
 			});
 			if (window.location.pathname.includes(wsMessage.server_id.split(':')[1])) {
@@ -152,31 +159,36 @@ export async function treatMessage(message: ArrayBuffer) {
 			break;
 		case 'join_server':
 			if (window.location.pathname.includes(wsMessage.join_server.server_id.split(':')[1])) {
-				server.update((server) => {
+				servers.update((cache) => {
+					const server = cache[wsMessage.serverId];
 					server?.members.push(wsMessage.join_server.user);
-					return server;
+					return cache;
 				});
 			}
 			break;
 		case 'leave_server':
 			if (window.location.pathname.includes(wsMessage.quit_server.server_id.split(':')[1])) {
-				server.update((server) => {
+				servers.update((cache) => {
+					const server = cache[wsMessage.quit_server.server_id];
 					const memberIdx = server?.members.findIndex(
 						(server) => server.id === wsMessage.quit_server.user_id
 					)!;
 					server?.members.splice(memberIdx, 1);
-					return server;
+					return cache;
 				});
 			}
 			break;
 		case 'new_avatar':
 			friends.update((friends) => {
-				const friend = friends.find((friend) => friend.id === 'users:' + wsMessage.content.user_id);
+				const friend = friends.find(
+					(friend) => friend.id === 'users:' + wsMessage.change_avatar.user_id
+				);
 				if (friend) {
-					friend.avatar = wsMessage.content.avatar;
+					friend.avatar = wsMessage.change_avatar.avatar;
 				}
 				return friends;
 			});
+			break;
 		case 'change_status':
 			friends.update((friends) => {
 				const friend = friends.find((friend) => friend.id === wsMessage.change_status.user_id);
@@ -185,6 +197,25 @@ export async function treatMessage(message: ArrayBuffer) {
 				}
 				return friends;
 			});
+			break;
+		case 'typing':
+			const userInfos = get(user);
+			if (userInfos.id === wsMessage.typing?.user_id) return;
+			usersTyping.update((usersTyping) => {
+				if (wsMessage.typing?.status === 'start') {
+					const exist = usersTyping.find((user) => user.user_id === wsMessage.typing?.user_id);
+					if (!exist) {
+						usersTyping.push({
+							user_id: wsMessage.typing?.user_id,
+							display_name: wsMessage.typing?.display_name
+						});
+					}
+				} else if (wsMessage.typing?.status === 'end') {
+					return usersTyping.filter((user) => user.user_id !== wsMessage.typing?.user_id);
+				}
+				return usersTyping;
+			});
+			break;
 		default:
 			break;
 	}
@@ -196,14 +227,22 @@ export function treatMessageJSON(message: any) {
 	const room = get(vcRoom);
 	switch (wsMessage.type) {
 		case 'new_participant':
-			addParticipant(wsMessage.content.channelId, wsMessage.content.user);
+			addParticipant(
+				wsMessage.content.serverId,
+				wsMessage.content.channelId,
+				wsMessage.content.user
+			);
 			if (room?.name === wsMessage.content.channelId) {
 				const audio = document.getElementById('audio_join_channel') as HTMLMediaElement;
 				audio.play();
 			}
 			break;
 		case 'quit_participant':
-			removeParticipant(wsMessage.content.channelId, wsMessage.content.user_id);
+			removeParticipant(
+				wsMessage.content.serverId,
+				wsMessage.content.channelId,
+				wsMessage.content.user_id
+			);
 			if (room?.name === wsMessage.content.channelId) {
 				const audio = document.getElementById('audio_quit_channel') as HTMLMediaElement;
 				audio.play();
@@ -211,6 +250,7 @@ export function treatMessageJSON(message: any) {
 			break;
 		case 'participant_status':
 			updateParticipantStatus(
+				wsMessage.content.serverId,
 				wsMessage.content.channelId,
 				wsMessage.content.user_id,
 				wsMessage.content.muted,

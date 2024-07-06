@@ -44,7 +44,6 @@
 					credentials: 'include',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-User-Agent': navigator.userAgent,
 						'X-User-ID': $user?.id
 					},
 					body: JSON.stringify(body)
@@ -60,7 +59,7 @@
 					if (form.data.type === 'create') {
 						server.roles = ['owner'];
 					}
-					servers.push(server);
+					servers[server.id] = server;
 					return servers;
 				});
 				open.set(false);
