@@ -121,4 +121,5 @@ export interface ServerState {
 export interface TypingState {
 	user_id: string;
 	display_name: string;
+	channel_id: string;
 }

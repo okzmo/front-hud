@@ -75,7 +75,7 @@
 		};
 
 		if (!friend_chatbox) {
-			body.server_id = 'servers:' + $page.params.id;
+			body.server_id = 'servers:' + $page.params.serverId;
 		}
 
 		const formData = new FormData();

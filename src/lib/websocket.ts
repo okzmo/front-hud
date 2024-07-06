@@ -207,7 +207,8 @@ export async function treatMessage(message: ArrayBuffer) {
 					if (!exist) {
 						usersTyping.push({
 							user_id: wsMessage.typing?.user_id,
-							display_name: wsMessage.typing?.display_name
+							display_name: wsMessage.typing?.display_name,
+							channel_id: wsMessage.typing?.channel_id
 						});
 					}
 				} else if (wsMessage.typing?.status === 'end') {

@@ -1,8 +1,13 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
 	import Icon from '@iconify/svelte';
 
 	export let usersTyping: any[];
+	let totalUsers = 0;
+	$: if (usersTyping) {
+		totalUsers = usersTyping.filter((user) => user.channel_id === $page.params.channelId).length;
+	}
 </script>
 
 {#if browser}
@@ -10,7 +15,7 @@
 		<div
 			class="flex-shrink-0 h-10 w-10 rounded-xl overflow-hidden bg-zinc-850 flex justify-center items-center"
 		>
-			{usersTyping.length}
+			{totalUsers}
 		</div>
 		<div class="flex flex-col w-fit">
 			<div
