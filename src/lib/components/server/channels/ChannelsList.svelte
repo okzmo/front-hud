@@ -32,7 +32,7 @@
 		const value = await res.json();
 		servers.update((cache) => {
 			if (cache[value.server.id]) {
-				cache[value.server.id] = mergeObj(cache[value.server.id], value.server);
+				cache[value.server.id] = { ...cache[value.server.id], ...value.server };
 			}
 			return cache;
 		});

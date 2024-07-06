@@ -200,7 +200,7 @@
 					},
 					suggestion: {
 						items: async ({ query }) => {
-							const filteredMembers = $servers['servers:' + $page.params.id].members
+							const filteredMembers = $servers['servers:' + $page.params.serverId].members
 								.filter((item) => item.username.toLowerCase().startsWith(query.toLowerCase()))
 								.slice(0, 5);
 							return filteredMembers;
