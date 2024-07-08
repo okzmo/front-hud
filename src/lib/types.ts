@@ -78,6 +78,7 @@ export interface Notification {
 	counter?: number;
 	mentions?: string[];
 	server_id?: string;
+	read?: boolean;
 }
 
 export interface MessageCache {

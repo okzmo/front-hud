@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
-import { contextMenuInfo, messages, user } from './stores';
+import { contextMenuInfo, messages, notifications, user } from './stores';
 import { get } from 'svelte/store';
 import type { Message } from './types';
 import { page } from '$app/stores';
@@ -333,5 +333,75 @@ export async function typing(status: string) {
 		return;
 	} catch (err) {
 		console.log(err);
+	}
+}
+
+export function syncNotifications() {
+	const userInfos = get(user);
+	const notifInfos = get(notifications);
+	if (!userInfos || !notifInfos) return;
+
+	fetch(`${import.meta.env.VITE_API_URL}/api/v1/notifications/message_update`, {
+		method: 'POST',
+		credentials: 'include',
+		headers: {
+			'X-User-ID': userInfos.id,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			user_id: userInfos.id,
+			channels: notifInfos
+				.filter((notif) => notif.type === 'new_message' && notif.read)
+				.map((notif) => notif.channel_id)
+		})
+	});
+}
+
+let syncTimeout;
+export function scheduleSync() {
+	clearTimeout(syncTimeout);
+	syncTimeout = setTimeout(syncNotifications, 5000); // Sync every 5 seconds
+}
+
+export function changeStatusOffline() {
+	const userInfos = get(user);
+	if (!userInfos) return;
+
+	fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_status`, {
+		method: 'POST',
+		credentials: 'include',
+		headers: {
+			'X-User-ID': userInfos?.id,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ user_id: userInfos.id, status: 'offline' })
+	});
+}
+
+export async function fetchNotifs() {
+	const userInfos = get(user);
+	if (!userInfos) return;
+
+	try {
+		const response = await fetch(
+			`${import.meta.env.VITE_API_URL}/api/v1/notifications/${userInfos.id.split(':')[1]}`,
+			{
+				method: 'GET',
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-User-ID': userInfos?.id
+				}
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("couldn't fetch notifications");
+		}
+
+		const data = await response.json();
+		notifications.set(data.notifications);
+	} catch (error) {
+		console.log(error);
 	}
 }

@@ -132,8 +132,6 @@ export async function quitRoom(serverId: string) {
 
 	const pageInfos = get(page);
 
-	console.log(pageInfos.url.pathname, serverId);
-	console.log(pageInfos.url.pathname.includes(serverId.split(':')[1]));
 	if (pageInfos.url.pathname.includes(serverId.split(':')[1])) {
 		const ws = get(wsConn);
 		const userInfos = get(user);

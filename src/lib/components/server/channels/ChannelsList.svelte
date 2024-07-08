@@ -3,7 +3,7 @@
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import ServerContextMenu from '$lib/components/server/ServerContextMenu.svelte';
 	import ServerCategory from '../ServerCategory.svelte';
-	import { generateRandomId, handleContextMenu, mergeObj } from '$lib/utils';
+	import { generateRandomId, handleContextMenu } from '$lib/utils';
 	import { onNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';

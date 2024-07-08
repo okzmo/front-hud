@@ -5,9 +5,9 @@
 
 	let friendNotification = false;
 
-	$: if ($notifications) {
-		friendNotification = $notifications.some((notif) => notif.channel_id?.includes('users'));
-	}
+	// $: if ($notifications) {
+	// 	friendNotification = $notifications.some((notif) => notif.channel_id?.includes('users'));
+	// }
 </script>
 
 <li>

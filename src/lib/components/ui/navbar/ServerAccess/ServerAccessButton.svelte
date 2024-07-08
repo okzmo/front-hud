@@ -23,8 +23,12 @@
 	}
 
 	$: if ($notifications) {
-		serverNotif = $notifications.some((notif) => notif.server_id && notif.server_id === id);
-		mentioned = $notifications.some((notif) => serverNotif && notif.mentions?.includes($user?.id));
+		serverNotif = $notifications.some(
+			(notif) => notif.server_id && notif.server_id === id && !notif.read
+		);
+		mentioned = $notifications.some(
+			(notif) => serverNotif && notif.mentions?.includes($user?.id) && !notif.read
+		);
 	}
 </script>
 

@@ -36,8 +36,11 @@
 			<button
 				class="flex gap-x-3 hover:bg-zinc-800/75 py-[0.45rem] text-zinc-500 px-3 rounded-[0.6rem] transition duration-75 active:scale-[0.97] items-center w-full"
 				class:active={$page.url.pathname.includes(href)}
-				class:notify={notification}
-				class:mentioned={notification?.mentions && notification?.mentions?.includes($user?.id)}
+				class:notify={notification && !notification.read}
+				class:mentioned={notification &&
+					!notification.read &&
+					notification.mentions &&
+					notification.mentions.includes($user?.id)}
 				on:click={() => {
 					if (type === 'textual') {
 						goto(href);

@@ -14,6 +14,7 @@ import {
 	messProto
 } from './stores';
 import { decompress } from 'brotli-dec-wasm/web';
+import type { Notification } from './types';
 
 export async function treatMessage(message: ArrayBuffer) {
 	const proto = get(messProto);
@@ -40,32 +41,7 @@ export async function treatMessage(message: ArrayBuffer) {
 				return cache;
 			});
 
-			if (!pathname.includes(channelId)) {
-				notifications.update((notifications) => {
-					const notif = notifications.find(
-						(notification) =>
-							notification.user_id === wsMessage.notification.user_id &&
-							notification.channel_id === wsMessage.notification.channel_id
-					);
-					if (!notif) {
-						notifications.push(wsMessage.notification);
-					} else if (notif && wsMessage.notification.mentions) {
-						notif.mentions = wsMessage.notification.mentions;
-						notif.counter += 1;
-					} else {
-						notif.counter += 1;
-					}
-
-					messages.update((cache) => {
-						if (cache[channelId]) {
-							cache[channelId].scrollPosition = undefined;
-						}
-						return cache;
-					});
-
-					return notifications;
-				});
-			} else {
+			if (pathname.includes(channelId)) {
 				usersTyping.update((users) => {
 					const exist = users.findIndex((user) => user.user_id === newMessage.author.id);
 					if (exist > -1) {
@@ -148,7 +124,6 @@ export async function treatMessage(message: ArrayBuffer) {
 			}
 			break;
 		case 'delete_server':
-			console.log(wsMessage);
 			servers.update((servers) => {
 				delete servers[wsMessage.server_id];
 				return servers;
@@ -217,6 +192,9 @@ export async function treatMessage(message: ArrayBuffer) {
 				return usersTyping;
 			});
 			break;
+		case 'new_notification':
+			manageNewNotification(wsMessage.notification);
+			break;
 		default:
 			break;
 	}
@@ -257,6 +235,38 @@ export function treatMessageJSON(message: any) {
 				wsMessage.content.muted,
 				wsMessage.content.deafen
 			);
+			break;
+	}
+}
+
+function manageNewNotification(notification: Notification) {
+	switch (notification.type) {
+		case 'new_message':
+			notifications.update((cache) => {
+				const notif = cache.find(
+					(cache) =>
+						cache.user_id === notification.user_id && cache.channel_id === notification.channel_id
+				);
+				if (!notif) {
+					cache.push(notification);
+				} else if (notif && notification.mentions) {
+					notif.mentions = notification.mentions;
+					notif.read = false;
+					notif.counter += 1;
+				} else {
+					notif.read = false;
+					notif.counter += 1;
+				}
+
+				messages.update((cache) => {
+					if (cache[notification.channel_id]) {
+						cache[notification.channel_id].scrollPosition = undefined;
+					}
+					return cache;
+				});
+
+				return cache;
+			});
 			break;
 	}
 }

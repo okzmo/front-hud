@@ -9,11 +9,10 @@ export const load: LayoutServerLoad = async ({ cookies, locals, fetch }) => {
 
 	const friendsEndpoint = `api/v1/friends/${userId}`;
 	const serversEndpoint = `api/v1/servers/${userId}`;
-	const notificationsEndpoint = `api/v1/notifications/${userId}`;
 	const sessionId = cookies.get('session');
 
 	try {
-		const [friendsResponse, serversResponse, notificationsResponse] = await Promise.all([
+		const [friendsResponse, serversResponse] = await Promise.all([
 			fetch(`${import.meta.env.VITE_API_URL}/${friendsEndpoint}`, {
 				method: 'GET',
 				credentials: 'include',
@@ -29,22 +28,13 @@ export const load: LayoutServerLoad = async ({ cookies, locals, fetch }) => {
 					Cookie: `session=${sessionId}`,
 					'Content-Type': 'application/json'
 				}
-			}),
-			fetch(`${import.meta.env.VITE_API_URL}/${notificationsEndpoint}`, {
-				method: 'GET',
-				credentials: 'include',
-				headers: {
-					Cookie: `session=${sessionId}`,
-					'Content-Type': 'application/json'
-				}
 			})
 		]);
 
 		const friendsData = await friendsResponse.json();
 		const serversData = await serversResponse.json();
-		const notificationsData = await notificationsResponse.json();
 
-		if (!friendsResponse.ok || !serversResponse.ok || !notificationsResponse.ok) {
+		if (!friendsResponse.ok || !serversResponse.ok) {
 			throw new Error(
 				`error on validating session: ${friendsResponse.status}, ${friendsData.message}`
 			);
@@ -55,7 +45,6 @@ export const load: LayoutServerLoad = async ({ cookies, locals, fetch }) => {
 				user,
 				friends: friendsData.friends,
 				servers: serversData.servers,
-				notifications: notificationsData.notifications,
 				formFriendRequest: await superValidate(zod(friendRequestSchema))
 			}
 		};

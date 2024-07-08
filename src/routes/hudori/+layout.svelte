@@ -17,6 +17,7 @@
 	import wasmUrl from 'brotli-dec-wasm/web/bg.wasm?url';
 	import { default as init } from 'brotli-dec-wasm/web';
 	import protobuf from 'protobufjs';
+	import { changeStatusOffline, fetchNotifs, scheduleSync, syncNotifications } from '$lib/utils';
 
 	export let data: LayoutData;
 	user.set(data.props?.user);
@@ -27,8 +28,11 @@
 		return cache;
 	});
 	friends.set(data.props?.friends);
-	notifications.set(data.props?.notifications);
 	friendRequest.set(data.props?.formFriendRequest);
+
+	$: if ($notifications) {
+		scheduleSync();
+	}
 
 	let ws;
 
@@ -84,17 +88,17 @@
 			audio.volume = 0.25;
 		}
 
-		window.addEventListener('beforeunload', () => {
-			fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_status`, {
-				method: 'POST',
-				credentials: 'include',
-				headers: {
-					'X-User-ID': $user?.id,
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ user_id: $user.id, status: 'offline' })
-			});
+		window.addEventListener('beforeunload', changeStatusOffline);
+		window.addEventListener('beforeunload', syncNotifications);
+		document.addEventListener('visibilitychange', async () => {
+			if (document.visibilityState === 'hidden') {
+				syncNotifications();
+			}
 		});
+
+		setTimeout(() => {
+			fetchNotifs();
+		}, 250);
 	});
 </script>
 

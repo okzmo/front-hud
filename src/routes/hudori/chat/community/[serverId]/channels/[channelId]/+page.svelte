@@ -15,14 +15,11 @@
 			(notification) => notification.channel_id?.split(':')[1] === $page.params.channelId
 		);
 		if (channelNotif > -1) {
-			if ($notifications.length > 1) {
-				notifications.update((notifications) => {
-					notifications.splice(channelNotif, 1);
-					return notifications;
-				});
-			} else {
-				notifications.set([]);
-			}
+			notifications.update((notifs) => {
+				notifs[channelNotif].read = true;
+
+				return notifs;
+			});
 		}
 	}
 
