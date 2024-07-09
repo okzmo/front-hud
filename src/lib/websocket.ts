@@ -251,11 +251,11 @@ function manageNewNotification(notification: Notification) {
 					cache.push(notification);
 				} else if (notif && notification.mentions) {
 					notif.mentions = notification.mentions;
+					notif.counter = notification.counter;
 					notif.read = false;
-					notif.counter += 1;
 				} else {
+					notif.counter = notification.counter;
 					notif.read = false;
-					notif.counter += 1;
 				}
 
 				messages.update((cache) => {

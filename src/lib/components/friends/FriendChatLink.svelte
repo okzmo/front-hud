@@ -19,7 +19,8 @@
 
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
 	$: notification = $notifications.filter(
-		(notification) => notification.channel_id?.split(':')[1] === id.split(':')[1]
+		(notification) =>
+			notification.channel_id?.split(':')[1] === id.split(':')[1] && !notification.read
 	)[0];
 </script>
 

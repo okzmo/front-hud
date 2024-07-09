@@ -8,17 +8,14 @@
 
 	$: if ($notifications) {
 		let friendNotif = $notifications.findIndex(
-			(notification) => notification.channel_id?.split(':')[1] === $page.params.id
+			(notification) =>
+				notification.channel_id?.split(':')[1] === $page.params.id && !notification.read
 		);
 		if (friendNotif > -1) {
-			if ($notifications.length > 1) {
-				notifications.update((notifications) => {
-					notifications.splice(friendNotif, 1);
-					return notifications;
-				});
-			} else {
-				notifications.set([]);
-			}
+			notifications.update((notifs) => {
+				notifs[friendNotif].read = true;
+				return notifs;
+			});
 		}
 	}
 
