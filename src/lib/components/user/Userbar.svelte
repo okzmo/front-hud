@@ -9,7 +9,7 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import type { User } from '$lib/types';
-	import { getProfile } from '$lib/utils';
+	import { getProfile } from '$lib/fetches';
 	import { page } from '$app/stores';
 
 	function muteMicrophone() {

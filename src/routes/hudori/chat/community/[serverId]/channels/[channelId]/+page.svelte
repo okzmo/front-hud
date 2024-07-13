@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { onNavigate } from '$app/navigation';
-	import { getMessages } from '$lib/utils';
+	import { getMessages } from '$lib/fetches';
 	import VoiceChannel from '$lib/components/ui/voicechannel/VoiceChannel.svelte';
 
 	let type = 'textual';

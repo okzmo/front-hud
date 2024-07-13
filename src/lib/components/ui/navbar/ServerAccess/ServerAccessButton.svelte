@@ -16,6 +16,7 @@
 	let href = `/hudori/chat/community/${id.split(':')[1]}`;
 	let serverNotif = false;
 	let mentioned = false;
+	let inviteId = '';
 
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
 	$: if ($serversStateStore[id]) {

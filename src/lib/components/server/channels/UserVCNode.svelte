@@ -2,7 +2,7 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import Profile from '$lib/components/user/Profile.svelte';
 	import type { User } from '$lib/types';
-	import { getProfile } from '$lib/utils';
+	import { getProfile } from '$lib/fetches';
 	import Icon from '@iconify/svelte';
 	import { writable } from 'svelte/store';
 	import { user } from '$lib/stores';

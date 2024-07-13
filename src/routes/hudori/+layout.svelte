@@ -17,7 +17,7 @@
 	import wasmUrl from 'brotli-dec-wasm/web/bg.wasm?url';
 	import { default as init } from 'brotli-dec-wasm/web';
 	import protobuf from 'protobufjs';
-	import { changeStatusOffline, fetchNotifs, scheduleSync, syncNotifications } from '$lib/utils';
+	import { changeStatusOffline, fetchNotifs, scheduleSync, syncNotifications } from '$lib/fetches';
 
 	export let data: LayoutData;
 	user.set(data.props?.user);

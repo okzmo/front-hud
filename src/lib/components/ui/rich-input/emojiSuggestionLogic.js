@@ -20,7 +20,6 @@ export const loadEmojis = async (query = '') => {
 		}
 	}
 
-	// Apply progressive filtering for additional query parts
 	for (let i = 1; i < queryParts.length; i++) {
 		filteredEmojis = filteredEmojis.filter(
 			(emoji) => partialMatch(emoji.alt, queryParts[i]) || partialMatch(emoji.name, queryParts[i])

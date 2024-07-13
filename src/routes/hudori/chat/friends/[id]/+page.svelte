@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
 	import { notifications } from '$lib/stores';
-	import { getMessages } from '$lib/utils';
+	import { getMessages } from '$lib/fetches';
 	import { onMount } from 'svelte';
 
 	$: if ($notifications) {

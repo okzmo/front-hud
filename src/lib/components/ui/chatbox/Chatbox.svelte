@@ -1,14 +1,14 @@
 <script lang="ts">
-	import UserMessage from '$lib/components/user/UserMessage.svelte';
+	import UserMessage from '$lib/components/messages/UserMessage.svelte';
 	import { loadingMessages, messages, usersTyping } from '$lib/stores';
 	import RichInput from '../rich-input/RichInput.svelte';
-	import type { Message, MessageUI } from '$lib/types';
+	import type { MessageUI } from '$lib/types';
 	import Icon from '@iconify/svelte';
 	import { afterUpdate, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
-	import { afterNavigate, beforeNavigate } from '$app/navigation';
-	import TypingMessage from '$lib/components/user/typingMessage.svelte';
+	import { beforeNavigate } from '$app/navigation';
+	import TypingMessage from '$lib/components/messages/typingMessage.svelte';
 
 	export let friend_chatbox: boolean;
 
@@ -136,13 +136,15 @@
 			{#each groupedMessages as message}
 				<UserMessage
 					{friend_chatbox}
+					id={message.id}
 					author={message.author}
 					content={message.content}
-					time={message.updated_at}
+					time={message.created_at}
 					groupedWithPrevious={message.groupWithPrevious}
 					groupedWithAfter={message.groupWithAfter}
 					images={message.images}
 					mentions={message.mentions}
+					edited={message.edited}
 				/>
 			{/each}
 		{:else}

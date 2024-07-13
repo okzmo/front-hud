@@ -51,6 +51,32 @@ export async function treatMessage(message: ArrayBuffer) {
 				});
 			}
 			break;
+		case 'edit_message':
+			messages.update((cache) => {
+				const mess = cache[wsMessage.mess.author?.id || wsMessage.mess.channel_id]?.messages?.find(
+					(message) => message.id === wsMessage.mess.id
+				);
+				if (mess) {
+					mess.content = wsMessage.mess.content;
+					mess.mentions = wsMessage.mess.mentions;
+					mess.edited = wsMessage.mess.edited;
+				}
+				return cache;
+			});
+
+			break;
+		case 'delete_message':
+			messages.update((cache) => {
+				const messIdx = cache[
+					wsMessage.mess.author?.id || wsMessage.mess.channel_id
+				]?.messages?.findIndex((message) => message.id === wsMessage.mess.id);
+				if (messIdx > -1) {
+					cache[wsMessage.mess.author?.id || wsMessage.mess.channel_id].messages.splice(messIdx, 1);
+				}
+				return cache;
+			});
+
+			break;
 		case 'friend_request':
 			notifications.update((notifications) => {
 				notifications.unshift(wsMessage.friend_request);

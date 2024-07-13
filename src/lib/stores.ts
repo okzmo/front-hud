@@ -31,12 +31,13 @@ export const loadingMessages = writable<boolean>(false);
 export const sharingScreen = writable<boolean>(false);
 export const usersTyping = writable<TypingState[]>([]);
 export const messProto = writable();
+export const editingMessage = writable<string>('');
 
 export const friendRequest = writable<SuperValidated<Infer<FriendRequestFormSchema>>>();
 
 // chat input (tiptap)
-export const editorState = writable<{ [key: string]: string }>({});
-export const updateChatInputState = (route: string, content: string) => {
+export const editorState = writable<{ [key: string]: string | null }>({});
+export const updateChatInputState = (route: string, content: string | null) => {
 	editorState.update((state) => {
 		return { ...state, [route]: content };
 	});

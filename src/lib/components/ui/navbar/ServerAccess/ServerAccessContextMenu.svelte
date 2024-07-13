@@ -1,5 +1,7 @@
 <script lang="ts">
 	import * as ContextMenu from '$lib/components/ui/context-menu';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import ServerInviteDialog from '$lib/components/server/ServerInviteDialog.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import Icon from '@iconify/svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
@@ -7,11 +9,13 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { writable } from 'svelte/store';
+	import { createInvitation } from '$lib/fetches';
 
 	export let roles: string[] | undefined;
 	export let name: string;
 	export let id: string;
 	let type: string;
+	let inviteId: string = '';
 
 	async function deleteServer() {
 		const endpoint = `${import.meta.env.VITE_API_URL}/api/v1/server/delete`;
@@ -83,6 +87,7 @@
 	}
 
 	const openRemoveChannel = writable<boolean>(false);
+	const openInvite = writable<boolean>(false);
 
 	let isOwner: boolean;
 	$: if (roles) {
@@ -95,7 +100,13 @@
 </script>
 
 <ContextMenu.Content class="flex flex-col">
-	<ContextMenu.Item class="gap-x-2 items-center text-sm">
+	<ContextMenu.Item
+		class="gap-x-2 items-center text-sm"
+		on:click={async () => {
+			inviteId = await createInvitation();
+			openInvite.set(true);
+		}}
+	>
 		<Icon icon="ph:user-plus-duotone" height={16} width={16} class="" />
 		Invite people
 	</ContextMenu.Item>
@@ -161,3 +172,7 @@
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>
+
+<Dialog.Root open={$openInvite} onOpenChange={() => openInvite.set(!$openInvite)}>
+	<ServerInviteDialog id={inviteId} />
+</Dialog.Root>
