@@ -10,7 +10,8 @@
 		getChatInputState,
 		servers,
 		editingMessage,
-		messages
+		messages,
+		replyTo
 	} from '$lib/stores';
 	import { page } from '$app/stores';
 	import Icon from '@iconify/svelte';
@@ -79,6 +80,7 @@
 			channel_id: $page.params.id || $page.params.channelId,
 			content: richInputContent,
 			mentions: mentions,
+			reply: $replyTo?.id,
 			private_message: friend_chatbox
 		};
 
@@ -116,6 +118,7 @@
 			showSlowRequest = false;
 			files.set([]);
 			mentions = [];
+			replyTo.set(undefined);
 		} catch (err) {
 			console.log(err);
 		}
@@ -321,9 +324,16 @@
 <div id="rich-input" class="rich-input bg-zinc-925 relative">
 	{#if showSlowRequest}
 		<div
-			class="absolute bg-zinc-850 left-3 -top-8 w-[calc(100%-1.5rem)] py-1 pb-3 px-3 rounded-tr-lg rounded-tl-lg"
+			class="absolute bg-zinc-850 left-3 -top-8 w-[calc(100%-1.5rem)] py-1 pb-4 px-3 rounded-tr-lg rounded-tl-lg text-sm"
 		>
 			Sending...
+		</div>
+	{/if}
+	{#if $replyTo}
+		<div
+			class="absolute bg-zinc-850 left-3 -top-8 w-[calc(100%-1.5rem)] py-1 pb-5 px-3 rounded-tr-lg rounded-tl-lg text-sm"
+		>
+			Reply to {$replyTo?.author?.display_name}
 		</div>
 	{/if}
 	{#if mentionProps}

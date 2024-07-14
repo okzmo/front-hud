@@ -64,6 +64,11 @@ export interface MessageUI {
 	images: string[];
 	mentions: string[];
 	groupWithAfter: boolean;
+	replies: {
+		id: string;
+		author: User;
+		content: string;
+	};
 }
 
 export interface Notification {

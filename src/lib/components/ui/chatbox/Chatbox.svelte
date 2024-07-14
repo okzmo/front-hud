@@ -145,6 +145,7 @@
 					images={message.images}
 					mentions={message.mentions}
 					edited={message.edited}
+					reply={message.replies}
 				/>
 			{/each}
 		{:else}

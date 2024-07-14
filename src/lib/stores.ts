@@ -5,7 +5,8 @@ import type {
 	ServersState,
 	MessageCache,
 	ServersCache,
-	TypingState
+	TypingState,
+	Message
 } from './types';
 import { type SuperValidated, type Infer } from 'sveltekit-superforms';
 import type { FriendRequestFormSchema } from './components/friends/schema-friend-request';
@@ -32,6 +33,7 @@ export const sharingScreen = writable<boolean>(false);
 export const usersTyping = writable<TypingState[]>([]);
 export const messProto = writable();
 export const editingMessage = writable<string>('');
+export const replyTo = writable<Message | undefined>();
 
 export const friendRequest = writable<SuperValidated<Infer<FriendRequestFormSchema>>>();
 

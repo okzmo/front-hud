@@ -5,7 +5,14 @@
 	import type { User } from '$lib/types';
 	import { browser } from '$app/environment';
 	import { writable } from 'svelte/store';
-	import { contextMenuInfo, loadingMessages, user, editingMessage, messages } from '$lib/stores';
+	import {
+		contextMenuInfo,
+		loadingMessages,
+		user,
+		editingMessage,
+		messages,
+		replyTo
+	} from '$lib/stores';
 	import { getProfile } from '$lib/fetches';
 	import GridImages from './GridImages.svelte';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
@@ -24,6 +31,7 @@
 	export let groupedWithAfter: boolean;
 	export let friend_chatbox: boolean;
 	export let edited: boolean;
+	export let reply: any;
 
 	let open = writable<boolean>(false);
 	let user_profile: User | undefined;
@@ -77,6 +85,30 @@
 			console.log(e);
 		}
 	}
+
+	function goToReply() {
+		const replyMessage = document.querySelector(`[data-messageid='${reply.id}']`);
+		if (!replyMessage) return;
+		replyMessage?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					console.log(entries);
+					if (entry.isIntersecting) {
+						console.log(entry);
+						replyMessage.classList.add('!bg-zinc-650/60');
+						setTimeout(() => {
+							replyMessage.classList.remove('!bg-zinc-650/60');
+						}, 1000);
+						observer.disconnect();
+					}
+				});
+			},
+			{ threshold: 0.5 }
+		);
+
+		observer.observe(replyMessage);
+	}
 </script>
 
 {#if browser}
@@ -107,11 +139,30 @@
 			{#if content}
 				<ContextMenu.Root>
 					<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId)}>
+						{#if reply && reply.id !== ''}
+							<button
+								class="text-xs inline-flex items-center gap-x-1 text-zinc-600 ml-2 group hover:text-zinc-400 transition-colors cursor-pointer"
+								on:click={goToReply}
+							>
+								<Icon
+									icon="iconoir:quote-message-solid"
+									class="text-zinc-500 group-hover:text-zinc-300 transition-colors"
+								/>
+								<span class="font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors"
+									>{reply?.author?.display_name}</span
+								>
+								<span
+									class="[&>p]:max-w-[10rem] [&>p]:inline-block [&>p]:overflow-hidden [&>p]:text-ellipsis overflow-hidden text-ellipsis flex-shrink-0 whitespace-nowrap flex"
+									>{@html reply?.content}</span
+								>
+							</button>
+						{/if}
 						<div
-							class="bg-zinc-850 rounded-xl rounded-bl-sm px-5 py-3 mt-1 w-fit text-sm [&>p]:break-all flex flex-col gap-y-1 max-w-[45rem]"
+							class="bg-zinc-850 rounded-xl rounded-bl-sm px-5 py-3 mt-1 w-fit text-sm [&>p]:break-all flex flex-col gap-y-1 max-w-[45rem] transition-colors"
 							class:groupMessagePrevious={groupedWithPrevious}
 							class:groupMessageAfter={groupedWithAfter}
 							class:mentioned={mentions && mentions.includes($user?.id)}
+							data-messageid={id}
 						>
 							{#if !groupedWithPrevious}
 								<span class="flex items-end gap-x-2 w-fit">
@@ -149,7 +200,11 @@
 					</ContextMenu.Trigger>
 					{#if contextMenuOpen}
 						<ContextMenu.Content id="context-menu-category">
-							<ContextMenu.Item class="gap-x-2 items-center text-sm">
+							<ContextMenu.Item
+								class="gap-x-2 items-center text-sm"
+								on:click={() =>
+									replyTo.set({ id: id, author: { display_name: author.display_name } })}
+							>
 								<Icon icon="ph:arrow-bend-up-left-bold" height={16} width={16} class="" />
 								Reply
 							</ContextMenu.Item>
