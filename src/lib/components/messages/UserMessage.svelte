@@ -93,9 +93,7 @@
 		const observer = new IntersectionObserver(
 			(entries) => {
 				entries.forEach((entry) => {
-					console.log(entries);
 					if (entry.isIntersecting) {
-						console.log(entry);
 						replyMessage.classList.add('!bg-zinc-650/60');
 						setTimeout(() => {
 							replyMessage.classList.remove('!bg-zinc-650/60');
