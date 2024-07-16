@@ -6,7 +6,10 @@
 	export let usersTyping: any[];
 	let totalUsers = 0;
 	$: if (usersTyping) {
-		totalUsers = usersTyping.filter((user) => user.channel_id === $page.params.channelId).length;
+		totalUsers = usersTyping.filter(
+			(user) =>
+				user.channel_id === $page.params.channelId || user.user_id.split(':')[1] === $page.params.id
+		).length;
 	}
 </script>
 
@@ -21,9 +24,7 @@
 			<div
 				class="bg-zinc-850 rounded-xl rounded-bl-sm px-3 py-1 mt-1 w-fit text-sm [&>p]:break-all flex flex-col gap-y-1 max-w-[45rem]"
 			>
-				<span class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline break-all [&>p>span]:first:ml-0">
-					<Icon icon="eos-icons:three-dots-loading" height={35} width={45} class="text-zinc-600" />
-				</span>
+				<Icon icon="eos-icons:three-dots-loading" height={35} width={45} class="text-zinc-600" />
 			</div>
 		</div>
 	</div>

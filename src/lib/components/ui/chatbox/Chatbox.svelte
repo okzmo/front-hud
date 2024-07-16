@@ -156,7 +156,7 @@
 				</div>
 			</div>
 		{/if}
-		{#if $usersTyping.length > 0 && $usersTyping.some((user) => user.channel_id === $page.params.channelId)}
+		{#if $usersTyping.length > 0 && $usersTyping.some((user) => user.channel_id === $page.params.channelId || user.user_id.split(':')[1] === $page.params.id)}
 			<TypingMessage usersTyping={$usersTyping} />
 		{/if}
 		<div class="anchor-scroll"></div>
