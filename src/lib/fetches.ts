@@ -59,6 +59,7 @@ export async function getMessages(params: any): Promise<Message[] | undefined> {
 	if (messagesCache && messagesCache[channelId]) {
 		return messagesCache[channelId].messages;
 	}
+	console.log('here');
 
 	const channelUrl = `${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}`;
 	const friendUrl = `${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}/private/${userStore?.id.split(':')[1]}`;

@@ -279,7 +279,7 @@
 					} else if (event.key.match(/^[a-zA-Z0-9]$/)) {
 						debounceTypingStart();
 						debounceTypingEnd();
-					} else if (event.key === 'ArrowUp') {
+					} else if (event.key === 'ArrowUp' && !mentionProps && !emojiProps) {
 						const channelId = $page.params.id || $page.params.channelId;
 						if ($messages[channelId]) {
 							const mess = $messages[channelId].messages?.findLast(

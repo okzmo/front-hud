@@ -190,6 +190,15 @@ export async function treatMessage(message: ArrayBuffer) {
 				return friends;
 			});
 			break;
+		case 'new_server_icon':
+			servers.update((server) => {
+				const serverExist = server[wsMessage.server_pic.id];
+				if (serverExist) {
+					serverExist.icon = wsMessage.server_pic.picture;
+				}
+				return server;
+			});
+			break;
 		case 'change_status':
 			friends.update((friends) => {
 				const friend = friends.find((friend) => friend.id === wsMessage.change_status.user_id);

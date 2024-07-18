@@ -38,7 +38,11 @@
 		<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId, roles)}>
 			<Button class="h-12 w-12 rounded-xl text-zinc-500 relative" size="icon" {href}>
 				{#if icon}
-					<img class="aspect-square object-cover" src={icon} alt={name.slice(0, 2).toUpperCase()} />
+					<img
+						class="h-full w-full object-cover rounded-xl"
+						src={icon}
+						alt={name.slice(0, 2).toUpperCase()}
+					/>
 				{:else}
 					{name.slice(0, 2).toUpperCase()}
 				{/if}
