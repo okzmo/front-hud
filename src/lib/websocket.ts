@@ -35,7 +35,7 @@ export async function treatMessage(message: ArrayBuffer) {
 
 			messages.update((cache) => {
 				if (cache[channelId] && cache[channelId].messages) {
-					cache[channelId].messages.push(newMessage);
+					cache[channelId].messages.unshift(newMessage);
 					cache[channelId].scrollPosition = undefined;
 				}
 				return cache;

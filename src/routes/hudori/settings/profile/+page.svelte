@@ -25,12 +25,17 @@
 			<Icon icon="ph:pencil-simple-duotone" height={20} width={20} />
 		</Button>
 		<div class="rounded-[1.5rem] flex relative px-[1.45rem] py-3 h-full">
-			<div class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.5rem] bg-zinc-700" />
-			<img
-				class="w-full h-full absolute left-0 top-0 object-contain rounded-[1.6rem] transform-gpu"
-				src={$user?.banner}
-				alt=""
-			/>
+			{#if $user?.banner !== ''}
+				<img
+					class="w-full h-full absolute left-0 top-0 object-contain rounded-[1.6rem] transform-gpu"
+					src={$user?.banner}
+					alt=""
+				/>
+			{:else}
+				<div
+					class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.5rem] bg-zinc-700"
+				/>
+			{/if}
 			<div class="flex flex-col justify-end gap-y-2 z-[2]">
 				<span class="flex gap-x-3">
 					<button on:click={() => openAvatar.set(true)}>

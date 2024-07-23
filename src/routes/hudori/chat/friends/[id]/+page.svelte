@@ -2,7 +2,7 @@
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
-	import { notifications } from '$lib/stores';
+	import { messages, notifications } from '$lib/stores';
 	import { getMessages } from '$lib/fetches';
 	import { onMount } from 'svelte';
 
@@ -21,15 +21,38 @@
 
 	onNavigate(async ({ to }) => {
 		if (to && to.params) {
-			await getMessages(to.params);
+			if (!$messages[to.params.id]) {
+				const allMessages = await getMessages({ ...to.params, offset: 0, limit: 25 });
+
+				messages.update((cache) => {
+					if (!cache[to.params.id]) {
+						cache[to.params.id] = { messages: [], date: Date.now() };
+					}
+					cache[to.params.id].messages = allMessages;
+					return cache;
+				});
+			}
 		}
 	});
 
 	onMount(async () => {
 		const params = {
-			id: $page.params.id
+			id: $page.params.id,
+			offset: 0,
+			limit: 25
 		};
-		await getMessages(params);
+
+		if (!$messages[$page.params.id]) {
+			const allMessages = await getMessages(params);
+
+			messages.update((cache) => {
+				if (!cache[$page.params.id]) {
+					cache[$page.params.id] = { messages: [], date: Date.now() };
+				}
+				cache[$page.params.id].messages = allMessages;
+				return cache;
+			});
+		}
 	});
 </script>
 

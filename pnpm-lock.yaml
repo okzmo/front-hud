@@ -65,9 +65,15 @@ importers:
       svelte-file-dropzone:
         specifier: ^2.0.7
         version: 2.0.7(svelte@4.2.18)
+      svelte-infinite-loading:
+        specifier: ^1.4.0
+        version: 1.4.0
       svelte-sonner:
         specifier: ^0.3.24
         version: 0.3.24(svelte@4.2.18)
+      svelte-tiny-virtual-list:
+        specifier: ^2.1.2
+        version: 2.1.2
       sveltekit-superforms:
         specifier: ^2.12.6
         version: 2.15.2(@sveltejs/kit@2.5.18(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.10)))(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.10)))(svelte@4.2.18)
@@ -2286,6 +2292,9 @@ packages:
     peerDependencies:
       svelte: ^3.19.0 || ^4.0.0
 
+  svelte-infinite-loading@1.4.0:
+    resolution: {integrity: sha512-Jo+f/yr/HmZQuIiiKKzAHVFXdAUWHW2RBbrcQTil8JVk1sCm/riy7KTJVzjBgQvHasrFQYKF84zvtc9/Y4lFYg==}
+
   svelte-preprocess@5.1.4:
     resolution: {integrity: sha512-IvnbQ6D6Ao3Gg6ftiM5tdbR6aAETwjhHV+UKGf5bHGYR69RQvF1ho0JKPcbUON4vy4R7zom13jPjgdOWCQ5hDA==}
     engines: {node: '>= 16.0.0'}
@@ -2327,6 +2336,9 @@ packages:
     resolution: {integrity: sha512-txuL0JBUs0v6qGrr0PGCsbXmKHuthdrAkfISYi8umuveF7+gINb6EXl6VmKY9aHhyxCqvVgqd6yophQNrnor4w==}
     peerDependencies:
       svelte: '>=3 <5'
+
+  svelte-tiny-virtual-list@2.1.2:
+    resolution: {integrity: sha512-jeP/WMvgFUR4mYXHGPiCexjX5DuzSO+3xzHNhxfcsFyy+uYPtnqI5UGb383swpzQAyXB0OBqYfzpYihD/5gxnA==}
 
   svelte@4.2.18:
     resolution: {integrity: sha512-d0FdzYIiAePqRJEb90WlJDkjUEx42xhivxN8muUBmfZnP+tzUgz12DJ2hRJi8sIHCME7jeK1PTMgKPSfTd8JrA==}
@@ -4717,6 +4729,8 @@ snapshots:
     dependencies:
       svelte: 4.2.18
 
+  svelte-infinite-loading@1.4.0: {}
+
   svelte-preprocess@5.1.4(postcss-load-config@4.0.2(postcss@8.4.39))(postcss@8.4.39)(svelte@4.2.18)(typescript@5.5.3):
     dependencies:
       '@types/pug': 2.0.10
@@ -4733,6 +4747,8 @@ snapshots:
   svelte-sonner@0.3.24(svelte@4.2.18):
     dependencies:
       svelte: 4.2.18
+
+  svelte-tiny-virtual-list@2.1.2: {}
 
   svelte@4.2.18:
     dependencies:

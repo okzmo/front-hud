@@ -9,9 +9,12 @@
 	import { page } from '$app/stores';
 	import { beforeNavigate } from '$app/navigation';
 	import TypingMessage from '$lib/components/messages/typingMessage.svelte';
+	import { getMessages } from '$lib/fetches';
+	import { groupMessages } from '$lib/utils';
 
 	export let friend_chatbox: boolean;
 
+	let infiniteLoadKey = 0;
 	let chatbox: HTMLDivElement;
 	let groupedMessages: MessageUI[] = [];
 	let dropzone: HTMLLabelElement;
@@ -19,44 +22,46 @@
 	let dropzone_opacity = 0;
 	let dropzone_zindex = 1;
 	let files = writable<File[]>([]);
+	let isLoadingMore = false;
 
-	const groupMessages = (messages: MessageUI[]) => {
-		const threshold = 10000; // 2 seconds
-		const groupedMessages = messages.map((msg, index) => {
-			const prevMsg = messages[index - 1];
-			const nextMsg = messages[index + 1];
-			const groupWithPrevious =
-				index > 0 &&
-				new Date(msg.updated_at).getTime() - new Date(prevMsg.updated_at).getTime() < threshold &&
-				msg.author === prevMsg.author;
-			const groupWithAfter =
-				index < messages.length - 1 &&
-				new Date(nextMsg.updated_at).getTime() - new Date(msg.updated_at).getTime() < threshold &&
-				msg.author === nextMsg.author;
+	async function loadMoreMessages() {
+		isLoadingMore = true;
+		const channelId = $page.params.id || $page.params.channelId;
 
-			return { ...msg, groupWithPrevious, groupWithAfter };
+		const newMessages = await getMessages({
+			channelId,
+			offset: groupedMessages.length,
+			limit: 25
 		});
 
-		return groupedMessages;
-	};
+		if (newMessages && newMessages.length > 0) {
+			messages.update((cache) => {
+				if (!cache[channelId]) {
+					cache[channelId] = { messages: [], date: Date.now() };
+				}
+				cache[channelId].messages = [...cache[channelId].messages, ...newMessages];
+				return cache;
+			});
+		}
+		isLoadingMore = false;
+	}
 
-	$: if ($messages[$page.params.id] || $messages[$page.params.channelId]) {
-		const channelContent = $messages[$page.params.id] || $messages[$page.params.channelId];
-		if (channelContent.messages) {
-			groupedMessages = groupMessages(channelContent?.messages);
+	$: channelId = $page.params.id || $page.params.channelId;
+	$: if ($messages[channelId]) {
+		infiniteLoadKey += 1;
+		if ($messages[channelId]?.messages) {
+			groupedMessages = groupMessages($messages[channelId]?.messages);
 		}
 	}
 
 	function scrollToPosition() {
-		const channelId = $page.params.id || $page.params.channelId;
 		const channelContent = $messages[channelId];
-		if (chatbox) {
-			chatbox.scrollTop = channelContent?.scrollPosition || chatbox.scrollHeight;
-			// chatbox?.scrollTo({
-			// 	left: 0,
-			// 	top: channelContent?.scrollPosition || chatbox.scrollHeight,
-			// 	behavior: 'smooth'
-			// });
+		if (chatbox && channelContent) {
+			if (chatbox.scrollTop + chatbox.clientHeight >= chatbox.scrollHeight - 100) {
+				chatbox.scrollTop = chatbox.scrollHeight;
+			} else if (channelContent.scrollPosition) {
+				chatbox.scrollTop = channelContent.scrollPosition;
+			}
 		}
 	}
 
@@ -71,7 +76,9 @@
 	});
 
 	afterUpdate(() => {
-		scrollToPosition();
+		if (!isLoadingMore) {
+			scrollToPosition();
+		}
 	});
 
 	onMount(() => {
@@ -111,9 +118,16 @@
 			dropzone_zindex = 2;
 			dropzone_opacity = 0;
 		});
-
-		scrollToPosition();
 	});
+
+	let isNearTop = false;
+
+	function handleScroll() {
+		isNearTop = -chatbox.scrollTop > chatbox.scrollHeight - 910;
+		if (isNearTop && !isLoadingMore) {
+			loadMoreMessages();
+		}
+	}
 </script>
 
 <label
@@ -129,7 +143,13 @@
 		<Icon icon="ph:images-duotone" height={100} width={100} />
 		<p>Drop your file for it to be uploaded!</p>
 	</div>
-	<div id="chatbox" bind:this={chatbox} class="flex flex-col p-6 overflow-y-auto h-full">
+
+	<div
+		id="chatbox"
+		bind:this={chatbox}
+		class="flex flex-col-reverse p-6 overflow-y-auto h-full"
+		on:scroll={handleScroll}
+	>
 		{#if $loadingMessages}
 			Loading...
 		{:else if groupedMessages.length > 0}

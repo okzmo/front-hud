@@ -18,12 +18,15 @@
 		alt=""
 	/>
 	<div class="rounded-2xl flex relative px-4 py-2 h-full">
-		<div class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.1rem] bg-zinc-700" />
-		<img
-			class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.1rem] transform-gpu"
-			src={user?.banner}
-			alt=""
-		/>
+		{#if user?.banner !== ''}
+			<img
+				class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.1rem] transform-gpu"
+				src={user?.banner}
+				alt=""
+			/>
+		{:else}
+			<div class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.1rem] bg-zinc-700" />
+		{/if}
 		<div class="flex flex-col justify-end gap-y-2 z-[2]">
 			<span class="flex gap-x-3">
 				<img class="w-14 h-14 object-cover rounded-2xl" src={user?.avatar} alt="" />

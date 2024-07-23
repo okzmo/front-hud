@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
-	import { notifications, servers, serversStateStore, vcRoom } from '$lib/stores';
+	import { notifications, servers, serversStateStore, vcRoom, messages } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { onNavigate } from '$app/navigation';
@@ -39,15 +39,37 @@
 
 	onNavigate(async ({ to }) => {
 		if (to && to.params) {
-			await getMessages(to.params);
+			if (!$messages[to.params.channelId]) {
+				const allMessages = await getMessages({ ...to.params, offset: 0, limit: 25 });
+
+				messages.update((cache) => {
+					if (!cache[to.params.channelId]) {
+						cache[to.params.channelId] = { messages: [], date: Date.now() };
+					}
+					cache[to.params.channelId].messages = allMessages;
+					return cache;
+				});
+			}
 		}
 	});
 
 	onMount(async () => {
 		const params = {
-			channelId: $page.params.channelId
+			channelId: $page.params.channelId,
+			offset: 0,
+			limit: 25
 		};
-		await getMessages(params);
+		if (!$messages[$page.params.channelId]) {
+			const allMessages = await getMessages(params);
+
+			messages.update((cache) => {
+				if (!cache[$page.params.channelId]) {
+					cache[$page.params.channelId] = { messages: [], date: Date.now() };
+				}
+				cache[$page.params.channelId].messages = allMessages;
+				return cache;
+			});
+		}
 	});
 
 	onMount(async () => {

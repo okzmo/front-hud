@@ -162,3 +162,23 @@ export async function removeCachedProfile(user_id: string) {
 		await cache.delete(`${import.meta.env.VITE_API_URL}/api/v1/user/${user_id}`);
 	}
 }
+
+export const groupMessages = (messages: MessageUI[]) => {
+	const threshold = 10000; // 2 seconds
+	const groupedMessages = messages.map((msg, index) => {
+		const prevMsg = messages[index - 1];
+		const nextMsg = messages[index + 1];
+		const groupWithPrevious =
+			index > 0 &&
+			new Date(msg.updated_at).getTime() - new Date(prevMsg.updated_at).getTime() < threshold &&
+			msg.author === prevMsg.author;
+		const groupWithAfter =
+			index < messages.length - 1 &&
+			new Date(nextMsg.updated_at).getTime() - new Date(msg.updated_at).getTime() < threshold &&
+			msg.author === nextMsg.author;
+
+		return { ...msg, groupWithPrevious, groupWithAfter };
+	});
+
+	return groupedMessages;
+};

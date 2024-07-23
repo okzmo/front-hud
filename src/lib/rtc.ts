@@ -198,11 +198,12 @@ function handleLocalTrackPublished(publication: LocalTrackPublication) {
 }
 
 function handleActiveSpeakerChange(speakers: Participant[]) {
+	const pageInfo = get(page);
+	if (!pageInfo.params.serverId) return;
 	// show UI indicators when participant is speaking
 	const room = get(vcRoom);
 	const speakersMap = new Map(speakers.map((speaker) => [speaker.identity, true]));
 
-	const pageInfo = get(page);
 	servers.update((cache) => {
 		const server = cache[`servers:${pageInfo.params.serverId}`];
 		for (const category of server?.categories) {

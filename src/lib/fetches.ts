@@ -52,17 +52,18 @@ export async function getProfile(own_id: string | undefined, user_id: string) {
 }
 
 export async function getMessages(params: any): Promise<Message[] | undefined> {
-	const messagesCache = get(messages);
+	// const messagesCache = get(messages);
 	const userStore = get(user);
 	const channelId = params.channelId ? params.channelId : params.id;
+	const offset = params.offset || 0;
+	const limit = params.limit || 25;
 	if (!channelId) return;
-	if (messagesCache && messagesCache[channelId]) {
-		return messagesCache[channelId].messages;
-	}
-	console.log('here');
+	// if (messagesCache && messagesCache[channelId]) {
+	// 	return messagesCache[channelId].messages;
+	// }
 
-	const channelUrl = `${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}`;
-	const friendUrl = `${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}/private/${userStore?.id.split(':')[1]}`;
+	const channelUrl = `${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}?limit=${limit}&before=${offset}`;
+	const friendUrl = `${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}/private/${userStore?.id.split(':')[1]}?limit=${limit}&before=${offset}`;
 
 	try {
 		const response = await fetch(params.channelId ? channelUrl : friendUrl, {
@@ -74,13 +75,7 @@ export async function getMessages(params: any): Promise<Message[] | undefined> {
 		});
 		const data = await response.json();
 
-		messages.update((cache) => {
-			cache[channelId] = {
-				messages: data.messages,
-				date: Date.now()
-			};
-			return cache;
-		});
+		return data.messages;
 	} catch (error) {
 		console.error('Error fetching messages:', error);
 	}

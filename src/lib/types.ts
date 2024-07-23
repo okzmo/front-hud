@@ -46,7 +46,7 @@ export interface Message {
 	id: string;
 	author: User;
 	channel_id: string;
-	content: JSONContent;
+	content: string;
 	edited: boolean;
 	images: string[];
 	mentions: string[];
@@ -57,7 +57,7 @@ export interface MessageUI {
 	id: string;
 	author: User;
 	channel_id: string;
-	content: JSONContent;
+	content: string;
 	edited: boolean;
 	updated_at: string;
 	groupWithPrevious: boolean;
