@@ -31,7 +31,7 @@ export async function joinRoom(channelId: string, userId: string, serverId: stri
 	if (existingRoom && existingRoom.name === channelId && pageInfos.params.channelId === channelId)
 		return;
 	if (existingRoom && existingRoom.name === channelId && pageInfos.params.channelId !== channelId) {
-		goto(`/hudori/chat/community/${serverId.split(':')[1]}/channels/${channelId.split(':')[1]}`);
+		goto(`/hudori/chat/space/${serverId.split(':')[1]}/channels/${channelId.split(':')[1]}`);
 		return;
 	}
 	if (existingRoom) {
@@ -100,7 +100,7 @@ export async function joinRoom(channelId: string, userId: string, serverId: stri
 	const userInfos = get(user);
 	const exist = participantExist(serverId, channelId, userInfos?.id);
 
-	goto(`/hudori/chat/community/${serverId.split(':')[1]}/channels/${channelId.split(':')[1]}`);
+	goto(`/hudori/chat/space/${serverId.split(':')[1]}/channels/${channelId.split(':')[1]}`);
 
 	if (!exist) {
 		const ws = get(wsConn);

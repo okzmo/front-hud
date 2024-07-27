@@ -41,7 +41,7 @@
 				const serverId = $page.params.serverId;
 				const chanId =
 					$servers['servers:' + $page.params.serverId].categories[0].channels[0].id.split(':')[1];
-				goto(`/hudori/chat/community/${serverId}/channels/${chanId}`);
+				goto(`/hudori/chat/space/${serverId}/channels/${chanId}`);
 			}
 		} catch (e) {
 			console.log(e);

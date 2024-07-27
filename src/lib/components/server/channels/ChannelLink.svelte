@@ -34,7 +34,7 @@
 	<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId)}>
 		<div class="flex flex-col">
 			<button
-				class="flex gap-x-3 hover:bg-zinc-800/75 py-[0.45rem] text-zinc-500 px-3 rounded-[0.6rem] transition duration-75 active:scale-[0.97] items-center w-full"
+				class="gradient-border relative flex gap-x-3 hover:bg-zinc-500/15 py-[0.55rem] text-zinc-500 px-3 rounded-[0.8rem] transition duration-75 active:scale-[0.97] items-center w-full"
 				class:active={$page.url.pathname.includes(href)}
 				class:notify={notification && !notification.read}
 				class:mentioned={notification &&
@@ -51,17 +51,17 @@
 			>
 				{#if type === 'textual'}
 					<Icon
-						icon="ph:chat-teardrop-text-duotone"
+						icon="solar:chat-round-line-bold-duotone"
 						class="pointer-events-none"
-						height="20"
-						width="20"
+						height="18"
+						width="18"
 					/>
 				{:else if type === 'voice'}
 					<Icon
-						icon="ph:speaker-simple-low-duotone"
+						icon="solar:volume-loud-bold-duotone"
 						class="pointer-events-none"
-						height="20"
-						width="20"
+						height="18"
+						width="18"
 					/>
 				{/if}
 				<p class="leading-none pointer-events-none">{channelName}</p>
@@ -80,8 +80,12 @@
 
 <style lang="postcss">
 	.active {
-		background-color: rgba(39, 39, 42, 0.75);
+		background-color: theme(colors.zinc.50015);
 		color: theme(colors.zinc.50);
+	}
+
+	:global(.active.gradient-border::before) {
+		opacity: 1;
 	}
 
 	.notify {
@@ -91,5 +95,27 @@
 	.mentioned {
 		color: theme(colors.zinc.50);
 		background-color: rgba(223, 67, 67, 0.25);
+	}
+
+	:global(.gradient-border::before) {
+		content: '';
+		position: absolute;
+		opacity: 0;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		border-radius: inherit;
+		padding: 1px; /* This determines the border thickness */
+		background: linear-gradient(to bottom, rgba(113, 113, 122, 0.3) 0%, rgba(113, 113, 122, 0) 35%);
+		-webkit-mask:
+			linear-gradient(#fff 0 0) content-box,
+			linear-gradient(#fff 0 0);
+		mask:
+			linear-gradient(#fff 0 0) content-box,
+			linear-gradient(#fff 0 0);
+		-webkit-mask-composite: xor;
+		mask-composite: exclude;
+		transition: opacity 100ms ease-out;
 	}
 </style>

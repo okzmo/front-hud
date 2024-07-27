@@ -119,7 +119,7 @@ export async function treatMessage(message: ArrayBuffer) {
 				const chanId =
 					serversInfos[wsMessage.delchannel.server_id].categories[0].channels[0].id.split(':')[1];
 				goto(
-					`/hudori/chat/community/${wsMessage.delchannel.server_id.split(':')[1]}/channels/${chanId}`
+					`/hudori/chat/space/${wsMessage.delchannel.server_id.split(':')[1]}/channels/${chanId}`
 				);
 			}
 			break;

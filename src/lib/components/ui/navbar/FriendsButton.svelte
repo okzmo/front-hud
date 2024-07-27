@@ -11,7 +11,7 @@
 </script>
 
 <li>
-	<Button class={`h-12 w-12 rounded-xl relative`} href="/hudori/chat/friends" size="icon">
+	<Button class={`h-12 w-12 relative`} href="/hudori/chat/friends" size="icon">
 		<Icon icon="ph:users-duotone" height="24" width="24" />
 		{#if friendNotification}
 			<div class="absolute h-2 w-2 bg-destructive -right-[0.15rem] -top-[0.15rem] rounded-lg" />

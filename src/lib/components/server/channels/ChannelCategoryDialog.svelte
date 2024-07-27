@@ -76,7 +76,7 @@
 					<p class="text-destructive mt-1">{$message.text}</p>
 				{/if}
 			</div>
-			<Button type="submit" class="py-3 mt-0 w-full">
+			<Button type="submit" class="py-3 mt-0 w-full" variant="secondary">
 				{#if $delayed}
 					Creating...
 				{:else}

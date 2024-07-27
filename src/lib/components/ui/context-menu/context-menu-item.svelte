@@ -14,7 +14,7 @@
 
 <ContextMenuPrimitive.Item
 	class={cn(
-		'relative flex first:mt-0 cursor-pointer select-none items-center rounded-lg pl-2 pr-5 py-2 text-base outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-zinc-700 data-[highlighted]:transition-colors data-[highlighted]:duration-75 data-[disabled]:opacity-50',
+		'context-item relative flex first:mt-0 cursor-pointer select-none items-center rounded-lg pl-2 pr-5 py-2 text-base outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-zinc-50015 data-[highlighted]:transition-colors data-[highlighted]:duration-75 data-[disabled]:opacity-50 hover:text-zinc-50',
 		inset && 'pl-8',
 		className
 	)}
@@ -29,3 +29,31 @@
 >
 	<slot />
 </ContextMenuPrimitive.Item>
+
+<style>
+	:global(.context-item:hover::before) {
+		opacity: 100;
+	}
+
+	:global(.context-item::before) {
+		content: '';
+		position: absolute;
+		opacity: 0;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		border-radius: inherit;
+		padding: 1px; /* This determines the border thickness */
+		background: linear-gradient(to bottom, rgba(113, 113, 122, 0.3) 0%, rgba(113, 113, 122, 0) 35%);
+		-webkit-mask:
+			linear-gradient(#fff 0 0) content-box,
+			linear-gradient(#fff 0 0);
+		mask:
+			linear-gradient(#fff 0 0) content-box,
+			linear-gradient(#fff 0 0);
+		-webkit-mask-composite: xor;
+		mask-composite: exclude;
+		transition: opacity 75ms ease-out;
+	}
+</style>

@@ -298,8 +298,9 @@
 	}
 
 	:global(.ProseMirror.edit-message) {
-		margin: 0rem !important;
+		margin: 0.5rem 0 0 0 !important;
 		padding: 0.5rem 0.8rem;
+		border-radius: 0.7rem;
 	}
 
 	:global(.ProseMirror a) {

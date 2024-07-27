@@ -7,7 +7,7 @@
 </script>
 
 <aside
-	class="border-r border-zinc-850 bg-zinc-900 relative flex-shrink-0 w-[17rem] flex flex-col px-4 pt-4 pb-3"
+	class="relative flex-shrink-0 w-[17rem] flex flex-col rounded-tl-xl rounded-bl-xl border-r border-zinc-850"
 >
 	{#if $page.url.pathname.includes('chat')}
 		{#if $page.url.pathname.includes('friends')}

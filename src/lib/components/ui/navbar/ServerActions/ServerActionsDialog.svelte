@@ -80,10 +80,10 @@
 
 <Dialog.Content>
 	<Dialog.Header>
-		<Dialog.Title>Join or create a community!</Dialog.Title>
-		<Dialog.Description
-			>A community is a way to gather your friends or a group of people in a single place.</Dialog.Description
-		>
+		<Dialog.Title>Join or create a space!</Dialog.Title>
+		<Dialog.Description>
+			A space is a way to gather your friends or a group of people in a single place.
+		</Dialog.Description>
 	</Dialog.Header>
 	<div class="flex flex-col gap-x-2">
 		<form method="POST" use:enhance class="flex flex-col gap-y-2 relative">
@@ -93,11 +93,11 @@
 					class:active={$type === 'create'}
 				>
 					<RadioGroup.Item value="create" id="create" class="absolute opacity-0" />
-					<Icon icon="ph:plus" height="26" width="26" />
+					<Icon icon="solar:add-circle-bold-duotone" height="26" width="26" />
 					<Label
 						for="create"
 						class="after:content-normal after:absolute after:left-0 after:top-0 after:w-full after:h-full hover:cursor-pointer text-base"
-						>Create a community</Label
+						>Create a space</Label
 					>
 				</div>
 				<div
@@ -105,34 +105,32 @@
 					class:active={$type === 'join'}
 				>
 					<RadioGroup.Item value="join" id="join" class="absolute opacity-0" />
-					<Icon icon="ph:users-four-duotone" height="26" width="26" />
+					<Icon icon="solar:users-group-rounded-bold-duotone" height="26" width="26" />
 					<Label
 						for="join"
 						class="after:content-normal after:absolute after:left-0 after:top-0 after:w-full after:h-full hover:cursor-pointer text-base"
-						>Join a community</Label
+						>Join a space</Label
 					>
 				</div>
 			</RadioGroup.Root>
 			<div class="mt-5 relative">
 				<Dialog.Description>
 					{#if $type === 'create'}
-						To create a community you just need to enter its name.
+						To create a space you just need to enter its name.
 					{:else}
-						To join a community you just need to enter the invite you've been given.
+						To join a space you just need to enter the invite you've been given.
 					{/if}
 				</Dialog.Description>
 				<Input
 					bind:value={$id}
-					placeholder={$type === 'create'
-						? 'Name of your new community'
-						: 'https://hudori.app/Je8dkeU'}
+					placeholder={$type === 'create' ? 'Name of your new space' : 'https://hudori.app/Je8dkeU'}
 					class="mt-2"
 				/>
 				{#if $message}
 					<p class="text-destructive mt-1">{$message.text}</p>
 				{/if}
 			</div>
-			<Button type="submit" class="py-3 mt-0 w-full">
+			<Button type="submit" class="py-3 mt-0 w-full" variant="secondary">
 				{#if $type === 'create'}
 					{#if $delayed}
 						Creating...

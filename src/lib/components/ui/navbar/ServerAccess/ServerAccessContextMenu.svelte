@@ -120,7 +120,7 @@
 			}}
 		>
 			<Icon icon="ph:sign-out-duotone" height={16} width={16} />
-			Leave community
+			Leave space
 		</ContextMenu.Item>
 	{:else}
 		<ContextMenu.Item
@@ -131,7 +131,7 @@
 			}}
 		>
 			<Icon icon="ph:trash-duotone" height={16} width={16} />
-			Delete community
+			Delete space
 		</ContextMenu.Item>
 	{/if}
 </ContextMenu.Content>
@@ -148,7 +148,7 @@
 			<AlertDialog.Description>
 				{#if type === 'delete'}
 					This action will permanently delete <span class="font-bold">{name}</span> as well as all the
-					data related to this community.
+					data related to this space.
 				{:else if type === 'leave'}
 					You will leave <span class="font-bold">{name}</span> and won't be able to join again until
 					you're invited back.

@@ -79,7 +79,7 @@
 		{#if canDelete}
 			<Separator class="my-2 max-w-[10rem] bg-zinc-700 mx-auto" />
 			<ContextMenuItem
-				class="gap-x-2 items-center text-destructive data-[highlighted]:bg-destructive data-[highlighted]:text-zinc-50 text-sm"
+				class="destructive-item gap-x-2 items-center text-destructive data-[highlighted]:bg-destructive data-[highlighted]:text-zinc-50 text-sm"
 				on:click={() => openAlert.set(true)}
 			>
 				<Icon icon="ph:trash-duotone" height={16} width={16} />
@@ -113,3 +113,9 @@
 		</AlertDialogFooter>
 	</AlertDialogContent>
 </AlertDialog>
+
+<style>
+	:global(.destructive-item:hover::before) {
+		opacity: 0 !important;
+	}
+</style>

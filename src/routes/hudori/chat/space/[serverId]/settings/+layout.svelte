@@ -14,7 +14,7 @@
 		handleEscape = (event) => {
 			if (event.key === 'Escape') {
 				// Navigate back to the previous page
-				goto($settingsLastPage || `/hudori/chat/community/${$page.params.serverId}`);
+				goto($settingsLastPage || `/hudori/chat/space/${$page.params.serverId}`);
 				// Remove the event listener to prevent further use
 				window.removeEventListener('keydown', handleEscape);
 			}
@@ -37,7 +37,7 @@
 <div class="flex max-w-[75rem] mx-auto h-full">
 	<div class="flex flex-col items-center w-fit text-zinc-700 group h-fit pt-[4rem]">
 		<a
-			href={$settingsLastPage || `/hudori/chat/community/${$page.params.serverId}`}
+			href={$settingsLastPage || `/hudori/chat/space/${$page.params.serverId}`}
 			class="flex justify-center items-center h-10 w-10 border border-zinc-700 rounded-full bg-transparent text-zinc-700 hover:bg-transparent group-hover:border-zinc-600 group-hover:text-zinc-600"
 		>
 			<Icon icon="ph:arrow-left-bold" />
@@ -48,7 +48,7 @@
 		<ul class="flex flex-col gap-y-2 flex-grow">
 			<li>
 				<SettingsLink
-					href="/hudori/chat/community/{$page.params.serverId}/settings/customization"
+					href="/hudori/chat/space/{$page.params.serverId}/settings/customization"
 					icon="ph:eye-duotone">Overview</SettingsLink
 				>
 			</li>

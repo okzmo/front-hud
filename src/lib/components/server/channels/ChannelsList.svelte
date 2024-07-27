@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import type { Server } from '$lib/types';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
 
 	let openContextMenuId = `context-menu-${generateRandomId()}`;
 	let isOpen: boolean = false;
@@ -53,26 +54,51 @@
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
 </script>
 
-<ul class="flex flex-col w-full flex-grow">
-	<span class="block w-full h-[10rem] rounded-lg bg-zinc-500" />
+<div class="flex flex-col w-full flex-grow">
 	{#await serverPromise then data}
-		{#if $servers[data?.id]}
-			<div class="mt-4 flex flex-col gap-y-1">
-				{#each $servers[data?.id].categories as category}
-					<ServerCategory serverId={data?.id} {category} />
-				{/each}
+		<img
+			class="absolute block w-[calc(100%+0.5rem)] max-w-[calc(100%+0.5rem)] h-[11rem] rounded-tl-lg bg-zinc-500 object-cover object-top blur-xl opacity-75 right-0"
+			src={data?.banner}
+			alt=""
+		/>
+		<img
+			class="absolute block w-full h-[11rem] rounded-tl-lg bg-zinc-500 object-cover object-top"
+			src={data?.banner}
+			alt=""
+		/>
+		<div class="gradient-sidebar h-full flex flex-col z-[2] mt-[10rem] px-3 backdrop-blur-md">
+			<div class="pt-[0.875rem] pb-5 flex justify-center items-center text-zinc-500">
+				{data?.name}
 			</div>
-		{:else}
-			<div></div>
-		{/if}
+			{#if $servers[data?.id]}
+				<ul class="flex flex-col gap-y-1">
+					{#each $servers[data?.id].categories as category}
+						<ServerCategory serverId={data?.id} {category} />
+					{/each}
+				</ul>
+			{:else}
+				<div></div>
+			{/if}
+			<ContextMenu.Root>
+				<ContextMenu.Trigger
+					class="w-full flex-grow"
+					on:contextmenu={() => handleContextMenu(openContextMenuId)}
+				></ContextMenu.Trigger>
+				{#if isOpen}
+					<ServerContextMenu />
+				{/if}
+			</ContextMenu.Root>
+		</div>
 	{/await}
-	<ContextMenu.Root>
-		<ContextMenu.Trigger
-			class="w-full h-full flex-1"
-			on:contextmenu={() => handleContextMenu(openContextMenuId)}
-		></ContextMenu.Trigger>
-		{#if isOpen}
-			<ServerContextMenu />
-		{/if}
-	</ContextMenu.Root>
-</ul>
+</div>
+
+<style>
+	.gradient-sidebar {
+		background: linear-gradient(
+			180deg,
+			rgba(18, 18, 21, 0.55) 0%,
+			rgba(18, 18, 21, 0.95) 10%,
+			#121215 72%
+		);
+	}
+</style>

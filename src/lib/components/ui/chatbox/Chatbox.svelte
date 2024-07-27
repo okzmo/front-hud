@@ -147,7 +147,7 @@
 	<div
 		id="chatbox"
 		bind:this={chatbox}
-		class="flex flex-col-reverse p-6 overflow-y-auto h-full"
+		class="flex flex-col-reverse py-6 overflow-y-auto h-full"
 		on:scroll={handleScroll}
 	>
 		{#if $loadingMessages}
@@ -171,7 +171,12 @@
 		{:else}
 			<div class="w-full h-full flex justify-center items-center">
 				<div class="flex flex-col items-center">
-					<Icon icon="quill:user-sad" height={150} width={150} class="text-zinc-725" />
+					<Icon
+						icon="solar:sad-circle-bold-duotone"
+						height={150}
+						width={150}
+						class="text-zinc-725"
+					/>
 					<p class="text-zinc-700 text-2xl mt-4">No messages were found.</p>
 				</div>
 			</div>

@@ -53,7 +53,7 @@
 						channelName={channel.name}
 						participants={channel.participants}
 						type={channel.type}
-						href={`/hudori/chat/community/${serverId.split(':')[1]}/channels/${channel.id.split(':')[1]}`}
+						href={`/hudori/chat/space/${serverId.split(':')[1]}/channels/${channel.id.split(':')[1]}`}
 					/>
 				{/each}
 			</div>

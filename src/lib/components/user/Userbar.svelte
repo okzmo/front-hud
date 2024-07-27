@@ -88,7 +88,7 @@
 <div class="flex flex-col flex-shrink-0 gap-y-2">
 	{#if $vcRoom}
 		<div
-			class="w-full flex bg-zinc-850 rounded-xl border border-zinc-750 justify-between items-center py-1 pr-1 pl-4"
+			class="w-full flex bg-zinc-950 rounded-xl border border-zinc-750 justify-between items-center py-1 pr-1 pl-4"
 		>
 			<div class="flex items-center gap-x-2">
 				<Icon icon="ph:wifi-high-duotone" class="text-green-500" width="20" height="20" />
@@ -107,42 +107,58 @@
 			</Button>
 		</div>
 	{/if}
-	<div class="flex gap-x-2 justify-between">
+	<div
+		class="flex gap-x-2 justify-between backdrop-blur-xl rounded-bl-xl p-[0.375rem] px-3 py-2 bg-zinc-960 border-t border-zinc-850 items-center"
+	>
 		{#if $user}
 			<Popover.Root onOpenChange={getUserProfile}>
 				<Popover.Trigger class="max-w-[9rem]">
-					<Button
-						class="h-12 p-0 rounded-xl overflow-hidden pr-4 text-sm gap-x-3 border-none relative"
-						style="background: {$user.username_color};"
+					<button
+						class="p-0 rounded-xl px-1 py-1 text-sm gap-x-3 border-none relative flex items-center hover:bg-zinc-850 transition-colors"
 					>
 						<img
-							class="object-cover w-12 h-12 aspect-square rounded-xl z-[1]"
+							class="object-cover w-10 h-10 aspect-square rounded-lg z-[1] shrink-0"
 							src={$user.avatar}
 							alt=""
 						/>
-						<span class="text-left truncate w-full z-[1]">{$user.display_name || 'User'}</span>
-						<div
-							class="absolute w-[calc(100%-2px)] h-[calc(100%-2px)] bg-zinc-925 left-1/2 -translate-x-1/2 rounded-xl opacity-75"
-						></div>
-					</Button>
+						<div class="flex flex-col gap-y-1">
+							<span
+								class="text-left truncate w-full z-[1] font-semibold text-base leading-none"
+								style="color: {$user.username_color};">{$user.display_name || 'User'}</span
+							>
+							<span class="text-left truncate w-full z-[1] leading-none"
+								>{$user.username || 'User'}</span
+							>
+						</div>
+					</button>
 				</Popover.Trigger>
 				<Profile user={user_profile} side="top" />
 			</Popover.Root>
 		{/if}
-		<Button class="h-12 w-12 rounded-xl px-3" on:click={muteMicrophone}>
-			{#if $mutedState.muteMic}
-				<Icon icon="ph:microphone-slash-duotone" class="text-red-500" width="20" height="20" />
-			{:else}
-				<Icon icon="ph:microphone-duotone" width="20" height="20" />
-			{/if}
-		</Button>
+		<div class="flex">
+			<button
+				class="h-10 w-10 rounded-lg px-2 flex justify-center items-center group hover:bg-zinc-850 transition-colors"
+				on:click={muteMicrophone}
+			>
+				<Icon
+					icon="solar:microphone-2-bold-duotone"
+					class={`${$mutedState.muteMic ? 'text-red-500 group-hover:text-red-400' : 'text-zinc-500 group-hover:text-zinc-200'}  transition-colors`}
+					width="20"
+					height="20"
+				/>
+			</button>
 
-		<Button class="h-12 w-12 rounded-xl px-3" on:click={muteHeadphone}>
-			{#if $mutedState.muteHead}
-				<Icon icon="ph:speaker-x-duotone" class="text-red-500" width="20" height="20" />
-			{:else}
-				<Icon icon="ph:speaker-simple-high-duotone" width="20" height="20" />
-			{/if}
-		</Button>
+			<button
+				class="h-10 w-10 rounded-lg px-2 flex justify-center items-center hover:bg-zinc-850 transition-colors group"
+				on:click={muteHeadphone}
+			>
+				<Icon
+					icon="solar:headphones-round-bold-duotone"
+					class={`${$mutedState.muteHead ? 'text-red-500 group-hover:text-red-400' : 'text-zinc-500 group-hover:text-zinc-200'}  transition-colors`}
+					width="20"
+					height="20"
+				/>
+			</button>
+		</div>
 	</div>
 </div>

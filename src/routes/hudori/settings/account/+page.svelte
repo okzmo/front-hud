@@ -85,7 +85,7 @@
 	const { form: displayNameFormData, enhance: displayNameEnhance } = displayNameForm;
 </script>
 
-<section class="flex-grow bg-zinc-800 ml-5 p-6 rounded-lg flex">
+<section class="flex-grow bg-zinc-900 ml-5 p-6 rounded-lg flex">
 	<span class="flex-[60%_0_0]">
 		<h3 class="text-xl font-semibold">Basic Details</h3>
 		<p class="text-zinc-500">Change your username, display name or email.</p>
@@ -114,6 +114,7 @@
 								editDisplayName ? displayNameForm.submit() : (editDisplayName = true)}
 							size="icon"
 							class={`absolute top-1/2 -translate-y-1/2 right-2 h-8 w-8 border-none bg-zinc-800 ${editDisplayName ? 'hover:text-white hover:bg-green-500 text-green-500 border-none' : ''}`}
+							variant="secondary"
 						>
 							<Icon
 								icon={editDisplayName ? 'ph:check-bold' : 'ph:pencil-simple-line-duotone'}
@@ -148,6 +149,7 @@
 								editUsername ? usernameForm.submit() : (editUsername = !editUsername)}
 							size="icon"
 							class={`absolute top-1/2 -translate-y-1/2 right-2 h-8 w-8 border-none bg-zinc-800 ${editUsername ? 'hover:text-white hover:bg-green-500 text-green-500 border-none' : ''}`}
+							variant="secondary"
 						>
 							<Icon
 								icon={editUsername ? 'ph:check-bold' : 'ph:pencil-simple-line-duotone'}
@@ -181,6 +183,7 @@
 							on:click={() => (editEmail ? emailForm.submit() : (editEmail = !editEmail))}
 							size="icon"
 							class={`absolute top-1/2 -translate-y-1/2 right-2 h-8 w-8 border-none bg-zinc-800 ${editEmail ? 'hover:text-white hover:bg-green-500 text-green-500 border-none' : ''}`}
+							variant="secondary"
 						>
 							<Icon
 								icon={editEmail ? 'ph:check-bold' : 'ph:pencil-simple-line-duotone'}
@@ -194,4 +197,53 @@
 		</form>
 	</div>
 </section>
-<section>Password</section>
+<section class="flex-grow bg-zinc-900 ml-5 p-6 rounded-lg flex mt-3">
+	<span class="flex-[60%_0_0]">
+		<h3 class="text-xl font-semibold">Password</h3>
+		<p class="text-zinc-500">Change your password.</p>
+	</span>
+	<div class="flex-[40%_0_0] flex flex-col gap-y-3">
+		<form method="POST" action="?/display_name" use:displayNameEnhance>
+			<Form.Field form={displayNameForm} name="display_name" class="relative">
+				<Form.Control let:attrs>
+					<div class="flex space-x-2 items-end">
+						<Form.Label
+							class="text-zinc-400 after:content-['-'] gap-x-2 flex items-center after:opacity-0 data-[fs-error]:after:opacity-100 text-xs uppercase leading-none"
+							>Current password</Form.Label
+						>
+						<Form.FieldErrors class="text-xs uppercase leading-none font-normal" />
+					</div>
+					<div class="relative">
+						<Input
+							{...attrs}
+							bind:value={$displayNameFormData.display_name}
+							class="!mt-0 data-[fs-error]:border-destructive data-[fs-error]:ring-destructive pr-0"
+							placeholder="Current password"
+						/>
+					</div>
+				</Form.Control>
+			</Form.Field>
+		</form>
+		<form method="POST" action="?/username" use:usernameEnhance>
+			<Form.Field form={usernameForm} name="username" class="relative">
+				<Form.Control let:attrs>
+					<div class="flex items-end space-x-2">
+						<Form.Label
+							class="text-zinc-400 after:content-['-'] gap-x-2 flex items-center after:opacity-0 data-[fs-error]:after:opacity-100 text-xs uppercase leading-none"
+							>New password</Form.Label
+						>
+						<Form.FieldErrors class="text-xs uppercase leading-none font-normal" />
+					</div>
+					<div class="relative">
+						<Input
+							{...attrs}
+							bind:value={$usernameFormData.username}
+							class="!mt-0 data-[fs-error]:border-destructive data-[fs-error]:ring-destructive pr-0"
+							placeholder="New password"
+						/>
+					</div>
+				</Form.Control>
+			</Form.Field>
+		</form>
+	</div>
+</section>

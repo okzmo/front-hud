@@ -31,12 +31,12 @@
 			openInvite.set(true);
 		}}
 	>
-		<Icon icon="ph:chats-circle-duotone" height={16} width={16} />
+		<Icon icon="solar:plain-bold-duotone" height={16} width={16} />
 		Invite People
 	</ContextMenu.Item>
 	{#if isOwner}
 		<ContextMenu.Item class="gap-x-2 items-center text-sm" on:click={() => openCategory.set(true)}>
-			<Icon icon="ph:rows-plus-bottom-duotone" height={16} width={16} />
+			<Icon icon="solar:add-circle-bold-duotone" height={16} width={16} />
 			Create category
 		</ContextMenu.Item>
 	{/if}

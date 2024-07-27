@@ -102,18 +102,28 @@
 	});
 </script>
 
-<div class="h-full w-full flex">
+<div class="h-full w-full flex py-3 pr-3">
 	<!-- <div -->
 	<!-- 	class="absolute -top-14 left-1/2 -translate-x-1/2 rounded-[50%] w-5/6 h-28 bg-zinc-500 z-[1] bg-gradient-to-b from-[#B693FF] to-[#9397FF] blur-3xl opacity-15 pointer-events-none" -->
 	<!-- ></div> -->
 	{#if !$page.url.pathname.includes('settings')}
 		<Navbar />
-		<Sidebar />
 	{/if}
+
 	{#if !$page.url.pathname.includes('settings')}
-		<main class="flex-grow max-w-[calc(100%-17rem-4.15rem)] relative">
-			<slot />
-		</main>
+		<div class="w-full flex relative">
+			<img
+				src={$servers['servers:' + $page.params.serverId]?.banner}
+				alt=""
+				class="w-full h-full absolute top-0 left-0 rounded-[0.8rem] object-cover"
+			/>
+			<Sidebar />
+			<main
+				class="flex-grow relative bg-zinc-960/95 backdrop-blur-[150px] rounded-tr-xl rounded-br-xl"
+			>
+				<slot />
+			</main>
+		</div>
 	{/if}
 	{#if $page.url.pathname.includes('settings')}
 		<slot />

@@ -6,7 +6,7 @@
 
 <style lang="postcss">
 	:global(body) {
-		background-color: theme(colors.zinc.925);
+		background-color: theme(colors.zinc.950);
 		color: theme(colors.zinc.50);
 		height: 100vh;
 		font-family: 'Outfit';

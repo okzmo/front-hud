@@ -81,7 +81,7 @@
 					class:active={$type === 'voice'}
 				>
 					<RadioGroup.Item value="voice" id="voice" class="absolute opacity-0" />
-					<Icon icon="ph:speaker-simple-low-duotone" height="26" width="26" />
+					<Icon icon="solar:volume-loud-bold-duotone" height="26" width="26" />
 					<Label
 						for="voice"
 						class="after:content-normal after:absolute after:left-0 after:top-0 after:w-full after:h-full hover:cursor-pointer text-base"
@@ -93,7 +93,7 @@
 					class:active={$type === 'textual'}
 				>
 					<RadioGroup.Item value="textual" id="textual" class="absolute opacity-0" />
-					<Icon icon="ph:chat-teardrop-text-duotone" height="26" width="26" />
+					<Icon icon="solar:chat-round-line-bold-duotone" height="26" width="26" />
 					<Label
 						for="textual"
 						class="after:content-normal after:absolute after:left-0 after:top-0 after:w-full after:h-full hover:cursor-pointer text-base"
@@ -108,7 +108,7 @@
 					<p class="text-destructive mt-1">{$message.text}</p>
 				{/if}
 			</div>
-			<Button type="submit" class="py-3 mt-0 w-full">
+			<Button type="submit" class="py-3 mt-0 w-full" variant="secondary">
 				{#if $delayed}
 					Creating...
 				{:else}

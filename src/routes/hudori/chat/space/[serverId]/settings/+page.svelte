@@ -4,6 +4,6 @@
 	import { page } from '$app/stores';
 
 	onMount(() => {
-		goto(`/hudori/chat/community/${$page.params.serverId}/settings/customization`);
+		goto(`/hudori/chat/space/${$page.params.serverId}/settings/customization`);
 	});
 </script>

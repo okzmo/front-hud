@@ -9,8 +9,8 @@
 
 <Sheet.Root>
 	<Sheet.Trigger asChild let:builder>
-		<Button builders={[builder]} class="h-12 w-12 rounded-xl text-zinc-500" size="icon">
-			<Icon icon="ph:bell-duotone" height="24" width="24" />
+		<Button builders={[builder]} class="h-12 w-12 text-zinc-500" size="icon">
+			<Icon icon="solar:bell-bold-duotone" height="24" width="24" />
 		</Button>
 	</Sheet.Trigger>
 	<Sheet.Content side="left">

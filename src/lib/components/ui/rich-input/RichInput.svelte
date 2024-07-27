@@ -321,7 +321,7 @@
 	});
 </script>
 
-<div id="rich-input" class="rich-input bg-zinc-925 relative">
+<div id="rich-input" class="rich-input bg-zinc-960/20 relative rounded-full">
 	{#if showSlowRequest}
 		<div
 			class="absolute bg-zinc-850 left-3 -top-8 w-[calc(100%-1.5rem)] py-1 pb-4 px-3 rounded-tr-lg rounded-tl-lg text-sm"
@@ -346,17 +346,22 @@
 		<label
 			for="dropzone-file"
 			id="image-upload-icon"
-			class="absolute top-1/2 -translate-y-1/2 left-[1.5rem] z-[2] w-[1.25rem] h-[1.25rem] flex justify-center items-center text-zinc-600 hover:text-zinc-400"
+			class="absolute top-[0.7rem] left-[2.4rem] z-[2] w-[1.25rem] h-[1.25rem] flex justify-center items-start text-zinc-600 hover:text-zinc-400 cursor-pointer transition-colors"
 		>
 			{#if $files.length > 0}
 				<span class="text-xs">{$files.length}</span>
 			{:else}
-				<Icon icon="ph:images-duotone" class="pointer-events-none" height={20} width={20} />
+				<Icon
+					icon="solar:add-circle-bold-duotone"
+					class="pointer-events-none"
+					height={20}
+					width={20}
+				/>
 			{/if}
 		</label>
 		<Icon
-			icon="ph:smiley-melting-duotone"
-			class="absolute top-1/2 -translate-y-1/2 right-[1.5rem] z-[2] text-zinc-600 hover:text-zinc-400"
+			icon="solar:smile-circle-bold-duotone"
+			class="absolute top-[0.7rem] right-[2.3rem] z-[2] text-zinc-600 hover:text-zinc-400  cursor-pointer transition-colors"
 			height={20}
 			width={20}
 		/>
@@ -371,20 +376,45 @@
 
 	:global(.ProseMirror:focus) {
 		outline: none;
-		border-color: theme(colors.zinc.600);
-		transition: border-color 75ms ease-out;
+		background-color: theme(colors.zinc.50015);
 	}
 
 	:global(.ProseMirror) {
 		max-height: 20rem;
-		border: 1px solid theme(colors.zinc.750);
-		background-color: theme(colors.zinc.850);
+		background-color: theme(colors.zinc.50010);
+		border: 0px solid theme(colors.zinc.850);
 		font-size: theme(fontSize.sm);
-		padding: 0.685rem 2.5rem;
-		border-radius: 0.75rem;
+		padding: 0.685rem 2.65rem;
+		border-radius: 1.5rem;
 		scroll-padding-block: 0.685rem;
 		overflow: auto;
-		margin: 0rem 0.75rem 0.75rem;
+		transition: background-color 100ms ease-out;
+		margin: 0 1.5rem 1.5rem;
+	}
+
+	:global(.ProseMirror:hover) {
+		cursor: text;
+	}
+
+	:global(.ProseMirror::before) {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		border-radius: inherit;
+		padding: 1px; /* This determines the border thickness */
+		background: linear-gradient(to bottom, rgba(113, 113, 122, 0.3) 0%, rgba(113, 113, 122, 0) 35%);
+		-webkit-mask:
+			linear-gradient(#fff 0 0) content-box,
+			linear-gradient(#fff 0 0);
+		mask:
+			linear-gradient(#fff 0 0) content-box,
+			linear-gradient(#fff 0 0);
+		-webkit-mask-composite: xor;
+		mask-composite: exclude;
+		transition: opacity 100ms ease-out;
 	}
 
 	:global(.ProseMirror a) {

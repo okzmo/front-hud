@@ -94,9 +94,9 @@
 			(entries) => {
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
-						replyMessage.classList.add('!bg-zinc-650/60');
+						replyMessage.classList.add('!bg-zinc-650/35');
 						setTimeout(() => {
-							replyMessage.classList.remove('!bg-zinc-650/60');
+							replyMessage.classList.remove('!bg-zinc-650/35');
 						}, 1000);
 						observer.disconnect();
 					}
@@ -110,57 +110,52 @@
 </script>
 
 {#if browser}
-	<div class="flex gap-x-2 items-end" class:mt-6={!groupedWithPrevious}>
-		{#if !groupedWithAfter}
-			<Popover.Root onOpenChange={() => getUserProfile()}>
-				<Popover.Trigger>
-					<div class="flex-shrink-0 h-10 w-10 rounded-xl overflow-hidden">
-						{#if $loadingMessages}
-							<Skeleton class="w-full h-full" />
-						{/if}
-						<img class="w-full h-full object-cover" src={author.avatar} alt="" />
-					</div>
-				</Popover.Trigger>
-				<Profile user={user_profile} side="right" />
-			</Popover.Root>
-		{/if}
-		<div class="flex flex-col w-fit">
-			{#if images && images.length > 0}
-				<div
-					class="flex gap-2 max-w-[30rem] [&+div]:rounded-tl-sm overflow-hidden flex-wrap"
-					class:ml-[3rem]={groupedWithAfter}
-				>
-					<GridImages {images} />
-				</div>
-			{/if}
-
-			{#if content}
-				<ContextMenu.Root>
-					<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId)}>
-						{#if reply && reply.id !== ''}
-							<button
-								class="text-xs inline-flex items-center gap-x-1 text-zinc-600 ml-2 group hover:text-zinc-400 transition-colors cursor-pointer"
-								on:click={goToReply}
-							>
-								<Icon
-									icon="iconoir:quote-message-solid"
-									class="text-zinc-500 group-hover:text-zinc-300 transition-colors"
-								/>
-								<span class="font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors"
-									>{reply?.author?.display_name}</span
-								>
-								<span
-									class="[&>p]:max-w-[10rem] [&>p]:inline-block [&>p]:overflow-hidden [&>p]:text-ellipsis overflow-hidden text-ellipsis flex-shrink-0 whitespace-nowrap flex"
-									>{@html reply?.content}</span
-								>
-							</button>
-						{/if}
+	<ContextMenu.Root>
+		<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId)}>
+			<div
+				class="flex gap-x-2 items-start px-6 py-3 hover:bg-zinc-500/5 transition-colors duration-75 relative"
+				class:mt-2={!groupedWithPrevious}
+				class:pt-8={reply && reply.id !== ''}
+				class:mentioned={mentions && mentions.includes($user?.id)}
+				data-messageid={id}
+			>
+				{#if reply && reply.id !== ''}
+					<button
+						class="text-xs inline-flex items-center gap-x-1 text-zinc-600 ml-2 group hover:text-zinc-400 transition-colors cursor-pointer absolute top-[0.65rem] left-[4.7rem]"
+						on:click={goToReply}
+					>
+						<Icon
+							icon="iconoir:quote-message-solid"
+							class="text-zinc-500 group-hover:text-zinc-300 transition-colors"
+						/>
+						<span class="font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors"
+							>{reply?.author?.display_name}</span
+						>
+						<span
+							class="[&>p]:max-w-[10rem] [&>p]:inline-block [&>p]:overflow-hidden [&>p]:text-ellipsis overflow-hidden text-ellipsis flex-shrink-0 whitespace-nowrap flex"
+							>{@html reply?.content}</span
+						>
+					</button>
+				{/if}
+				{#if !groupedWithAfter}
+					<Popover.Root onOpenChange={() => getUserProfile()}>
+						<Popover.Trigger>
+							<div class="flex-shrink-0 h-10 w-10 rounded-xl overflow-hidden">
+								{#if $loadingMessages}
+									<Skeleton class="w-full h-full" />
+								{/if}
+								<img class="w-full h-full object-cover" src={author.avatar} alt="" />
+							</div>
+						</Popover.Trigger>
+						<Profile user={user_profile} side="right" />
+					</Popover.Root>
+				{/if}
+				<div class="flex flex-col w-fit">
+					{#if content}
 						<div
-							class="bg-zinc-850 rounded-xl rounded-bl-sm px-5 py-3 mt-1 w-fit text-sm [&>p]:break-all flex flex-col gap-y-1 max-w-[45rem] transition-colors"
+							class="rounded-xl rounded-bl-sm pl-3 w-fit text-sm [&>p]:break-all flex flex-col max-w-[45rem] transition-colors"
 							class:groupMessagePrevious={groupedWithPrevious}
 							class:groupMessageAfter={groupedWithAfter}
-							class:mentioned={mentions && mentions.includes($user?.id)}
-							data-messageid={id}
 						>
 							{#if !groupedWithPrevious}
 								<span class="flex items-end gap-x-2 w-fit">
@@ -181,7 +176,7 @@
 								</span>
 							{/if}
 							<span
-								class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline break-all [&>p>span]:first:ml-0"
+								class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline break-all [&>p>span]:first:ml-0 [&>p]:leading-[1.75rem]"
 							>
 								{#if $editingMessage === id}
 									<RichInputEditMessage
@@ -195,39 +190,47 @@
 								{/if}
 							</span>
 						</div>
-					</ContextMenu.Trigger>
-					{#if contextMenuOpen}
-						<ContextMenu.Content id="context-menu-category">
-							<ContextMenu.Item
-								class="gap-x-2 items-center text-sm"
-								on:click={() =>
-									replyTo.set({ id: id, author: { display_name: author.display_name } })}
-							>
-								<Icon icon="ph:arrow-bend-up-left-bold" height={16} width={16} class="" />
-								Reply
-							</ContextMenu.Item>
-							{#if author.id === $user.id}
+						{#if contextMenuOpen}
+							<ContextMenu.Content id="context-menu-category">
 								<ContextMenu.Item
 									class="gap-x-2 items-center text-sm"
-									on:click={() => editingMessage.set(id)}
+									on:click={() =>
+										replyTo.set({ id: id, author: { display_name: author.display_name } })}
 								>
-									<Icon icon="ph:pencil-simple-duotone" height={16} width={16} class="" />
-									Edit message
+									<Icon icon="ph:arrow-bend-up-left-bold" height={16} width={16} class="" />
+									Reply
 								</ContextMenu.Item>
-								<ContextMenu.Item
-									class="gap-x-2 items-center text-destructive data-[highlighted]:bg-destructive data-[highlighted]:text-zinc-50 text-sm"
-									on:click={deleteMessage}
-								>
-									<Icon icon="ph:trash-duotone" height={16} width={16} />
-									Delete message
-								</ContextMenu.Item>
-							{/if}
-						</ContextMenu.Content>
+								{#if author.id === $user.id}
+									<ContextMenu.Item
+										class="gap-x-2 items-center text-sm"
+										on:click={() => editingMessage.set(id)}
+									>
+										<Icon icon="ph:pencil-simple-duotone" height={16} width={16} class="" />
+										Edit message
+									</ContextMenu.Item>
+									<ContextMenu.Item
+										class="gap-x-2 items-center text-destructive data-[highlighted]:bg-destructive data-[highlighted]:text-zinc-50 text-sm"
+										on:click={deleteMessage}
+									>
+										<Icon icon="ph:trash-duotone" height={16} width={16} />
+										Delete message
+									</ContextMenu.Item>
+								{/if}
+							</ContextMenu.Content>
+						{/if}
 					{/if}
-				</ContextMenu.Root>
-			{/if}
-		</div>
-	</div>
+
+					{#if images && images.length > 0}
+						<div
+							class="flex gap-2 max-w-[30rem] [&+div]:rounded-tl-sm overflow-hidden flex-wrap ml-2 mt-1"
+						>
+							<GridImages {images} />
+						</div>
+					{/if}
+				</div>
+			</div>
+		</ContextMenu.Trigger>
+	</ContextMenu.Root>
 {/if}
 
 <style lang="postcss">
@@ -246,7 +249,11 @@
 	}
 
 	.mentioned {
-		background-color: #f7b14a2a;
-		border: 1px solid #f7b14a;
+		background-color: #f9864c2b;
+		border-left: 2px solid #f9864c;
+	}
+
+	.mentioned:hover {
+		background-color: #f9864c3b;
 	}
 </style>
