@@ -275,8 +275,9 @@
 			on:click={toggleGradient}
 			class="aspect-square h-10 w-10"
 			style="background: {isGradient ? solidColor : generateGradientString()};"
+			variant="secondary"
 		></Button>
-		<Button class="flex-grow" on:click={submitColor}>Save</Button>
+		<Button variant="secondary" class="flex-grow" on:click={submitColor}>Save</Button>
 	</div>
 </div>
 

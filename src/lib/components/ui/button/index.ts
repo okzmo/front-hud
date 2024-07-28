@@ -10,6 +10,8 @@ const buttonVariants = tv({
 				'relative button-gradient-border bg-zinc-900 text-zinc-50 hover:bg-zinc-800 active:scale-[0.95] ',
 			secondary:
 				'bg-zinc-900 border border-zinc-800 rounded-lg hover:rounded-lg hover:bg-zinc-850 active:scale-[0.97]',
+			altDefault:
+				'relative button-gradient-border bg-zinc-900 text-zinc-50 hover:bg-zinc-800 active:scale-[0.95] hover:rounded-lg transition-opacity',
 			destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
 			outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
 			ghost: 'hover:bg-accent hover:text-accent-foreground',

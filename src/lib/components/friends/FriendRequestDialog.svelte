@@ -67,6 +67,7 @@
 				</Form.Control>
 				<Button
 					type="submit"
+					variant="secondary"
 					class={`w-24 ${success ? 'bg-green-500 border-none hover:bg-green-600' : 'bg-zinc-850 border border-zinc-725 hover:bg-zinc-725'}`}
 				>
 					{success ? 'Sent!' : 'Submit'}

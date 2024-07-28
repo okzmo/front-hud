@@ -3,7 +3,6 @@
 	import { type Events, type Props, buttonVariants } from './index.js';
 	import { cn } from '$lib/utils.js';
 	import { page } from '$app/stores';
-
 	type $$Props = Props;
 	type $$Events = Events;
 
@@ -69,7 +68,8 @@
 		transition:
 			border-radius 250ms ease-out,
 			background-color 150ms ease-out,
-			transform 150ms ease-out;
+			transform 150ms ease-out,
+			opacity 75ms ease-out;
 	}
 
 	:global(.button-gradient-border::before) {

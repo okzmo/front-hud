@@ -7,13 +7,14 @@
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
 	import ServerIconDialog from '$lib/components/server/settings/ServerIconDialog.svelte';
+	import ServerBannerDialog from '$lib/components/server/settings/ServerBannerDialog.svelte';
 
 	let openBanner = writable<boolean>(false);
 	let openIcon = writable<boolean>(false);
 </script>
 
 <div class="ml-5 flex flex-col mx-auto">
-	<div class="relative aspect-[40/25] w-full h-full">
+	<div class="relative aspect-[27/21] w-full h-full">
 		<Button
 			class="right-4 top-4 z-[2] absolute rounded-xl bg-zinc-800/50 hover:bg-zinc-800/75 border-none shadow-none backdrop-blur-lg"
 			size="icon"
@@ -58,7 +59,7 @@
 </div>
 
 <Dialog.Root open={$openBanner} onOpenChange={() => openBanner.set(!openBanner)}>
-	<ProfileBannerDialog dialogState={openBanner} />
+	<ServerBannerDialog dialogState={openBanner} />
 </Dialog.Root>
 
 <Dialog.Root open={$openIcon} onOpenChange={() => openIcon.set(!openIcon)}>

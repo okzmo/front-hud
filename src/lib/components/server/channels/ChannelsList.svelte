@@ -8,7 +8,8 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import type { Server } from '$lib/types';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import Icon from '@iconify/svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
 
 	let openContextMenuId = `context-menu-${generateRandomId()}`;
 	let isOpen: boolean = false;
@@ -61,13 +62,25 @@
 			src={data?.banner}
 			alt=""
 		/>
-		<img
-			class="absolute block w-full h-[11rem] rounded-tl-lg bg-zinc-500 object-cover object-top"
-			src={data?.banner}
-			alt=""
-		/>
+		<div class="relative group">
+			<img
+				class="absolute block w-full h-[11rem] rounded-tl-lg bg-zinc-500 object-cover object-top"
+				src={data?.banner}
+				alt=""
+			/>
+			<Button
+				class="right-2 top-2 z-[2] absolute rounded-xl bg-zinc-800/50 hover:bg-zinc-800/75 border-none shadow-none backdrop-blur-lg opacity-0 group-hover:opacity-100 select-none"
+				size="icon"
+				href="/hudori/chat/space/{data?.id.split(':')[1]}/settings"
+				variant="altDefault"
+				draggable="false"
+			>
+				<Icon icon="solar:settings-bold-duotone" height={18} width={18} />
+			</Button>
+		</div>
 		<div class="gradient-sidebar h-full flex flex-col z-[2] mt-[10rem] px-3 backdrop-blur-md">
-			<div class="pt-[0.875rem] pb-5 flex justify-center items-center text-zinc-500">
+			<div class="pt-[0.875rem] pb-8 text-zinc-50 relative w-fit mx-auto flex items-center">
+				<Icon icon="solar:confetti-bold-duotone" class="absolute -left-8" height={18} width={18} />
 				{data?.name}
 			</div>
 			{#if $servers[data?.id]}

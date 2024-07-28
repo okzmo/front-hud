@@ -114,12 +114,16 @@
 				size="icon"
 				on:click={() => (image = undefined)}
 				class="shadow-none border-none bg-destructive hover:bg-red-600"
+				variant="secondary"
 			>
 				<Icon icon="ph:trash-duotone" height={20} width={20} />
 			</Button>
 		{/if}
-		<Button class="flex-1" disabled={!image || uploading} on:click={submitBanner}
-			>{uploading ? 'Uploading...' : 'Save'}</Button
+		<Button
+			variant="secondary"
+			class="flex-1"
+			disabled={!image || uploading}
+			on:click={submitBanner}>{uploading ? 'Uploading...' : 'Save'}</Button
 		>
 	</div>
 </Dialog.Content>

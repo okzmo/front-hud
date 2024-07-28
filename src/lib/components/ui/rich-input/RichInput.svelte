@@ -321,7 +321,7 @@
 	});
 </script>
 
-<div id="rich-input" class="rich-input bg-zinc-960/20 relative rounded-full">
+<div id="rich-input" class="rich-input bg-zinc-960/20 relative rounded-br-xl max-w-full">
 	{#if showSlowRequest}
 		<div
 			class="absolute bg-zinc-850 left-3 -top-8 w-[calc(100%-1.5rem)] py-1 pb-4 px-3 rounded-tr-lg rounded-tl-lg text-sm"
@@ -342,11 +342,11 @@
 	{#if emojiProps}
 		<EmojiList props={emojiProps} bind:this={emojisList} />
 	{/if}
-	<div bind:this={element} class="relative">
+	<div bind:this={element} class="relative max-w-full">
 		<label
 			for="dropzone-file"
 			id="image-upload-icon"
-			class="absolute top-[0.7rem] left-[2.4rem] z-[2] w-[1.25rem] h-[1.25rem] flex justify-center items-start text-zinc-600 hover:text-zinc-400 cursor-pointer transition-colors"
+			class="absolute top-[2rem] -translate-y-1/2 left-[1.7rem] z-[2] w-[1.25rem] h-[1.25rem] flex justify-center items-start text-zinc-600 hover:text-zinc-400 cursor-pointer transition-colors"
 		>
 			{#if $files.length > 0}
 				<span class="text-xs">{$files.length}</span>
@@ -361,7 +361,7 @@
 		</label>
 		<Icon
 			icon="solar:smile-circle-bold-duotone"
-			class="absolute top-[0.7rem] right-[2.3rem] z-[2] text-zinc-600 hover:text-zinc-400  cursor-pointer transition-colors"
+			class="absolute top-[2rem] -translate-y-1/2 right-[1.7rem] z-[2] text-zinc-600 hover:text-zinc-400  cursor-pointer transition-colors"
 			height={20}
 			width={20}
 		/>
@@ -376,45 +376,25 @@
 
 	:global(.ProseMirror:focus) {
 		outline: none;
-		background-color: theme(colors.zinc.50015);
+		background-color: theme(colors.zinc.925);
 	}
 
 	:global(.ProseMirror) {
 		max-height: 20rem;
-		background-color: theme(colors.zinc.50010);
-		border: 0px solid theme(colors.zinc.850);
-		font-size: theme(fontSize.sm);
-		padding: 0.685rem 2.65rem;
-		border-radius: 1.5rem;
+		background-color: transparent;
+		border-top: 1px solid theme(colors.zinc.850);
+		border-bottom: 0px;
+		border-left: 0px;
+		border-right: 0px;
+		font-size: theme(fontSize.base);
+		padding: 1.22rem 4.65rem;
+		border-radius: 0 0 0.75rem 0;
 		scroll-padding-block: 0.685rem;
 		overflow: auto;
 		transition: background-color 100ms ease-out;
-		margin: 0 1.5rem 1.5rem;
-	}
-
-	:global(.ProseMirror:hover) {
-		cursor: text;
-	}
-
-	:global(.ProseMirror::before) {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		border-radius: inherit;
-		padding: 1px; /* This determines the border thickness */
-		background: linear-gradient(to bottom, rgba(113, 113, 122, 0.3) 0%, rgba(113, 113, 122, 0) 35%);
-		-webkit-mask:
-			linear-gradient(#fff 0 0) content-box,
-			linear-gradient(#fff 0 0);
-		mask:
-			linear-gradient(#fff 0 0) content-box,
-			linear-gradient(#fff 0 0);
-		-webkit-mask-composite: xor;
-		mask-composite: exclude;
-		transition: opacity 100ms ease-out;
+		margin: 0;
+		overflow-wrap: break-word;
+		word-break: break-word;
 	}
 
 	:global(.ProseMirror a) {
@@ -428,7 +408,7 @@
 
 	:global(.is-editor-empty:first-child::before) {
 		color: theme(colors.zinc.600);
-		font-size: theme(fontSize.sm);
+		font-size: theme(fontSize.base);
 		content: attr(data-placeholder);
 		float: left;
 		height: 0;

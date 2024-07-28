@@ -85,30 +85,30 @@
 	}
 </script>
 
-<div class="flex flex-col flex-shrink-0 gap-y-2">
-	{#if $vcRoom}
-		<div
-			class="w-full flex bg-zinc-950 rounded-xl border border-zinc-750 justify-between items-center py-1 pr-1 pl-4"
-		>
-			<div class="flex items-center gap-x-2">
-				<Icon icon="ph:wifi-high-duotone" class="text-green-500" width="20" height="20" />
-				<p class="text-green-500">Connected</p>
-			</div>
-			<Button
-				class="h-10 w-10 rounded-lg px-2 border-none shadow-none group hover:bg-red-500/20"
-				on:click={() => quitRoom('servers:' + $page.params.serverId)}
-			>
-				<Icon
-					icon="ph:phone-slash-duotone"
-					class="group-hover:text-red-500 transition-colors duration-75"
-					width="20"
-					height="20"
-				/>
-			</Button>
-		</div>
-	{/if}
+<div
+	class={`flex items-end flex-shrink-0 border-t border-zinc-850 ${$vcRoom ? 'h-[7.5rem]' : 'h-[4rem]'}  transition-[height] duration-200 relative overflow-hidden bg-zinc-960 backdrop-blur-xl `}
+>
 	<div
-		class="flex gap-x-2 justify-between backdrop-blur-xl rounded-bl-xl p-[0.375rem] px-3 py-2 bg-zinc-960 border-t border-zinc-850 items-center"
+		class="absolute w-full flex justify-between items-center py-1 pl-5 pr-3 bottom-[4rem] z-[20]"
+	>
+		<div class="flex items-center gap-x-2">
+			<Icon icon="ph:wifi-high-duotone" class="text-green-500" width="20" height="20" />
+			<p class="text-green-500">Connected</p>
+		</div>
+		<button
+			class="h-10 w-10 rounded-lg px-2 flex justify-center items-center group hover:bg-red-500/20 transition-colors"
+			on:click={() => quitRoom('servers:' + $page.params.serverId)}
+		>
+			<Icon
+				icon="ph:phone-slash-duotone"
+				class="text-zinc-500 group-hover:text-red-500 transition-colors duration-75"
+				width="20"
+				height="20"
+			/>
+		</button>
+	</div>
+	<div
+		class="flex gap-x-2 justify-between rounded-bl-xl p-[0.375rem] px-3 py-2 items-center w-full"
 	>
 		{#if $user}
 			<Popover.Root onOpenChange={getUserProfile}>
@@ -162,3 +162,9 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	.max-height-transi {
+		transition: max-height 150ms ease-out;
+	}
+</style>

@@ -44,10 +44,8 @@
 		form.append('cropX', croppingElements.pixels.x);
 		form.append('cropWidth', croppingElements.pixels.width);
 		form.append('cropHeight', croppingElements.pixels.height);
+		form.append('server_id', `servers:${$page.params.serverId}`);
 		if (old_icon) form.append('old_icon', old_icon);
-		if ($servers[`servers:${$page.params.serverId}`]) {
-			form.append('server_id', `servers:${$page.params.serverId}`);
-		}
 
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/server/change_icon`, {
 			method: 'POST',
@@ -64,13 +62,15 @@
 
 		const data = await response.json();
 		uploading = false;
-		servers.update((server) => {
-			const serverExist = server[`servers:${$page.params.serverId}`];
-			if (serverExist) {
-				serverExist.icon = data.icon;
-			}
-			return server;
-		});
+		if ($servers[`servers:${$page.params.serverId}`]) {
+			servers.update((server) => {
+				const serverExist = server[`servers:${$page.params.serverId}`];
+				if (serverExist) {
+					serverExist.icon = data.icon;
+				}
+				return server;
+			});
+		}
 
 		dialogState.set(false);
 		image = undefined;
@@ -117,11 +117,12 @@
 				size="icon"
 				on:click={() => (image = undefined)}
 				class="shadow-none border-none bg-destructive hover:bg-red-600"
+				variant="secondary"
 			>
 				<Icon icon="ph:trash-duotone" height={20} width={20} />
 			</Button>
 		{/if}
-		<Button class="flex-1" disabled={!image || uploading} on:click={submitIcon}
+		<Button class="flex-1" disabled={!image || uploading} on:click={submitIcon} variant="secondary"
 			>{uploading ? 'Uploading...' : 'Save'}</Button
 		>
 	</div>
