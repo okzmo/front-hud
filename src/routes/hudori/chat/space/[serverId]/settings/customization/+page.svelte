@@ -50,7 +50,7 @@
 					</button>
 				</span>
 			</div>
-			<div class="w-full absolute h-full progressive-blur rounded-[1.5rem]"></div>
+			<div class="w-full absolute h-full rounded-[1.5rem]"></div>
 			<div
 				class="w-[calc(100%+1px)] absolute h-full rounded-2xl bg-gradient-to-t from-black/15 to-transparent left-0 top-0"
 			></div>
@@ -65,14 +65,3 @@
 <Dialog.Root open={$openIcon} onOpenChange={() => openIcon.set(!openIcon)}>
 	<ServerIconDialog dialogState={openIcon} />
 </Dialog.Root>
-
-<style lang="postcss">
-	.progressive-blur {
-		backdrop-filter: blur(40px);
-		-webkit-backdrop-filter: blur(40px);
-		inset: 0;
-
-		mask-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1) 85%, rgb(0, 0, 0));
-		-webkit-mask-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1) 85%, rgb(0, 0, 0));
-	}
-</style>

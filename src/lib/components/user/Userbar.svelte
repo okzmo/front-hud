@@ -86,7 +86,7 @@
 </script>
 
 <div
-	class={`flex items-end flex-shrink-0 border-t border-zinc-850 ${$vcRoom ? 'h-[7.5rem]' : 'h-[4rem]'}  transition-[height] duration-200 relative overflow-hidden bg-zinc-960 backdrop-blur-xl `}
+	class={`flex items-end flex-shrink-0 border-t border-zinc-850 ${$vcRoom ? 'h-[7.5rem]' : 'h-[4rem]'}  transition-[height] duration-200 relative overflow-hidden bg-zinc-960 backdrop-blur-xl rounded-bl-xl `}
 >
 	<div
 		class="absolute w-full flex justify-between items-center py-1 pl-5 pr-3 bottom-[4rem] z-[20]"
