@@ -5,7 +5,7 @@
 	import { browser } from '$app/environment';
 	import SettingsLink from '$lib/components/settings/SettingsLink.svelte';
 	import { goto } from '$app/navigation';
-	import { settingsLastPage } from '$lib/stores';
+	import { serversStateStore, settingsLastPage } from '$lib/stores';
 	import { page } from '$app/stores';
 
 	let handleEscape: (event: KeyboardEvent) => void;
@@ -37,7 +37,8 @@
 <div class="flex max-w-[75rem] mx-auto h-full">
 	<div class="flex flex-col items-center w-fit text-zinc-700 group h-fit pt-[4rem]">
 		<a
-			href={$settingsLastPage || `/hudori/chat/space/${$page.params.serverId}`}
+			href={$settingsLastPage ||
+				`/hudori/chat/space/${$page.params.serverId}/channels/${$serversStateStore[`servers:${$page.params.serverId}`]?.lastVisited}`}
 			class="flex justify-center items-center h-10 w-10 border border-zinc-700 rounded-full bg-transparent text-zinc-700 hover:bg-transparent group-hover:border-zinc-600 group-hover:text-zinc-600"
 		>
 			<Icon icon="ph:arrow-left-bold" />
