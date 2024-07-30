@@ -11,7 +11,8 @@
 		servers,
 		editingMessage,
 		messages,
-		replyTo
+		replyTo,
+		sessStore
 	} from '$lib/stores';
 	import { page } from '$app/stores';
 	import Icon from '@iconify/svelte';
@@ -24,6 +25,7 @@
 	import { debounce } from '$lib/utils';
 	import { typing } from '$lib/fetches';
 	import type { SuggestionProps } from '@tiptap/suggestion';
+	import { Body, fetch } from '@tauri-apps/api/http';
 
 	let element: Element | undefined;
 	let editor: Editor;
@@ -75,6 +77,7 @@
 			return;
 		}
 
+		const formData = new FormData();
 		const body = {
 			author: $user,
 			channel_id: $page.params.id || $page.params.channelId,
@@ -88,8 +91,6 @@
 			body.server_id = 'servers:' + $page.params.serverId;
 		}
 
-		const formData = new FormData();
-
 		if ($files.length > 0) {
 			showSlowRequest = true;
 			$files.forEach((file, idx) => {
@@ -100,14 +101,17 @@
 		formData.append('body', JSON.stringify(body));
 
 		try {
+			const sessionId = await sessStore.get('sessionId');
 			const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/messages/create`, {
 				method: 'POST',
-				credentials: 'include',
-				body: formData,
 				headers: {
+					'Content-Type': 'multipart/form-data',
 					'X-User-ID': $user?.id,
-					'X-User-Agent': navigator.userAgent
-				}
+					Authorization: `Bearer ${sessionId}`
+				},
+				body: Body.form({
+					body: JSON.stringify(body)
+				})
 			});
 
 			if (!response.ok) {

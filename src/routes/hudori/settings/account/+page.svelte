@@ -4,14 +4,16 @@
 	import { Button } from '$lib/components/ui/button';
 	import { user } from '$lib/stores';
 	import Icon from '@iconify/svelte';
-	import { superForm } from 'sveltekit-superforms/client';
+	import { defaults, setError, superForm } from 'sveltekit-superforms/client';
 	import type { PageData } from './$types';
 	import {
 		detailsDisplayNameSchema,
 		detailsEmailSchema,
 		detailsUsernameSchema
 	} from '$lib/components/settings/schema-details';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod, zodClient } from 'sveltekit-superforms/adapters';
+	import { fail } from '@sveltejs/kit';
+	import { Body, fetch } from '@tauri-apps/api/http';
 
 	let editDisplayName: Boolean = false;
 	let editUsername: Boolean = false;
@@ -21,61 +23,140 @@
 
 	let userId: string = $user!.id;
 
-	const emailForm = superForm(data.emailForm, {
-		validators: zodClient(detailsEmailSchema),
+	const dataEmail = defaults(zod(detailsEmailSchema));
+	const emailForm = superForm(dataEmail, {
+		validators: zod(detailsEmailSchema),
+		SPA: true,
 		dataType: 'json',
 		validationMethod: 'submit-only',
 		multipleSubmits: 'prevent',
 		onSubmit({ formData }) {
 			formData.set('user_id', userId);
 		},
-		onResult({ result }) {
-			if (result.type === 'success') {
+		async onUpdate({ form }) {
+			if (!form.valid) return;
+
+			let body: any = {
+				user_id: $user.id,
+				email: form.data.email
+			};
+
+			try {
+				const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_email`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: Body.json(body)
+				});
+
+				const data = response.data as { name?: string; message: string };
+
+				if (!response.ok) {
+					return setError(form, data.name, data.message);
+				}
+
+				user.update((user) => {
+					user!.email = form.data.email;
+					return user;
+				});
 				editEmail = false;
-				user.update((user) => {
-					user!.email = $emailFormData.email;
-					return user;
-				});
+			} catch (e) {
+				console.log(e);
+				return fail(500, { error: 'An unexpected error occured.' });
 			}
 		}
 	});
 
-	const usernameForm = superForm(data.usernameForm, {
-		validators: zodClient(detailsUsernameSchema),
+	const dataUsername = defaults(zod(detailsUsernameSchema));
+	const usernameForm = superForm(dataUsername, {
+		validators: zod(detailsUsernameSchema),
+		SPA: true,
 		dataType: 'json',
 		validationMethod: 'submit-only',
 		multipleSubmits: 'prevent',
 		onSubmit({ formData }) {
 			formData.set('user_id', userId);
 		},
-		onResult({ result }) {
-			if (result.type === 'success') {
+		async onUpdate({ form }) {
+			if (!form.valid) return;
+
+			let body: any = {
+				user_id: $user.id,
+				username: form.data.username
+			};
+
+			try {
+				const response = await fetch(
+					`${import.meta.env.VITE_API_URL}/api/v1/user/change_username`,
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: Body.json(body)
+					}
+				);
+
+				const data = response.data as { name?: string; message: string };
+
+				if (!response.ok) {
+					return setError(form, data.name, data.message);
+				}
+
+				user.update((user) => {
+					user!.username = form.data.username;
+					return user;
+				});
 				editUsername = false;
-
-				user.update((user) => {
-					user!.username = $usernameFormData.username;
-					return user;
-				});
+			} catch (e) {
+				console.log(e);
+				return fail(500, { error: 'An unexpected error occured.' });
 			}
 		}
 	});
 
-	const displayNameForm = superForm(data.displayNameForm, {
-		validators: zodClient(detailsDisplayNameSchema),
+	const dataDP = defaults(zod(detailsDisplayNameSchema));
+	const displayNameForm = superForm(dataDP, {
+		validators: zod(detailsDisplayNameSchema),
+		SPA: true,
 		dataType: 'json',
 		validationMethod: 'submit-only',
 		multipleSubmits: 'prevent',
 		onSubmit({ formData }) {
 			formData.set('user_id', userId);
 		},
-		onResult({ result }) {
-			if (result.type === 'success') {
-				editDisplayName = false;
+		async onUpdate({ form }) {
+			if (!form.valid) return;
+
+			let body: any = {
+				user_id: $user.id,
+				display_name: form.data.display_name
+			};
+
+			try {
+				const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_name`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: Body.json(body)
+				});
+
+				const data = response.data as { name?: string; message: string };
+
+				if (!response.ok) {
+					return setError(form, data.name, data.message);
+				}
 
 				user.update((user) => {
-					user!.display_name = $displayNameFormData.display_name;
+					user!.display_name = form.data.display_name;
 					return user;
 				});
+				editDisplayName = false;
+			} catch (e) {
+				console.log(e);
+				return fail(500, { error: 'An unexpected error occured.' });
 			}
 		}
 	});

@@ -4,10 +4,13 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Dropzone from 'svelte-file-dropzone';
 	import Icon from '@iconify/svelte';
-	import { servers, user } from '$lib/stores';
+	import { servers, user, sessStore } from '$lib/stores';
 	import type { Writable } from 'svelte/store';
-	import { removeCachedProfile } from '$lib/utils';
+	import { cacheImage, removeCachedProfile } from '$lib/utils';
 	import { page } from '$app/stores';
+	import { fetch, Body } from '@tauri-apps/api/http';
+	import { BaseDirectory, removeFile } from '@tauri-apps/api/fs';
+
 	let crop = { x: 0, y: 0 };
 	let zoom = 1;
 	let image: string | undefined = undefined;
@@ -39,7 +42,7 @@
 
 		uploading = true;
 		const form = new FormData();
-		const old_banner = $servers[`servers:${$page.params.serverId}`]?.banner?.split('/').at(-1);
+		const old_banner = $servers[`servers:${$page.params.serverId}`]?.banner?.split('/').pop();
 		form.append('banner', file);
 		form.append('cropY', croppingElements.pixels.y);
 		form.append('cropX', croppingElements.pixels.x);
@@ -48,20 +51,30 @@
 		form.append('old_banner', old_banner!);
 		form.append('server_id', `servers:${$page.params.serverId}`);
 
+		const sessionId = await sessStore.get('sessionId');
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/server/change_banner`, {
 			method: 'POST',
-			credentials: 'include',
-			body: form,
+			body: Body.form(form),
 			headers: {
-				'X-User-ID': $user?.id
+				'Content-type': 'multipart/form-data',
+				'X-User-ID': $user?.id,
+				Authorization: `Bearer ${sessionId}`
 			}
 		});
 
 		if (!response.ok) {
+			console.log(response.data);
 			console.error('Image upload failed', response.status);
 		}
 
-		const data = await response.json();
+		const data = response.data as { banner: string };
+
+		if (old_banner) {
+			await removeFile(`images/${old_banner}`, { dir: BaseDirectory.AppCache });
+		}
+		const new_banner = data.banner.split('/').pop();
+		await cacheImage(data.banner, new_banner!);
+
 		uploading = false;
 		servers.update((server) => {
 			const serverExist = server[`servers:${$page.params.serverId}`];

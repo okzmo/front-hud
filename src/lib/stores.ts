@@ -12,6 +12,7 @@ import { type SuperValidated, type Infer } from 'sveltekit-superforms';
 import type { FriendRequestFormSchema } from './components/friends/schema-friend-request';
 import { browser } from '$app/environment';
 import type { Room } from 'livekit-client';
+import { Store } from 'tauri-plugin-store-api';
 
 type ContextMenuServer = {
 	id: string;
@@ -34,6 +35,8 @@ export const usersTyping = writable<TypingState[]>([]);
 export const messProto = writable();
 export const editingMessage = writable<string>('');
 export const replyTo = writable<Message | undefined>();
+export const spaceBg = writable<string>('');
+export const sessStore = new Store('.sess.dat');
 
 export const friendRequest = writable<SuperValidated<Infer<FriendRequestFormSchema>>>();
 

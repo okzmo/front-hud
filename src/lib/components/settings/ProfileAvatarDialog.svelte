@@ -4,10 +4,12 @@
 	import Button from '../ui/button/button.svelte';
 	import Dropzone from 'svelte-file-dropzone';
 	import Icon from '@iconify/svelte';
-	import { friends, servers, user } from '$lib/stores';
+	import { friends, servers, sessStore, user } from '$lib/stores';
 	import type { Writable } from 'svelte/store';
 	import { removeCachedProfile } from '$lib/utils';
 	import { page } from '$app/stores';
+	import { fetch, Body } from '@tauri-apps/api/http';
+
 	let crop = { x: 0, y: 0 };
 	let zoom = 1;
 	let image: string | undefined = undefined;
@@ -52,14 +54,15 @@
 		if ($friends) {
 			form.append('friends', JSON.stringify($friends.map((friend) => friend.id)));
 		}
+		const sessionId = await sessStore.get('sessionId');
 
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_avatar`, {
 			method: 'POST',
-			credentials: 'include',
-			body: form,
+			body: Body.form(form),
 			headers: {
-				'X-User-Agent': navigator.userAgent,
-				'X-User-ID': $user?.id
+				'Content-type': 'multipart/form-data',
+				'X-User-ID': $user?.id,
+				Authorization: `Bearer ${sessionId}`
 			}
 		});
 
@@ -67,7 +70,7 @@
 			console.error('Image upload failed', response.status);
 		}
 
-		const data = await response.json();
+		const data = response.data as { avatar: string };
 		uploading = false;
 		user.update((user) => {
 			user.avatar = data.avatar;

@@ -1,16 +1,60 @@
 <script lang="ts">
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { superForm, setError, fail, defaults } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
 	import Icon from '@iconify/svelte';
-	import { signinFormSchema, type SigninFormSchema } from './schema-signin';
+	import { signinFormSchema } from './schema-signin';
+	import { fetch, Body } from '@tauri-apps/api/http';
+	import { user } from '$lib/stores';
+	import type { User } from '$lib/types';
+	import { sessStore } from '$lib/stores';
+	import { goto } from '$app/navigation';
 
-	export let data: SuperValidated<Infer<SigninFormSchema>>;
+	const data = defaults(zod(signinFormSchema));
 
 	const form = superForm(data, {
-		validators: zodClient(signinFormSchema),
-		dataType: 'json'
+		SPA: true,
+		validators: zod(signinFormSchema),
+		dataType: 'json',
+		clearOnSubmit: 'errors-and-message',
+		async onUpdate({ form }) {
+			if (!form.valid) return;
+
+			const endpoint = `${import.meta.env.VITE_API_URL}/auth/signin`;
+			console.log(endpoint);
+
+			try {
+				const response = await fetch(endpoint, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: Body.json(form.data)
+				});
+				console.log(response);
+				const data = response.data as {
+					message: string;
+					name?: string;
+					user: User;
+					sessionId: string;
+				};
+
+				if (!response.ok) {
+					return setError(form, data.name, data.message);
+				}
+
+				user.set(data.user);
+				try {
+					await sessStore.set('sessionId', data.sessionId);
+					goto('/hudori/chat/friends');
+				} catch (e) {
+					console.error(e);
+				}
+			} catch (e) {
+				return fail(500, { error: 'An unexpected error occured.' });
+			}
+		}
 	});
 
 	const { form: formData, enhance, errors } = form;

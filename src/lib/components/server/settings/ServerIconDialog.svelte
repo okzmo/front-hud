@@ -4,9 +4,13 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Dropzone from 'svelte-file-dropzone';
 	import Icon from '@iconify/svelte';
-	import { servers, user } from '$lib/stores';
+	import { servers, sessStore, user } from '$lib/stores';
 	import type { Writable } from 'svelte/store';
 	import { page } from '$app/stores';
+	import { fetch, Body } from '@tauri-apps/api/http';
+	import { cacheImage } from '$lib/utils';
+	import { BaseDirectory, removeFile } from '@tauri-apps/api/fs';
+
 	let crop = { x: 0, y: 0 };
 	let zoom = 1;
 	let image: string | undefined = undefined;
@@ -47,12 +51,14 @@
 		form.append('server_id', `servers:${$page.params.serverId}`);
 		if (old_icon) form.append('old_icon', old_icon);
 
+		const sessionId = await sessStore.get('sessionId');
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/server/change_icon`, {
 			method: 'POST',
-			credentials: 'include',
-			body: form,
+			body: Body.form(form),
 			headers: {
-				'X-User-ID': $user?.id
+				'Content-type': 'multipart/form-data',
+				'X-User-ID': $user?.id,
+				Authorization: `Bearer ${sessionId}`
 			}
 		});
 
@@ -60,7 +66,13 @@
 			console.error('Image upload failed', response.status);
 		}
 
-		const data = await response.json();
+		const data = response.data as { icon: string };
+
+		if (old_icon) {
+			await removeFile(`images/${old_icon}`, { dir: BaseDirectory.AppCache });
+		}
+		const new_icon = data.icon.split('/').pop();
+		await cacheImage(data.icon, new_icon!);
 		uploading = false;
 		if ($servers[`servers:${$page.params.serverId}`]) {
 			servers.update((server) => {

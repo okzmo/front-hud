@@ -3,10 +3,9 @@
 	import * as Form from '$lib/components/ui/form';
 	import { Button } from '../ui/button';
 	import { Input } from '../ui/input';
-	import { superForm } from 'sveltekit-superforms';
+	import { defaults, superForm } from 'sveltekit-superforms';
 	import { friendRequestSchema } from './schema-friend-request';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { friendRequest } from '$lib/stores';
+	import { zod } from 'sveltekit-superforms/adapters';
 	import { formatError } from '$lib/utils';
 
 	let success: boolean = false;
@@ -14,8 +13,10 @@
 	export let initiator_id: string;
 	export let initiator_username: string;
 
-	const form = superForm($friendRequest, {
-		validators: zodClient(friendRequestSchema),
+	const data = defaults(zod(friendRequestSchema));
+	const form = superForm(data, {
+		SPA: true,
+		validators: zod(friendRequestSchema),
 		dataType: 'json',
 		invalidateAll: false,
 		validationMethod: 'submit-only',

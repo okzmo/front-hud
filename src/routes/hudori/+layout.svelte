@@ -2,15 +2,7 @@
 	import Navbar from '$lib/components/ui/navbar/Navbar.svelte';
 	import Sidebar from '$lib/components/ui/sidebar/Sidebar.svelte';
 	import { treatMessage, treatMessageJSON } from '$lib/websocket';
-	import {
-		notifications,
-		friendRequest,
-		friends,
-		servers,
-		user,
-		wsConn,
-		messProto
-	} from '$lib/stores';
+	import { notifications, servers, wsConn, messProto, user, spaceBg } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
@@ -18,17 +10,9 @@
 	import { default as init } from 'brotli-dec-wasm/web';
 	import protobuf from 'protobufjs';
 	import { changeStatusOffline, fetchNotifs, scheduleSync, syncNotifications } from '$lib/fetches';
+	import { getImageSrc } from '$lib/utils';
 
 	export let data: LayoutData;
-	user.set(data.props?.user);
-	servers.update((cache) => {
-		data.props?.servers.forEach((server) => {
-			cache[server.id] = { ...server };
-		});
-		return cache;
-	});
-	friends.set(data.props?.friends);
-	friendRequest.set(data.props?.formFriendRequest);
 
 	$: if ($notifications) {
 		scheduleSync();
@@ -37,9 +21,7 @@
 	let ws;
 
 	onMount(() => {
-		ws = new WebSocket(
-			`${import.meta.env.VITE_API_WS_URL}/ws/${data.props?.user.id.split(':')[1]}`
-		);
+		ws = new WebSocket(`${import.meta.env.VITE_API_WS_URL}/ws/${$user.id.split(':')[1]}`);
 		ws.binaryType = 'arraybuffer';
 		wsConn.set(ws);
 
@@ -113,7 +95,7 @@
 	{#if !$page.url.pathname.includes('settings')}
 		<div class="w-full flex relative">
 			<img
-				src={$servers['servers:' + $page.params.serverId]?.banner}
+				src={$spaceBg}
 				alt=""
 				class="w-full h-full absolute top-0 left-0 rounded-[0.8rem] object-cover"
 			/>

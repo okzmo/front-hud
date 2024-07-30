@@ -1,7 +1,9 @@
-import { messages, notifications, user } from './stores';
+import { notifications, sessStore, user } from './stores';
 import { get } from 'svelte/store';
 import type { Message } from './types';
 import { page } from '$app/stores';
+import { Body, fetch } from '@tauri-apps/api/http';
+import type { Notification } from '$lib/types';
 
 export async function getProfile(own_id: string | undefined, user_id: string) {
 	const cache = await caches.open('user_profile');
@@ -20,12 +22,12 @@ export async function getProfile(own_id: string | undefined, user_id: string) {
 		}
 	}
 	try {
+		const sessionId = await sessStore.get('sessionId');
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/${user_id}`, {
 			method: 'GET',
-			credentials: 'include',
 			headers: {
-				'X-User-Agent': navigator.userAgent,
-				'X-User-ID': own_id
+				'X-User-ID': own_id,
+				Authorization: `Bearer ${sessionId}`
 			}
 		});
 
@@ -33,7 +35,7 @@ export async function getProfile(own_id: string | undefined, user_id: string) {
 			throw new Error('Error occured when fetching profile.');
 		}
 
-		const data = await response.json();
+		const data = response.data;
 
 		const headers = new Headers({
 			'Content-Type': 'application/json',
@@ -61,6 +63,7 @@ export async function getMessages(params: any): Promise<Message[] | undefined> {
 	// if (messagesCache && messagesCache[channelId]) {
 	// 	return messagesCache[channelId].messages;
 	// }
+	const sessionId = await sessStore.get('sessionId');
 
 	const channelUrl = `${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}?limit=${limit}&before=${offset}`;
 	const friendUrl = `${import.meta.env.VITE_API_URL}/api/v1/messages/${channelId}/private/${userStore?.id.split(':')[1]}?limit=${limit}&before=${offset}`;
@@ -68,12 +71,12 @@ export async function getMessages(params: any): Promise<Message[] | undefined> {
 	try {
 		const response = await fetch(params.channelId ? channelUrl : friendUrl, {
 			method: 'GET',
-			credentials: 'include',
 			headers: {
-				'X-User-ID': userStore?.id
+				'X-User-ID': userStore?.id,
+				Authorization: `Bearer ${sessionId}`
 			}
 		});
-		const data = await response.json();
+		const data = response.data as { messages: Message[] };
 
 		return data.messages;
 	} catch (error) {
@@ -94,6 +97,7 @@ export const mergeObj = (target: Object, source: Object) => {
 export async function typing(status: string) {
 	const userInfos = get(user);
 	const pageInfos = get(page);
+	const sessionId = await sessStore.get('sessionId');
 
 	const body = {
 		user_id: userInfos.id,
@@ -105,11 +109,11 @@ export async function typing(status: string) {
 	try {
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/channels/typing`, {
 			method: 'POST',
-			credentials: 'include',
-			body: JSON.stringify(body),
+			body: Body.json(body),
 			headers: {
 				'Content-Type': 'application/json',
-				'X-User-ID': userInfos?.id
+				'X-User-ID': userInfos?.id,
+				Authorization: `Bearer ${sessionId}`
 			}
 		});
 
@@ -123,19 +127,20 @@ export async function typing(status: string) {
 	}
 }
 
-export function syncNotifications() {
+export async function syncNotifications() {
 	const userInfos = get(user);
 	const notifInfos = get(notifications);
 	if (!userInfos || !notifInfos) return;
+	const sessionId = await sessStore.get('sessionId');
 
 	fetch(`${import.meta.env.VITE_API_URL}/api/v1/notifications/message_update`, {
 		method: 'POST',
-		credentials: 'include',
 		headers: {
 			'X-User-ID': userInfos.id,
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${sessionId}`
 		},
-		body: JSON.stringify({
+		body: Body.json({
 			user_id: userInfos.id,
 			channels: notifInfos
 				.filter((notif) => notif.type === 'new_message' && notif.read)
@@ -156,28 +161,28 @@ export function changeStatusOffline() {
 
 	fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_status`, {
 		method: 'POST',
-		credentials: 'include',
 		headers: {
 			'X-User-ID': userInfos?.id,
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ user_id: userInfos.id, status: 'offline' })
+		body: Body.json({ user_id: userInfos.id, status: 'offline' })
 	});
 }
 
 export async function fetchNotifs() {
 	const userInfos = get(user);
 	if (!userInfos) return;
+	const sessionId = await sessStore.get('sessionId');
 
 	try {
 		const response = await fetch(
 			`${import.meta.env.VITE_API_URL}/api/v1/notifications/${userInfos.id.split(':')[1]}`,
 			{
 				method: 'GET',
-				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-User-ID': userInfos?.id
+					'X-User-ID': userInfos?.id,
+					Authorization: `Bearer ${sessionId}`
 				}
 			}
 		);
@@ -186,7 +191,7 @@ export async function fetchNotifs() {
 			throw new Error("couldn't fetch notifications");
 		}
 
-		const data = await response.json();
+		const data = response.data as { notifications: Notification[] };
 		notifications.set(data.notifications);
 	} catch (error) {
 		console.log(error);
@@ -203,18 +208,19 @@ export async function createInvitation() {
 		user_id: userInfos.id,
 		server_id: 'servers:' + pageInfos.params.serverId
 	};
+	const sessionId = await sessStore.get('sessionId');
 
 	try {
 		const response = await fetch(endpoint, {
 			method: 'POST',
-			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-User-ID': userInfos.id
+				'X-User-ID': userInfos.id,
+				Authorization: `Bearer ${sessionId}`
 			},
-			body: JSON.stringify(body)
+			body: Body.json(body)
 		});
-		const data = await response.json();
+		const data = response.data as { id: string; message: string };
 
 		if (!response.ok) {
 			throw new Error(data.message);

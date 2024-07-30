@@ -3,6 +3,10 @@ import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
 import { contextMenuInfo } from './stores';
+import type { MessageUI } from './types';
+import { appCacheDir } from '@tauri-apps/api/path';
+import { BaseDirectory, createDir, exists, writeBinaryFile } from '@tauri-apps/api/fs';
+import { convertFileSrc } from '@tauri-apps/api/tauri';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -164,7 +168,7 @@ export async function removeCachedProfile(user_id: string) {
 }
 
 export const groupMessages = (messages: MessageUI[]) => {
-	const threshold = 10000; // 2 seconds
+	const threshold = 10000;
 	const groupedMessages = messages.map((msg, index) => {
 		const prevMsg = messages[index - 1];
 		const nextMsg = messages[index + 1];
@@ -181,4 +185,39 @@ export const groupMessages = (messages: MessageUI[]) => {
 	});
 
 	return groupedMessages;
+};
+
+export const cacheImage = async (url: string, filename: string) => {
+	const cacheDir = await appCacheDir();
+	const imagesDir = `${cacheDir}/images`;
+	const imagePath = `${cacheDir}images/${filename}`;
+
+	if (await exists(imagePath)) {
+		return imagePath;
+	}
+	try {
+		await createDir(imagesDir, { recursive: true });
+	} catch (error) {
+		console.error(`Error creating directory: ${error}`);
+	}
+
+	const response = await fetch(url);
+	const imageData = await response.arrayBuffer();
+
+	try {
+		await writeBinaryFile(`images/${filename}`, new Uint8Array(imageData), {
+			dir: BaseDirectory.AppCache
+		});
+	} catch (error) {
+		console.error(error);
+	}
+
+	return imagePath;
+};
+
+export const getImageSrc = async (url: string) => {
+	const filename = url.split('/').pop();
+	const imagePath = await cacheImage(url, filename);
+
+	return convertFileSrc(imagePath);
 };

@@ -1,9 +1,11 @@
 <script>
 	import { page } from '$app/stores';
+	import DiscoverySidebar from '$lib/components/discovery/DiscoverySidebar.svelte';
 
 	import FriendsChannelsList from '$lib/components/friends/FriendsChannelsList.svelte';
 	import ChannelsList from '$lib/components/server/channels/ChannelsList.svelte';
 	import Userbar from '$lib/components/user/Userbar.svelte';
+	console.log($page.url.pathname.includes('discovery'));
 </script>
 
 <aside
@@ -15,8 +17,8 @@
 		{:else}
 			<ChannelsList />
 		{/if}
-	{:else if $page.url.pathname.includes('videos')}
-		hello
+	{:else if $page.url.pathname.includes('discovery')}
+		<DiscoverySidebar />
 	{:else if $page.url.pathname.includes('thoughts')}
 		hello
 	{/if}

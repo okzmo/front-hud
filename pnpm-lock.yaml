@@ -83,6 +83,9 @@ importers:
       tailwind-variants:
         specifier: ^0.2.1
         version: 0.2.1(tailwindcss@3.4.7)
+      tauri-plugin-store-api:
+        specifier: github:tauri-apps/tauri-plugin-store#v1
+        version: https://codeload.github.com/tauri-apps/tauri-plugin-store/tar.gz/5f5404feea43b6cddd65e4171f52e92ca161a2aa
       tippy.js:
         specifier: ^6.3.7
         version: 6.3.7
@@ -2439,6 +2442,10 @@ packages:
     resolution: {integrity: sha512-rxWZbe87YJb4OcSopb7up2Ba4U82BoiSGUdoDr3Ydrg9ckxFS/YWsvhN323GMcddgU65QRy7JndC7ahhInhvlQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
+
+  tauri-plugin-store-api@https://codeload.github.com/tauri-apps/tauri-plugin-store/tar.gz/5f5404feea43b6cddd65e4171f52e92ca161a2aa:
+    resolution: {tarball: https://codeload.github.com/tauri-apps/tauri-plugin-store/tar.gz/5f5404feea43b6cddd65e4171f52e92ca161a2aa}
+    version: 0.0.0
 
   text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
@@ -4940,6 +4947,10 @@ snapshots:
       sucrase: 3.35.0
     transitivePeerDependencies:
       - ts-node
+
+  tauri-plugin-store-api@https://codeload.github.com/tauri-apps/tauri-plugin-store/tar.gz/5f5404feea43b6cddd65e4171f52e92ca161a2aa:
+    dependencies:
+      '@tauri-apps/api': 1.6.0
 
   text-table@0.2.0: {}
 

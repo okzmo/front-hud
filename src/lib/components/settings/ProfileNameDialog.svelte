@@ -2,7 +2,8 @@
 	import { spring } from 'svelte/motion';
 	import { Button } from '../ui/button';
 	import { type Writable } from 'svelte/store';
-	import { user } from '$lib/stores';
+	import { user, sessStore } from '$lib/stores';
+	import { fetch, Body } from '@tauri-apps/api/http';
 
 	interface ColorStop {
 		color: string;
@@ -210,14 +211,15 @@
 			username_color: $selectedColor
 		};
 
+		const sessionId = await sessStore.get('sessionId');
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_name_color`, {
 			method: 'POST',
-			credentials: 'include',
 			headers: {
 				'X-User-ID': $user?.id,
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${sessionId}`
 			},
-			body: JSON.stringify(body)
+			body: Body.json(body)
 		});
 
 		if (!response.ok) {

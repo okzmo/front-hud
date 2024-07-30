@@ -3,7 +3,7 @@
 	import { notifications, servers, serversStateStore, vcRoom, messages } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { onNavigate } from '$app/navigation';
+	import { afterNavigate, onNavigate } from '$app/navigation';
 	import { getMessages } from '$lib/fetches';
 	import VoiceChannel from '$lib/components/ui/voicechannel/VoiceChannel.svelte';
 
@@ -37,7 +37,7 @@
 		type = 'textual';
 	}
 
-	onNavigate(async ({ to }) => {
+	afterNavigate(async ({ to }) => {
 		if (to && to.params) {
 			if (!$messages[to.params.channelId]) {
 				const allMessages = await getMessages({ ...to.params, offset: 0, limit: 25 });
@@ -70,12 +70,6 @@
 				return cache;
 			});
 		}
-	});
-
-	onMount(async () => {
-		window.addEventListener('beforeunload', () => {
-			localStorage.setItem('states', JSON.stringify($serversStateStore));
-		});
 	});
 </script>
 
