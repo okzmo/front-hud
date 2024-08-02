@@ -42,7 +42,7 @@
 			}
 
 			if ($page.url.pathname.includes(id.split(':')[1])) {
-				goto('/hudori/chat/friends');
+				goto('/hudori/discovery');
 			}
 		} catch (e) {
 			console.log(e);
@@ -79,7 +79,7 @@
 			});
 
 			if ($page.url.pathname.includes(id.split(':')[1])) {
-				goto('/hudori/chat/friends');
+				goto('/hudori/discovery');
 			}
 		} catch (e) {
 			console.log(e);

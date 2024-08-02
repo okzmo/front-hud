@@ -47,7 +47,7 @@
 				user.set(data.user);
 				try {
 					await sessStore.set('sessionId', data.sessionId);
-					goto('/hudori/chat/friends');
+					goto('/hudori/discovery');
 				} catch (e) {
 					console.error(e);
 				}

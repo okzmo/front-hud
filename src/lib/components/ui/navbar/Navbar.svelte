@@ -3,13 +3,14 @@
 
 	import Button from '../button/button.svelte';
 	import Separator from '../separator/separator.svelte';
-	import { servers, settingsLastPage } from '$lib/stores';
+	import { friends, servers, settingsLastPage, showFriends } from '$lib/stores';
 	import ServerActionsButton from './ServerActions/ServerActionsButton.svelte';
 	import GlobalButton from './GlobalButton/GlobalButton.svelte';
 	import FriendsButton from './FriendsButton.svelte';
 	import ServerAccessButton from './ServerAccess/ServerAccessButton.svelte';
 	import NotificationsButton from './NotificationsButton.svelte';
 	import { beforeNavigate } from '$app/navigation';
+	import FriendAccessButton from './FriendAccessButton/FriendAccessButton.svelte';
 
 	beforeNavigate(({ from, to }) => {
 		if (from && to?.url.pathname.includes('settings')) {
@@ -18,13 +19,13 @@
 	});
 </script>
 
-<nav class="min-w-[4.15rem] h-full flex flex-col">
+<nav class="min-w-[4.15rem] h-full flex flex-col pt-6">
 	<ul class="flex flex-col relative flex-grow overflow-y-auto">
 		<GlobalButton />
 		<Separator class="mt-3 bg-zinc-700 w-[3rem] mx-auto" />
 		<div class="pt-3 flex flex-col gap-y-2 scrollbar-hide relative items-center">
-			<!-- <FriendsButton /> -->
-			{#if $servers}
+			<FriendsButton />
+			{#if $servers && !$showFriends}
 				{#each Object.values($servers) as server}
 					<ServerAccessButton
 						id={server.id}
@@ -32,6 +33,10 @@
 						name={server.name}
 						roles={server.roles}
 					/>
+				{/each}
+			{:else}
+				{#each $friends as friend}
+					<FriendAccessButton id={friend.id} avatar={friend.avatar} name={friend.username} />
 				{/each}
 			{/if}
 			<ServerActionsButton />

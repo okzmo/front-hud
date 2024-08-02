@@ -3,10 +3,11 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { Separator } from '$lib/components/ui/separator';
 	import Icon from '@iconify/svelte';
-	import { servers, user } from '$lib/stores';
+	import { servers, sessStore, user } from '$lib/stores';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { writable } from 'svelte/store';
+	import { fetch, Body } from '@tauri-apps/api/http';
 
 	export let channelId: string;
 	export let categoryName: string;
@@ -21,17 +22,17 @@
 		};
 
 		try {
+			const sessId = await sessStore.get('sessionId');
 			const response = await fetch(endpoint, {
 				method: 'POST',
-				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-User-Agent': navigator.userAgent,
-					'X-User-ID': $user?.id
+					'X-User-ID': $user?.id,
+					Authorization: `Bearer ${sessId}`
 				},
-				body: JSON.stringify(body)
+				body: Body.json(body)
 			});
-			const data = await response.json();
+			const data = response.data as { message: string };
 
 			if (!response.ok) {
 				throw new Error(data.message);

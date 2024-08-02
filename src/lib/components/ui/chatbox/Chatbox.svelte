@@ -147,7 +147,7 @@
 	<div
 		id="chatbox"
 		bind:this={chatbox}
-		class="flex flex-col-reverse py-6 overflow-y-auto h-full"
+		class="flex flex-col-reverse py-6 overflow-y-auto h-full select-none"
 		on:scroll={handleScroll}
 	>
 		{#if $loadingMessages}

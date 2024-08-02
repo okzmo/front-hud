@@ -4,7 +4,14 @@
 	import StarterKit from '@tiptap/starter-kit';
 	import Placeholder from '@tiptap/extension-placeholder';
 	import Link from '@tiptap/extension-link';
-	import { user, updateChatInputState, servers, messages, editingMessage } from '$lib/stores';
+	import {
+		user,
+		updateChatInputState,
+		servers,
+		messages,
+		editingMessage,
+		sessStore
+	} from '$lib/stores';
 	import { page } from '$app/stores';
 	import type { Writable } from 'svelte/store';
 	import Mention from '@tiptap/extension-mention';
@@ -13,6 +20,7 @@
 	import { EmojiSuggestion } from './emojiSuggestion';
 	import EmojiList from './EmojiList.svelte';
 	import type { SuggestionProps } from '@tiptap/suggestion';
+	import { fetch, Body } from '@tauri-apps/api/http';
 
 	let element: Element | undefined;
 	let editor: Editor;
@@ -65,13 +73,14 @@
 		};
 
 		try {
+			const sessId = await sessStore.get('sessionId');
 			const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/messages/edit`, {
 				method: 'PUT',
-				credentials: 'include',
-				body: JSON.stringify(body),
+				body: Body.json(body),
 				headers: {
 					'Content-Type': 'application/json',
-					'X-User-ID': $user?.id
+					'X-User-ID': $user?.id,
+					Authorization: `Bearer ${sessId}`
 				}
 			});
 

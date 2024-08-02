@@ -3,7 +3,6 @@
 	import { Button } from '$lib/components/ui/button';
 	import Icon from '@iconify/svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import ProfileBannerDialog from '$lib/components/settings/ProfileBannerDialog.svelte';
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
 	import ServerIconDialog from '$lib/components/server/settings/ServerIconDialog.svelte';
@@ -11,6 +10,8 @@
 
 	let openBanner = writable<boolean>(false);
 	let openIcon = writable<boolean>(false);
+
+	let banner = $servers[`servers:${$page.params.serverId}`]?.banner;
 </script>
 
 <div class="ml-5 flex flex-col mx-auto">
@@ -24,13 +25,11 @@
 		</Button>
 		<div class="rounded-[1.5rem] flex relative px-[1rem] py-[1rem] h-full">
 			<div class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.5rem] bg-zinc-700" />
-			{#if $servers[`servers:${$page.params.serverId}`]?.banner}
-				<img
-					class="w-full h-full absolute left-0 top-0 object-contain rounded-[1.6rem] transform-gpu"
-					src={$servers[`servers:${$page.params.serverId}`]?.banner}
-					alt=""
-				/>
-			{/if}
+			<img
+				class="w-full h-full absolute left-0 top-0 object-contain rounded-[1.6rem] transform-gpu"
+				src={banner}
+				alt=""
+			/>
 			<div class="flex flex-col justify-end gap-y-2 z-[2]">
 				<span class="flex gap-x-3">
 					<button
@@ -50,9 +49,8 @@
 					</button>
 				</span>
 			</div>
-			<div class="w-full absolute h-full rounded-[1.5rem]"></div>
 			<div
-				class="w-[calc(100%+1px)] absolute h-full rounded-2xl bg-gradient-to-t from-black/15 to-transparent left-0 top-0"
+				class="w-[calc(100%+1px)] absolute h-full rounded-2xl bg-gradient-to-t from-black/15 to-transparent left-0 top-0 pointer-events-none"
 			></div>
 		</div>
 	</div>

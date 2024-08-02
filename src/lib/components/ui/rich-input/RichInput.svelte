@@ -109,9 +109,7 @@
 					'X-User-ID': $user?.id,
 					Authorization: `Bearer ${sessionId}`
 				},
-				body: Body.form({
-					body: JSON.stringify(body)
-				})
+				body: Body.form(formData)
 			});
 
 			if (!response.ok) {
@@ -277,7 +275,7 @@
 					) {
 						event.preventDefault();
 
-						sendMessage(editor.getHTML());
+						sendMessage(JSON.stringify(editor.getJSON()));
 
 						return true;
 					} else if (event.key.match(/^[a-zA-Z0-9]$/)) {

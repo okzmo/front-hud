@@ -14,7 +14,7 @@
 		handleEscape = (event) => {
 			if (event.key === 'Escape') {
 				// Navigate back to the previous page
-				goto($settingsLastPage || '/hudori/chat/friends');
+				goto($settingsLastPage || '/hudori/discovery');
 				// Remove the event listener to prevent further use
 				window.removeEventListener('keydown', handleEscape);
 			}

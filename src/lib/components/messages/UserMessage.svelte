@@ -11,7 +11,8 @@
 		user,
 		editingMessage,
 		messages,
-		replyTo
+		replyTo,
+		sessStore
 	} from '$lib/stores';
 	import { getProfile } from '$lib/fetches';
 	import GridImages from './GridImages.svelte';
@@ -20,6 +21,13 @@
 	import Icon from '@iconify/svelte';
 	import RichInputEditMessage from '../ui/rich-input/RichInputEditMessage.svelte';
 	import { page } from '$app/stores';
+	import { generateHTML, generateText } from '@tiptap/core';
+	import StarterKit from '@tiptap/starter-kit';
+	import Link from '@tiptap/extension-link';
+	import Mention from '@tiptap/extension-mention';
+	import { Emoji } from '../ui/rich-input/emojiNode';
+	import { EmojiSuggestion } from '../ui/rich-input/emojiSuggestion';
+	import { fetch, Body } from '@tauri-apps/api/http';
 
 	export let id: string;
 	export let author: User;
@@ -67,16 +75,17 @@
 		};
 
 		try {
+			const sessId = await sessStore.get('sessionId');
 			const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/messages/delete`, {
 				method: 'DELETE',
-				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-User-ID': $user?.id
+					'X-User-ID': $user?.id,
+					Authorization: `Bearer ${sessId}`
 				},
-				body: JSON.stringify(body)
+				body: Body.json(body)
 			});
-			const data = await response.json();
+			const data = response.data as { message: string };
 
 			if (!response.ok) {
 				throw new Error(data.message);
@@ -113,7 +122,7 @@
 	<ContextMenu.Root>
 		<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId)}>
 			<div
-				class="flex gap-x-2 items-start px-6 py-3 hover:bg-zinc-500/5 transition-colors duration-75 relative"
+				class="flex gap-x-2 items-start px-6 py-3 hover:bg-zinc-500/5 transition-colors duration-75 relative select-none"
 				class:mt-2={!groupedWithPrevious}
 				class:pt-8={reply && reply.id !== ''}
 				class:mentioned={mentions && mentions.includes($user?.id)}
@@ -132,7 +141,7 @@
 							>{reply?.author?.display_name}</span
 						>
 						<span
-							class="[&>p]:max-w-[10rem] [&>p]:inline-block [&>p]:overflow-hidden [&>p]:text-ellipsis overflow-hidden text-ellipsis flex-shrink-0 whitespace-nowrap flex"
+							class="[&>p]:max-w-[10rem] [&>p]:inline-block [&>p]:overflow-hidden [&>p]:text-ellipsis overflow-hidden text-ellipsis flex-shrink-0 whitespace-nowrap flex select-none"
 							>{@html reply?.content}</span
 						>
 					</button>
@@ -144,7 +153,7 @@
 								{#if $loadingMessages}
 									<Skeleton class="w-full h-full" />
 								{/if}
-								<img class="w-full h-full object-cover" src={author.avatar} alt="" />
+								<img class="w-full h-full object-cover select-none" src={author.avatar} alt="" />
 							</div>
 						</Popover.Trigger>
 						<Profile user={user_profile} side="right" />
@@ -153,7 +162,7 @@
 				<div class="flex flex-col w-fit">
 					{#if content}
 						<div
-							class="rounded-xl rounded-bl-sm pl-3 w-fit text-sm [&>p]:break-all flex flex-col max-w-[45rem] transition-colors"
+							class="rounded-xl rounded-bl-sm pl-3 w-fit text-sm [&>p]:break-all flex flex-col transition-colors"
 							class:groupMessagePrevious={groupedWithPrevious}
 							class:groupMessageAfter={groupedWithAfter}
 						>
@@ -165,18 +174,20 @@
                   background: ${author.username_color?.includes('linear-gradient') ? author.username_color : ''};
                   background-clip: ${author.username_color?.includes('linear-gradient') ? 'text' : ''};
                 `}
-										class={`text-sm leading-0`}
+										class={`text-sm leading-0 select-text`}
 									>
 										{author.display_name}
 									</p>
-									<time class="text-zinc-400 leading-[1.08rem] text-xs">{formatISODate(time)}</time>
+									<time class="text-zinc-400 leading-[1.08rem] text-xs select-text"
+										>{formatISODate(time)}</time
+									>
 									{#if edited}
 										<span class="text-zinc-400 leading-[1.08rem] text-xs">(edited)</span>
 									{/if}
 								</span>
 							{/if}
 							<span
-								class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline break-all [&>p>span]:first:ml-0 [&>p]:leading-[1.75rem]"
+								class="[&>p>a]:text-blue-400 [&>p>a:hover]:underline break-all [&>p>span]:first:ml-0 [&>p]:leading-[1.75rem] w-fit [&>p]:w-fit select-text"
 							>
 								{#if $editingMessage === id}
 									<RichInputEditMessage
@@ -186,12 +197,34 @@
 										messageToEditId={id}
 									/>
 								{:else}
-									{@html content}
+									{@html generateHTML(JSON.parse(content), [
+										StarterKit,
+										Link,
+										Mention,
+										Emoji,
+										EmojiSuggestion
+									])}
 								{/if}
 							</span>
 						</div>
 						{#if contextMenuOpen}
 							<ContextMenu.Content id="context-menu-category">
+								<ContextMenu.Item
+									class="gap-x-2 items-center text-sm"
+									on:click={() =>
+										navigator.clipboard.writeText(
+											generateText(JSON.parse(content), [
+												StarterKit,
+												Link,
+												Mention,
+												Emoji,
+												EmojiSuggestion
+											])
+										)}
+								>
+									<Icon icon="solar:copy-bold-duotone" height={16} width={16} class="" />
+									Copy
+								</ContextMenu.Item>
 								<ContextMenu.Item
 									class="gap-x-2 items-center text-sm"
 									on:click={() =>
@@ -205,14 +238,14 @@
 										class="gap-x-2 items-center text-sm"
 										on:click={() => editingMessage.set(id)}
 									>
-										<Icon icon="ph:pencil-simple-duotone" height={16} width={16} class="" />
+										<Icon icon="solar:pen-bold-duotone" height={16} width={16} class="" />
 										Edit message
 									</ContextMenu.Item>
 									<ContextMenu.Item
 										class="gap-x-2 items-center text-destructive data-[highlighted]:bg-destructive data-[highlighted]:text-zinc-50 text-sm"
 										on:click={deleteMessage}
 									>
-										<Icon icon="ph:trash-duotone" height={16} width={16} />
+										<Icon icon="solar:trash-bin-2-bold-duotone" height={16} width={16} />
 										Delete message
 									</ContextMenu.Item>
 								{/if}
@@ -222,7 +255,7 @@
 
 					{#if images && images.length > 0}
 						<div
-							class="flex gap-2 max-w-[30rem] [&+div]:rounded-tl-sm overflow-hidden flex-wrap ml-2 mt-1"
+							class="flex gap-2 max-w-[30rem] [&+div]:rounded-tl-sm overflow-hidden flex-wrap ml-2 mt-1 select-none"
 						>
 							<GridImages {images} />
 						</div>

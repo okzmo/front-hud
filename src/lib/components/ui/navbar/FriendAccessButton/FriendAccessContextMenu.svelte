@@ -1,20 +1,20 @@
 <script lang="ts">
 	import * as ContextMenu from '$lib/components/ui/context-menu';
-	import Separator from '../ui/separator/separator.svelte';
 	import Icon from '@iconify/svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import { friends, user } from '$lib/stores';
+	import { user } from '$lib/stores';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
+	import { writable } from 'svelte/store';
 
-	export let username: string;
+	export let name: string;
 	export let id: string;
 
-	async function removeFriend() {
-		const endpoint = `${import.meta.env.VITE_API_URL}/api/v1/friends/delete`;
+	async function deleteServer() {
+		const endpoint = `${import.meta.env.VITE_API_URL}/api/v1/server/delete`;
 		let body: any = {
 			user_id: $user?.id,
-			friend_id: id
+			server_id: id
 		};
 
 		try {
@@ -34,11 +34,6 @@
 				throw new Error(data.message);
 			}
 
-			friends.update((friends) => {
-				const newArr = friends.filter((friend) => friend.id !== id);
-				return newArr;
-			});
-
 			if ($page.url.pathname.includes(id.split(':')[1])) {
 				goto('/hudori/discovery');
 			}
@@ -46,42 +41,42 @@
 			console.log(e);
 		}
 	}
+
+	const openRemoveChannel = writable<boolean>(false);
 </script>
 
-<AlertDialog.Root>
-	<ContextMenu.Content>
-		<ContextMenu.Item class="gap-x-2 items-center  text-sm">
-			<Icon icon="ph:user-duotone" height={16} width={16} class="" />
-			Profile
-		</ContextMenu.Item>
-		<ContextMenu.Item class="gap-x-2 items-center  text-sm">
-			<Icon icon="ph:phone-duotone" height={16} width={16} class="" />
-			Call
-		</ContextMenu.Item>
-		<Separator class="my-2 max-w-[9.5rem] bg-zinc-700 mx-auto" />
+<ContextMenu.Content class="flex flex-col">
+	<ContextMenu.Item
+		class="gap-x-2 items-center text-destructive data-[highlighted]:bg-destructive data-[highlighted]:text-zinc-50 text-sm"
+		on:click={() => {
+			openRemoveChannel.set(true);
+		}}
+	>
+		<Icon icon="ph:sign-out-duotone" height={16} width={16} />
+		Remove friend
+	</ContextMenu.Item>
+</ContextMenu.Content>
 
-		<AlertDialog.Trigger>
-			<ContextMenu.Item
-				class="gap-x-2 items-center text-destructive data-[highlighted]:text-zinc-50 data-[highlighted]:bg-destructive text-sm"
-			>
-				<Icon icon="ph:user-minus-duotone" height={16} width={16} class="" />
-				Remove Friend
-			</ContextMenu.Item>
-		</AlertDialog.Trigger>
-	</ContextMenu.Content>
-
+<AlertDialog.Root
+	open={$openRemoveChannel}
+	onOpenChange={() => {
+		openRemoveChannel.set(!$openRemoveChannel);
+	}}
+>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
 			<AlertDialog.Title>Are you absolutely sure ?</AlertDialog.Title>
 			<AlertDialog.Description>
-				This action will permanently remove <span class="font-bold">{username}</span> from your friend
-				list.
+				This action will permanently delete your space <span class="font-bold">{name}</span> as well
+				as all the data related to this space.
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
-				on:click={removeFriend}
+				on:click={() => {
+					deleteServer();
+				}}
 				class="bg-destructive border-none hover:bg-destructive/80"
 			>
 				Remove

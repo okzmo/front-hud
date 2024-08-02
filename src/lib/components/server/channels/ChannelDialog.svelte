@@ -8,10 +8,11 @@
 	import { defaults, stringProxy, superForm, type Infer } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { channelCreationSchema } from '$lib/components/server/channels/schema-channel-request';
-	import { user } from '$lib/stores';
+	import { sessStore, user } from '$lib/stores';
 	import type { Writable } from 'svelte/store';
 	import { formatError } from '$lib/utils';
 	import { page } from '$app/stores';
+	import { fetch, Body } from '@tauri-apps/api/http';
 
 	export let open: Writable<boolean>;
 	export let categoryName: string | undefined;
@@ -37,16 +38,17 @@
 			};
 
 			try {
+				const sessId = await sessStore.get('sessionId');
 				const response = await fetch(endpoint, {
 					method: 'POST',
-					credentials: 'include',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-User-ID': $user?.id
+						'X-User-ID': $user?.id,
+						Authorization: `Bearer ${sessId}`
 					},
-					body: JSON.stringify(body)
+					body: Body.json(body)
 				});
-				const data = await response.json();
+				const data = response.data as { message: string };
 
 				if (!response.ok) {
 					throw new Error(data.message);

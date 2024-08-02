@@ -77,6 +77,8 @@
 	scrollbar-width: none;
 }
 
+
+
 @layer base {
 	@font-face {
 		font-family: 'Outfit';
@@ -118,3 +120,4 @@
 		font-style: normal;
 	}
 }
+

@@ -11,6 +11,7 @@
 	import protobuf from 'protobufjs';
 	import { changeStatusOffline, fetchNotifs, scheduleSync, syncNotifications } from '$lib/fetches';
 	import { getImageSrc } from '$lib/utils';
+	import { fade } from 'svelte/transition';
 
 	export let data: LayoutData;
 
@@ -94,14 +95,17 @@
 
 	{#if !$page.url.pathname.includes('settings')}
 		<div class="w-full flex relative">
-			<img
-				src={$spaceBg}
-				alt=""
-				class="w-full h-full absolute top-0 left-0 rounded-[0.8rem] object-cover"
-			/>
+			{#key $spaceBg}
+				<img
+					transition:fade={{ duration: 100 }}
+					src={$spaceBg}
+					alt=""
+					class="w-full h-full absolute top-0 left-0 rounded-[0.8rem] object-cover"
+				/>
+			{/key}
 			<Sidebar />
 			<main
-				class="flex-grow relative bg-zinc-960/95 backdrop-blur-[150px] rounded-tr-xl rounded-br-xl"
+				class="flex-grow relative bg-zinc-960/95 backdrop-blur-[50px] rounded-tr-xl rounded-br-xl"
 			>
 				<slot />
 			</main>

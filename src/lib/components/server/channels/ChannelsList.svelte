@@ -12,6 +12,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { fetch } from '@tauri-apps/api/http';
 	import { sessStore } from '$lib/stores';
+	import { fade } from 'svelte/transition';
 
 	let openContextMenuId = `context-menu-${generateRandomId()}`;
 	let isOpen: boolean = false;
@@ -69,17 +70,23 @@
 </script>
 
 <div class="flex flex-col w-full flex-grow">
-	<img
-		class="absolute block w-[calc(100%+0.5rem)] max-w-[calc(100%+0.5rem)] h-[11rem] rounded-tl-lg bg-zinc-500 object-cover object-top blur-xl opacity-75 right-0 transform-gpu"
-		src={cacheImage}
-		alt=""
-	/>
 	<div class="relative group">
-		<img
-			class="absolute block w-full h-[11rem] rounded-tl-lg bg-zinc-500 object-cover object-top"
-			src={cacheImage}
-			alt=""
-		/>
+		{#key cacheImage}
+			<img
+				class="absolute block w-[calc(100%+0.5rem)] max-w-[calc(100%+0.5rem)] h-[11rem] rounded-tl-lg bg-zinc-500 object-cover object-top blur-xl opacity-75 right-0 transform-gpu select-none"
+				draggable="false"
+				src={cacheImage}
+				transition:fade={{ duration: 100 }}
+				alt=""
+			/>
+			<img
+				class="absolute block w-full h-[11rem] rounded-tl-lg bg-zinc-500 object-cover object-top select-none"
+				draggable="false"
+				src={cacheImage}
+				transition:fade={{ duration: 100 }}
+				alt=""
+			/>
+		{/key}
 		<Button
 			class="right-2 top-2 z-[2] absolute rounded-xl bg-zinc-800/50 hover:bg-zinc-800/75 border-none shadow-none backdrop-blur-lg opacity-0 group-hover:opacity-100 select-none"
 			size="icon"
