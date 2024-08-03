@@ -3,17 +3,22 @@
 	import Button from '../ui/button/button.svelte';
 	import { acceptFriendRequest, refuseFriendRequest } from './friendRequest';
 	import { formatISODate } from '$lib/utils';
-	import { friends, notifications } from '$lib/stores';
+	import { friends, notifications, servers } from '$lib/stores';
 
 	async function handleAccept(request_id: string, notif_id: string) {
-		const friend = await acceptFriendRequest(request_id, notif_id);
-		if (friend) {
+		const infos = await acceptFriendRequest(request_id, notif_id);
+		if (infos) {
 			notifications.update((notifications) =>
 				notifications.filter((notif) => notif.request_id !== request_id)
 			);
 			friends.update((friends) => {
-				friends.push(friend);
+				infos.friend.space_id = infos.server.id;
+				friends.push(infos.friend);
 				return friends;
+			});
+			servers.update((servers) => {
+				servers[infos.server.id] = infos.server;
+				return servers;
 			});
 		}
 	}

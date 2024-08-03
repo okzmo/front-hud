@@ -3,10 +3,12 @@
 	import * as Form from '$lib/components/ui/form';
 	import { Button } from '../ui/button';
 	import { Input } from '../ui/input';
-	import { defaults, superForm } from 'sveltekit-superforms';
+	import { defaults, fail, setError, superForm } from 'sveltekit-superforms';
 	import { friendRequestSchema } from './schema-friend-request';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { formatError } from '$lib/utils';
+	import { fetch, Body } from '@tauri-apps/api/http';
+	import { sessStore } from '$lib/stores';
 
 	let success: boolean = false;
 
@@ -20,22 +22,48 @@
 		dataType: 'json',
 		invalidateAll: false,
 		validationMethod: 'submit-only',
-		onSubmit({ formData }) {
-			formData.set('initiator_id', initiator_id);
-			formData.set('initiator_username', initiator_username);
-		},
-		onResult({ result }) {
-			if (result.type === 'success') {
+		async onUpdate({ form }) {
+			if (!form.valid) return;
+
+			const receiver_username = form.data.username;
+
+			const body = {
+				receiver_username,
+				initiator_username,
+				initiator_id
+			};
+
+			const sessionId = await sessStore.get('sessionId');
+			try {
+				const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/friends/add`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${sessionId}`
+					},
+					body: Body.json(body)
+				});
+
+				const data = response.data as { name?: string; message: string };
+				console.log(response);
+
+				if (!response.ok) {
+					return setError(form, data.name, data.message);
+				}
+
 				success = true;
 				setTimeout(() => {
 					success = false;
-					form.reset();
-				}, 3000);
-			} else if (result.type === 'failure') {
-				setTimeout(() => {
-					form.reset();
 				}, 2000);
+			} catch (e) {
+				console.log(e);
+				return fail(500, { error: 'An unexpected error occured.' });
 			}
+		},
+		onResult() {
+			setTimeout(() => {
+				form.reset();
+			}, 2000);
 		}
 	});
 
@@ -47,12 +75,7 @@
 		<Dialog.Title>Add a new friend!</Dialog.Title>
 		<Dialog.Description>To add a friend you just have to enter their username.</Dialog.Description>
 	</Dialog.Header>
-	<form
-		method="POST"
-		use:enhance
-		class="flex flex-col gap-y-2 relative"
-		action="/hudori/chat/friends"
-	>
+	<form method="POST" use:enhance class="flex flex-col gap-y-2 relative">
 		<Form.Field {form} name="username" class="w-full">
 			<div class=" flex gap-x-2">
 				<Form.Control let:attrs>

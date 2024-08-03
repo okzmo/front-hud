@@ -123,7 +123,7 @@
 						/>
 						<div class="flex flex-col gap-y-1">
 							<span
-								class="text-left truncate w-full z-[1] font-semibold text-base leading-none"
+								class="text-left truncate w-full z-[1] font-medium text-base leading-none"
 								style="color: {$user.username_color};">{$user.display_name || 'User'}</span
 							>
 							<span class="text-left truncate w-full z-[1] leading-none"

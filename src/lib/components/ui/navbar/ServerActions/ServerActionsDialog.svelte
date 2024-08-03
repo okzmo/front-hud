@@ -57,6 +57,7 @@
 				}
 
 				const server = data.server;
+				console.log(data);
 				servers.update((servers) => {
 					if (form.data.type === 'create') {
 						server.roles = ['owner'];

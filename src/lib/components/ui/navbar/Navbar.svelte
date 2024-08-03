@@ -17,6 +17,8 @@
 			settingsLastPage.set(from.url.href);
 		}
 	});
+
+	$: groupServer = Object.values($servers).filter((server) => server.type === 'group');
 </script>
 
 <nav class="min-w-[4.15rem] h-full flex flex-col pt-6">
@@ -26,7 +28,7 @@
 		<div class="pt-3 flex flex-col gap-y-2 scrollbar-hide relative items-center">
 			<FriendsButton />
 			{#if $servers && !$showFriends}
-				{#each Object.values($servers) as server}
+				{#each groupServer as server}
 					<ServerAccessButton
 						id={server.id}
 						icon={server.icon}
@@ -36,7 +38,12 @@
 				{/each}
 			{:else}
 				{#each $friends as friend}
-					<FriendAccessButton id={friend.id} avatar={friend.avatar} name={friend.username} />
+					<FriendAccessButton
+						friend_id={friend.id}
+						space_id={friend.space_id}
+						avatar={friend.avatar}
+						name={friend.username}
+					/>
 				{/each}
 			{/if}
 			<ServerActionsButton />

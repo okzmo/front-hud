@@ -75,7 +75,7 @@
 			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				on:click={() => {
-					deleteServer();
+					removeFriend();
 				}}
 				class="bg-destructive border-none hover:bg-destructive/80"
 			>

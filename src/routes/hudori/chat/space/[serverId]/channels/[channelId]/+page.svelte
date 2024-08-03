@@ -17,6 +17,9 @@
 		if (channelNotif > -1) {
 			notifications.update((notifs) => {
 				notifs[channelNotif].read = true;
+				if (notifs[channelNotif]?.mentions?.length > 0) {
+					notifs[channelNotif].mentions = [];
+				}
 
 				return notifs;
 			});

@@ -21,6 +21,15 @@
 
 	$: cachedServer = $servers['servers:' + $page.params.serverId];
 
+	$: if (cachedServer?.banner) {
+		changeBanner();
+	}
+
+	async function changeBanner() {
+		cacheImage = await getImageSrc(cachedServer?.banner);
+		spaceBg.set(cacheImage);
+	}
+
 	async function getServerById(serverId: string) {
 		if ($servers['servers:' + serverId] && $servers['servers:' + serverId].categories) {
 			return $servers['servers:' + serverId];
@@ -53,8 +62,7 @@
 	afterNavigate(async ({ from, to }) => {
 		if (from?.params?.serverId !== to?.params?.serverId) {
 			serverPromise = getServerById(to.params.serverId);
-			cacheImage = await getImageSrc(cachedServer?.banner);
-			spaceBg.set(cacheImage);
+			changeBanner();
 
 			localStorage.setItem('states', JSON.stringify($serversStateStore));
 		}
@@ -62,9 +70,17 @@
 
 	onMount(async () => {
 		serverPromise = getServerById($page.params.serverId);
-		cacheImage = await getImageSrc(cachedServer?.banner);
-		spaceBg.set(cacheImage);
+		changeBanner();
 	});
+
+	let isOwner: boolean;
+	$: if ($servers['servers:' + $page.params.serverId]) {
+		if ($servers['servers:' + $page.params.serverId].roles?.some((role) => role === 'owner')) {
+			isOwner = true;
+		} else {
+			isOwner = false;
+		}
+	}
 
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
 </script>
@@ -87,15 +103,17 @@
 				alt=""
 			/>
 		{/key}
-		<Button
-			class="right-2 top-2 z-[2] absolute rounded-xl bg-zinc-800/50 hover:bg-zinc-800/75 border-none shadow-none backdrop-blur-lg opacity-0 group-hover:opacity-100 select-none"
-			size="icon"
-			href="/hudori/chat/space/{cachedServer?.id.split(':')[1]}/settings"
-			variant="altDefault"
-			draggable="false"
-		>
-			<Icon icon="solar:settings-bold-duotone" height={18} width={18} />
-		</Button>
+		{#if isOwner}
+			<Button
+				class="right-2 top-2 z-[2] absolute rounded-xl bg-zinc-800/50 hover:bg-zinc-800/75 border-none shadow-none backdrop-blur-lg opacity-0 group-hover:opacity-100 select-none"
+				size="icon"
+				href="/hudori/chat/space/{cachedServer?.id.split(':')[1]}/settings"
+				variant="altDefault"
+				draggable="false"
+			>
+				<Icon icon="solar:settings-bold-duotone" height={18} width={18} />
+			</Button>
+		{/if}
 	</div>
 	<div class="gradient-sidebar h-full flex flex-col z-[2] mt-[10rem] px-3 backdrop-blur-md">
 		<div class="pt-[0.875rem] pb-8 text-zinc-50 relative w-fit mx-auto flex items-center">

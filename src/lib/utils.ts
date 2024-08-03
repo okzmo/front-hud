@@ -223,32 +223,3 @@ export const getImageSrc = async (url: string) => {
   return convertFileSrc(imagePath);
 };
 
-function initializeVideoHover(video) {
-  // Pause initially
-  video.pause();
-  video.currentTime = 0;
-
-  // Play on hover
-  video.addEventListener('mouseenter', () => {
-    console.log("enter")
-    video.play();
-  });
-
-  // Pause and reset on mouse leave
-  video.addEventListener('mouseleave', () => {
-    console.log("leave")
-    video.pause();
-  });
-}
-
-// Function to initialize all videos with the 'gif-video' class
-function initializeAllVideos() {
-  const videos = document.querySelectorAll('video');
-  console.log(videos)
-  videos.forEach(initializeVideoHover);
-}
-
-setTimeout(() => {
-  initializeAllVideos()
-
-}, 500)

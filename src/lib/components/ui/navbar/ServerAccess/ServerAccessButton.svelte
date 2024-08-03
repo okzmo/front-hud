@@ -17,7 +17,6 @@
 	let href = `/hudori/chat/space/${id.split(':')[1]}`;
 	let serverNotif = false;
 	let mentioned = false;
-	let inviteId = '';
 
 	$: isOpen = $contextMenuInfo?.id === openContextMenuId;
 	$: if ($serversStateStore[id]) {
@@ -28,6 +27,7 @@
 		serverNotif = $notifications.some(
 			(notif) => notif.server_id && notif.server_id === id && !notif.read
 		);
+
 		mentioned = $notifications.some(
 			(notif) => serverNotif && notif.mentions?.includes($user?.id) && !notif.read
 		);
@@ -49,7 +49,7 @@
 					{/if}
 					<div
 						class="absolute h-2 w-2 bg-white -left-[50%] top-1/2 -translate-y-1/2 rounded-lg group-hover:-left-[30%] group-hover:h-4 transition-[height,left]"
-						class:-left-[30%]={serverNotif}
+						class:!-left-[30%]={serverNotif}
 						class:active={$page.url.pathname.includes(href)}
 					/>
 					{#if mentioned}

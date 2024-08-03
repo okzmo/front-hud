@@ -86,8 +86,15 @@ export async function treatMessage(message: ArrayBuffer) {
       break;
     case 'friend_accept':
       friends.update((friends) => {
-        friends.push(wsMessage.friend_accept);
+        let friend = wsMessage.friend_accept.user
+        friend.space_id = wsMessage.friend_accept.server.id
+        friends.push(friend);
         return friends;
+      });
+
+      servers.update((servers) => {
+        servers[wsMessage.friend_accept.server.id] = wsMessage.friend_accept.server
+        return servers;
       });
 
       break;
@@ -141,11 +148,13 @@ export async function treatMessage(message: ArrayBuffer) {
       });
       break;
     case 'friend_remove':
+      const allFriends = get(friends)
+      const friendToRemove = allFriends.find(friend => friend.id === wsMessage.user_id)
       friends.update((friends) => {
         const newArr = friends.filter((friend) => friend.id !== wsMessage.user_id);
         return newArr;
       });
-      if (window.location.pathname.includes(wsMessage.user_id.split(':')[1])) {
+      if (window.location.pathname.includes(friendToRemove?.space_id?.split(":")[1])) {
         goto('/hudori/discovery');
       }
       break;
@@ -195,6 +204,15 @@ export async function treatMessage(message: ArrayBuffer) {
         const serverExist = server[wsMessage.server_pic.id];
         if (serverExist) {
           serverExist.icon = wsMessage.server_pic.picture;
+        }
+        return server;
+      });
+      break;
+    case 'new_server_banner':
+      servers.update((server) => {
+        const serverExist = server[wsMessage.server_pic.id];
+        if (serverExist) {
+          serverExist.banner = wsMessage.server_pic.picture;
         }
         return server;
       });

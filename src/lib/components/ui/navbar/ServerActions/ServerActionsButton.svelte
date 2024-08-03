@@ -4,6 +4,8 @@
 	import Icon from '@iconify/svelte';
 	import ServerActionsDialog from './ServerActionsDialog.svelte';
 	import { writable } from 'svelte/store';
+	import { showFriends, user } from '$lib/stores';
+	import FriendRequestDialog from '$lib/components/friends/FriendRequestDialog.svelte';
 
 	const open = writable<boolean>(false);
 </script>
@@ -15,6 +17,10 @@
 				<Icon icon="ph:plus-light" height="22" width="22" />
 			</Button>
 		</Dialog.Trigger>
-		<ServerActionsDialog {open} />
+		{#if $showFriends}
+			<FriendRequestDialog initiator_id={$user?.id} initiator_username={$user?.username} />
+		{:else}
+			<ServerActionsDialog {open} />
+		{/if}
 	</Dialog.Root>
 </li>

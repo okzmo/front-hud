@@ -11,7 +11,7 @@
 	let openBanner = writable<boolean>(false);
 	let openIcon = writable<boolean>(false);
 
-	let banner = $servers[`servers:${$page.params.serverId}`]?.banner;
+	$: banner = $servers[`servers:${$page.params.serverId}`]?.banner;
 </script>
 
 <div class="ml-5 flex flex-col mx-auto">
@@ -30,25 +30,27 @@
 				src={banner}
 				alt=""
 			/>
-			<div class="flex flex-col justify-end gap-y-2 z-[2]">
-				<span class="flex gap-x-3">
-					<button
-						class="relative w-20 h-20 overflow-hidden rounded-2xl"
-						on:click={() => openIcon.set(true)}
-					>
-						<div
-							class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.5rem] bg-zinc-800 z-[-1]"
-						/>
-						{#if $servers[`servers:${$page.params.serverId}`]?.icon}
-							<img
-								class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.6rem] transform-gpu"
-								src={$servers[`servers:${$page.params.serverId}`]?.icon}
-								alt=""
+			{#if $servers[`servers:${$page.params.serverId}`]?.type !== 'friend'}
+				<div class="flex flex-col justify-end gap-y-2 z-[2]">
+					<span class="flex gap-x-3">
+						<button
+							class="relative w-20 h-20 overflow-hidden rounded-2xl"
+							on:click={() => openIcon.set(true)}
+						>
+							<div
+								class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.5rem] bg-zinc-800 z-[-1]"
 							/>
-						{/if}
-					</button>
-				</span>
-			</div>
+							{#if $servers[`servers:${$page.params.serverId}`]?.icon}
+								<img
+									class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.6rem] transform-gpu"
+									src={$servers[`servers:${$page.params.serverId}`]?.icon}
+									alt=""
+								/>
+							{/if}
+						</button>
+					</span>
+				</div>
+			{/if}
 			<div
 				class="w-[calc(100%+1px)] absolute h-full rounded-2xl bg-gradient-to-t from-black/15 to-transparent left-0 top-0 pointer-events-none"
 			></div>
