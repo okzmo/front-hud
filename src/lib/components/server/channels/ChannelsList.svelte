@@ -89,14 +89,14 @@
 	<div class="relative group">
 		{#key cacheImage}
 			<img
-				class="absolute block w-[calc(100%+0.5rem)] max-w-[calc(100%+0.5rem)] h-[11rem] rounded-tl-lg bg-zinc-500 object-cover object-top blur-xl opacity-75 right-0 transform-gpu select-none"
+				class="absolute block w-[calc(100%+0.5rem)] max-w-[calc(100%+0.5rem)] h-[11rem] rounded-tl-[0.5rem] bg-zinc-500 object-cover object-top blur-xl opacity-75 right-0 transform-gpu select-none"
 				draggable="false"
 				src={cacheImage}
 				transition:fade={{ duration: 100 }}
 				alt=""
 			/>
 			<img
-				class="absolute block w-full h-[11rem] rounded-tl-lg bg-zinc-500 object-cover object-top select-none"
+				class="absolute block w-full h-[11rem] rounded-tl-[0.5rem] bg-zinc-500 object-cover object-top select-none"
 				draggable="false"
 				src={cacheImage}
 				transition:fade={{ duration: 100 }}

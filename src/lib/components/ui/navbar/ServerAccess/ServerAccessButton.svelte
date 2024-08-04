@@ -39,7 +39,7 @@
 		<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId, roles)}>
 			{#await getImageSrc(icon) then image}
 				<Button
-					class="server-access-btn h-12 w-12 text-zinc-500 relative group"
+					class="server-access-btn h-[3.35rem] w-[3.35rem] text-zinc-500 relative group"
 					style={`${image ? `background-image: url('${image}'); background-size: cover` : ''}`}
 					size="icon"
 					{href}
@@ -48,8 +48,8 @@
 						{name.slice(0, 2).toUpperCase()}
 					{/if}
 					<div
-						class="absolute h-2 w-2 bg-white -left-[50%] top-1/2 -translate-y-1/2 rounded-lg group-hover:-left-[30%] group-hover:h-4 transition-[height,left]"
-						class:!-left-[30%]={serverNotif}
+						class="absolute h-2 w-2 bg-white -left-[50%] top-1/2 -translate-y-1/2 rounded-lg group-hover:-left-[29%] group-hover:h-4 transition-[height,left]"
+						class:!-left-[29%]={serverNotif}
 						class:active={$page.url.pathname.includes(href)}
 					/>
 					{#if mentioned}
@@ -69,12 +69,12 @@
 <style>
 	.active {
 		height: 1.8rem;
-		left: -30%;
+		left: -29%;
 	}
 
 	:global(.server-access-btn:hover .active) {
 		height: 1.8rem;
-		left: -30%;
+		left: -29%;
 	}
 
 	:global(.server-access-btn::after) {

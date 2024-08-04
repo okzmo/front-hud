@@ -11,15 +11,13 @@
 		detailsEmailSchema,
 		detailsUsernameSchema
 	} from '$lib/components/settings/schema-details';
-	import { zod, zodClient } from 'sveltekit-superforms/adapters';
+	import { zod } from 'sveltekit-superforms/adapters';
 	import { fail } from '@sveltejs/kit';
 	import { Body, fetch } from '@tauri-apps/api/http';
 
 	let editDisplayName: Boolean = false;
 	let editUsername: Boolean = false;
 	let editEmail: Boolean = false;
-
-	export let data: PageData;
 
 	let userId: string = $user!.id;
 

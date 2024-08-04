@@ -24,17 +24,15 @@
 		>
 			<Icon icon="ph:pencil-simple-duotone" height={20} width={20} />
 		</Button>
-		<div class="rounded-[1.5rem] flex relative px-[1.45rem] py-3 h-full">
+		<div class="rounded-lg flex relative px-[1.45rem] py-3 h-full">
 			{#if $user?.banner !== ''}
 				<img
-					class="w-full h-full absolute left-0 top-0 object-contain rounded-[1.6rem] transform-gpu"
+					class="w-full h-full absolute left-0 top-0 object-contain rounded-lg transform-gpu"
 					src={$user?.banner}
 					alt=""
 				/>
 			{:else}
-				<div
-					class="w-full h-full absolute left-0 top-0 object-cover rounded-[1.5rem] bg-zinc-700"
-				/>
+				<div class="w-full h-full absolute left-0 top-0 object-cover rounded-lg bg-zinc-700" />
 			{/if}
 			<div class="flex flex-col justify-end gap-y-2 z-[2]">
 				<span class="flex gap-x-3">
@@ -64,9 +62,9 @@
 				</span>
 				<p class="text-sm leading-[1.10rem]">{$user?.about_me}</p>
 			</div>
-			<div class="w-full absolute h-full progressive-blur rounded-[1.5rem]"></div>
+			<div class="w-full absolute h-full progressive-blur rounded-lg"></div>
 			<div
-				class="w-[calc(100%+1px)] absolute h-full rounded-2xl bg-gradient-to-t from-black/15 to-transparent left-0 top-0"
+				class="w-[calc(100%+1px)] absolute h-full rounded-lg bg-gradient-to-t from-black/15 to-transparent left-0 top-0"
 			></div>
 		</div>
 	</div>

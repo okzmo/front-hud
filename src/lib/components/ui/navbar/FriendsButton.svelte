@@ -11,7 +11,11 @@
 </script>
 
 <li>
-	<Button class={`h-12 w-12 relative`} size="icon" on:click={() => showFriends.set(!$showFriends)}>
+	<Button
+		class={`h-[3.35rem] w-[3.35rem] relative`}
+		size="icon"
+		on:click={() => showFriends.set(!$showFriends)}
+	>
 		<Icon
 			icon={!$showFriends ? 'solar:users-group-rounded-bold-duotone' : 'ph:arrow-left-bold'}
 			height="24"

@@ -96,12 +96,12 @@
 					transition:fade={{ duration: 100 }}
 					src={$spaceBg}
 					alt=""
-					class="w-full h-full absolute top-0 left-0 rounded-[0.8rem] object-cover"
+					class="w-full h-full absolute top-0 left-0 rounded-[3rem] object-cover"
 				/>
 			{/key}
 			<Sidebar />
 			<main
-				class="flex-grow relative bg-zinc-960/95 backdrop-blur-[50px] rounded-tr-xl rounded-br-xl"
+				class="flex-grow relative bg-zinc-960/95 backdrop-blur-[50px] rounded-tr-[0.5rem] rounded-br-[0.5rem]"
 			>
 				<slot />
 			</main>

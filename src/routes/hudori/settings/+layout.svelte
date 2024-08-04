@@ -37,7 +37,7 @@
 	const firstSpaceId = firstSpace[0]?.split(':')[1];
 </script>
 
-<div class="flex max-w-[70rem] mx-auto h-full">
+<div class="flex w-[65vw] mx-auto h-full">
 	<div class="flex flex-col items-center w-fit text-zinc-700 group h-fit pt-[4rem]">
 		<Button
 			href={$settingsLastPage || `/hudori/chat/space/${firstSpaceId}`}
@@ -72,7 +72,7 @@
 			</Button>
 		</form>
 	</nav>
-	<div class="flex-grow pt-[4rem] w-full min-w-[40vw]">
+	<div class="flex-grow pt-[4rem] w-full">
 		<slot />
 	</div>
 </div>
