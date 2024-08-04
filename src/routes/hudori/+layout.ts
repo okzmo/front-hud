@@ -1,6 +1,3 @@
-import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-import { friendRequestSchema } from '$lib/components/friends/schema-friend-request';
 import { friends, servers, sessStore, user } from '$lib/stores';
 import { fetch } from '@tauri-apps/api/http';
 import type { Server, User } from '$lib/types';
@@ -62,12 +59,6 @@ export const load = async () => {
       });
       return cache;
     });
-
-    return {
-      props: {
-        formFriendRequest: await superValidate(zod(friendRequestSchema))
-      }
-    };
   } catch (error) {
     console.log(error);
   }

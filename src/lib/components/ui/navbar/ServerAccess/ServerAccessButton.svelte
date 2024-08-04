@@ -40,7 +40,7 @@
 			{#await getImageSrc(icon) then image}
 				<Button
 					class="server-access-btn h-12 w-12 text-zinc-500 relative group"
-					style="background-image: url('{image}'); background-size: cover"
+					style={`${image ? `background-image: url('${image}'); background-size: cover` : ''}`}
 					size="icon"
 					{href}
 				>

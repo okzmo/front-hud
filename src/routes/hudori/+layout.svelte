@@ -2,18 +2,14 @@
 	import Navbar from '$lib/components/ui/navbar/Navbar.svelte';
 	import Sidebar from '$lib/components/ui/sidebar/Sidebar.svelte';
 	import { treatMessage, treatMessageJSON } from '$lib/websocket';
-	import { notifications, servers, wsConn, messProto, user, spaceBg } from '$lib/stores';
+	import { notifications, wsConn, messProto, user, spaceBg } from '$lib/stores';
 	import { onMount } from 'svelte';
-	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
 	import wasmUrl from 'brotli-dec-wasm/web/bg.wasm?url';
 	import { default as init } from 'brotli-dec-wasm/web';
 	import protobuf from 'protobufjs';
 	import { changeStatusOffline, fetchNotifs, scheduleSync, syncNotifications } from '$lib/fetches';
-	import { getImageSrc } from '$lib/utils';
 	import { fade } from 'svelte/transition';
-
-	export let data: LayoutData;
 
 	$: if ($notifications) {
 		scheduleSync();
@@ -110,8 +106,7 @@
 				<slot />
 			</main>
 		</div>
-	{/if}
-	{#if $page.url.pathname.includes('settings')}
+	{:else}
 		<slot />
 	{/if}
 
