@@ -1,14 +1,15 @@
 <script lang="ts">
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
-	import { notifications, servers, serversStateStore, vcRoom, messages } from '$lib/stores';
+	import { notifications, servers, vcRoom, messages } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { afterNavigate, onNavigate } from '$app/navigation';
+	import { afterNavigate } from '$app/navigation';
 	import { getMessages } from '$lib/fetches';
 	import VoiceChannel from '$lib/components/ui/voicechannel/VoiceChannel.svelte';
+	import type { User } from '$lib/types';
 
 	let type = 'textual';
-	let participants = [];
+	let participants: User[] = [];
 
 	$: if ($notifications) {
 		let channelNotif = $notifications.findIndex(
@@ -17,7 +18,8 @@
 		if (channelNotif > -1) {
 			notifications.update((notifs) => {
 				notifs[channelNotif].read = true;
-				if (notifs[channelNotif]?.mentions?.length > 0) {
+				const mentions = notifs[channelNotif]?.mentions;
+				if (mentions && mentions.length > 0) {
 					notifs[channelNotif].mentions = [];
 				}
 
@@ -42,17 +44,16 @@
 
 	afterNavigate(async ({ to }) => {
 		if (to && to.params) {
-			if (!$messages[to.params.channelId]) {
-				const allMessages = await getMessages({ ...to.params, offset: 0, limit: 25 });
-
-				messages.update((cache) => {
-					if (!cache[to.params.channelId]) {
-						cache[to.params.channelId] = { messages: [], date: Date.now() };
-					}
-					cache[to.params.channelId].messages = allMessages;
-					return cache;
-				});
-			}
+			const channelId = to.params.channelId;
+			const allMessages = await getMessages({ ...to.params, offset: 0, limit: 25 });
+			messages.update((cache) => {
+				if (!allMessages || !$messages[channelId]) {
+					cache[channelId] = { messages: [], date: Date.now() };
+				} else {
+					cache[channelId].messages = allMessages;
+				}
+				return cache;
+			});
 		}
 	});
 
@@ -66,10 +67,11 @@
 			const allMessages = await getMessages(params);
 
 			messages.update((cache) => {
-				if (!cache[$page.params.channelId]) {
+				if (!cache[$page.params.channelId] || !allMessages) {
 					cache[$page.params.channelId] = { messages: [], date: Date.now() };
+				} else {
+					cache[$page.params.channelId].messages = allMessages;
 				}
-				cache[$page.params.channelId].messages = allMessages;
 				return cache;
 			});
 		}

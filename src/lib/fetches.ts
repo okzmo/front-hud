@@ -59,7 +59,7 @@ export async function getMessages(params: any): Promise<Message[] | undefined> {
   const channelId = params.channelId ? params.channelId : params.id;
   const offset = params.offset || 0;
   const limit = params.limit || 25;
-  if (!channelId) return;
+  if (!channelId) return [];
   // if (messagesCache && messagesCache[channelId]) {
   // 	return messagesCache[channelId].messages;
   // }
