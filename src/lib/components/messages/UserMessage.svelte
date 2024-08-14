@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { formatISODate, generateRandomId, handleContextMenu } from '$lib/utils';
+	import {
+		formatISODate,
+		generateRandomId,
+		handleContextMenu,
+		restoreSelection,
+		saveSelection
+	} from '$lib/utils';
 	import * as Popover from '$lib/components/ui/popover';
 	import Profile from '../user/Profile.svelte';
 	import type { User } from '$lib/types';
@@ -119,7 +125,7 @@
 </script>
 
 {#if browser}
-	<ContextMenu.Root>
+	<ContextMenu.Root disableFocusFirstItem={true}>
 		<ContextMenu.Trigger on:contextmenu={() => handleContextMenu(openContextMenuId)}>
 			<div
 				class="flex gap-x-2 items-start px-6 py-3 hover:bg-zinc-500/5 transition-colors duration-75 relative select-none"
@@ -193,7 +199,13 @@
 									<RichInputEditMessage
 										{friend_chatbox}
 										files={null}
-										messageToEdit={content}
+										messageToEdit={generateHTML(JSON.parse(content), [
+											StarterKit,
+											Link,
+											Mention,
+											Emoji,
+											EmojiSuggestion
+										])}
 										messageToEditId={id}
 									/>
 								{:else}
@@ -208,9 +220,11 @@
 							</span>
 						</div>
 						{#if contextMenuOpen}
-							<ContextMenu.Content id="context-menu-category">
+							<ContextMenu.Content id="context-menu-message">
 								<ContextMenu.Item
 									class="gap-x-2 items-center text-sm"
+									on:focusin={() => setTimeout(restoreSelection, 0)}
+									on:focusout={() => setTimeout(restoreSelection, 0)}
 									on:click={() =>
 										navigator.clipboard.writeText(
 											generateText(JSON.parse(content), [
@@ -227,6 +241,8 @@
 								</ContextMenu.Item>
 								<ContextMenu.Item
 									class="gap-x-2 items-center text-sm"
+									on:focusin={() => setTimeout(restoreSelection, 0)}
+									on:focusout={() => setTimeout(restoreSelection, 0)}
 									on:click={() =>
 										replyTo.set({ id: id, author: { display_name: author.display_name } })}
 								>
@@ -236,6 +252,8 @@
 								{#if author.id === $user.id}
 									<ContextMenu.Item
 										class="gap-x-2 items-center text-sm"
+										on:focusin={() => setTimeout(restoreSelection, 0)}
+										on:focusout={() => setTimeout(restoreSelection, 0)}
 										on:click={() => editingMessage.set(id)}
 									>
 										<Icon icon="solar:pen-bold-duotone" height={16} width={16} class="" />
@@ -244,6 +262,8 @@
 									<ContextMenu.Item
 										class="gap-x-2 items-center text-destructive data-[highlighted]:bg-destructive data-[highlighted]:text-zinc-50 text-sm"
 										on:click={deleteMessage}
+										on:focusin={() => setTimeout(restoreSelection, 0)}
+										on:focusout={() => setTimeout(restoreSelection, 0)}
 									>
 										<Icon icon="solar:trash-bin-2-bold-duotone" height={16} width={16} />
 										Delete message

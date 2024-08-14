@@ -10,6 +10,8 @@
 	import protobuf from 'protobufjs';
 	import { changeStatusOffline, fetchNotifs, scheduleSync, syncNotifications } from '$lib/fetches';
 	import { fade } from 'svelte/transition';
+	import { saveSelection, restoreSelection } from '$lib/utils';
+	import { ContextMenu } from 'bits-ui';
 
 	$: if ($notifications) {
 		scheduleSync();
@@ -59,7 +61,8 @@
 		const body = document.body;
 
 		body.oncontextmenu = (ev) => {
-			ev.preventDefault();
+			saveSelection();
+			setTimeout(restoreSelection, 0);
 		};
 
 		const audios = document.getElementsByTagName('audio');

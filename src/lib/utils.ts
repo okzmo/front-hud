@@ -223,3 +223,18 @@ export const getImageSrc = async (url: string) => {
   return convertFileSrc(imagePath);
 };
 
+
+let savedSelection: Range;
+export function saveSelection() {
+  if (window.getSelection()) {
+    savedSelection = window.getSelection()?.getRangeAt(0);
+  }
+}
+
+export function restoreSelection() {
+  if (savedSelection) {
+    let selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(savedSelection);
+  }
+}

@@ -284,7 +284,7 @@
 					} else if (event.key === 'ArrowUp' && !mentionProps && !emojiProps) {
 						const channelId = $page.params.id || $page.params.channelId;
 						if ($messages[channelId]) {
-							const mess = $messages[channelId].messages?.findLast(
+							const mess = $messages[channelId].messages?.find(
 								(message) => message.author.id === $user.id
 							);
 							editingMessage.set(mess.id);

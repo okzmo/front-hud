@@ -13,6 +13,7 @@ import type { FriendRequestFormSchema } from './components/friends/schema-friend
 import { browser } from '$app/environment';
 import type { Room } from 'livekit-client';
 import { Store } from 'tauri-plugin-store-api';
+import type { JSONContent } from '@tiptap/core';
 
 type ContextMenuServer = {
   id: string;
@@ -43,7 +44,7 @@ export const friendRequest = writable<SuperValidated<Infer<FriendRequestFormSche
 
 // chat input (tiptap)
 export const editorState = writable<{ [key: string]: string | null }>({});
-export const updateChatInputState = (route: string, content: string | null) => {
+export const updateChatInputState = (route: string, content: JSONContent | null) => {
   editorState.update((state) => {
     return { ...state, [route]: content };
   });

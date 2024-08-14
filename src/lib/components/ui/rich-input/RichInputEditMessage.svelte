@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { Editor } from '@tiptap/core';
+	import { Editor, generateHTML, type JSONContent } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
 	import Placeholder from '@tiptap/extension-placeholder';
 	import Link from '@tiptap/extension-link';
@@ -46,7 +46,7 @@
 			editor.commands.setContent(messageToEdit);
 		}
 	}
-	async function editMessage(richInputContent: string) {
+	async function editMessage(richInputContent: JSONContent) {
 		if ((editor.getText().length <= 0 || editor.getText().length > 2500) && $files.length === 0) {
 			return;
 		}
@@ -54,7 +54,7 @@
 		messages.update((cache) => {
 			const mess = cache[channelId]?.messages?.find((message) => message.id === messageToEditId);
 			if (mess) {
-				mess.content = richInputContent;
+				mess.content = JSON.stringify(richInputContent);
 				mess.mentions = mentions;
 				mess.edited = true;
 			}
@@ -66,7 +66,7 @@
 		const body = {
 			channel_id: $page.params.id || $page.params.channelId,
 			author_id: $user.id.split(':')[1],
-			content: richInputContent,
+			content: JSON.stringify(richInputContent),
 			mentions: mentions,
 			private_message: friend_chatbox,
 			message_id: messageToEditId
@@ -247,7 +247,7 @@
 					) {
 						event.preventDefault();
 
-						editMessage(editor.getHTML());
+						editMessage(editor.getJSON());
 
 						return true;
 					}
@@ -257,7 +257,7 @@
 			}
 		});
 
-		editor.commands.setContent(messageToEdit || '');
+		editor.commands.setContent(messageToEdit);
 		editor.commands.focus('end');
 	}
 
