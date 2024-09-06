@@ -109,9 +109,9 @@
 			(entries) => {
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
-						replyMessage.classList.add('!bg-zinc-650/35');
+						replyMessage.classList.add('!bg-zinc-650/15');
 						setTimeout(() => {
-							replyMessage.classList.remove('!bg-zinc-650/35');
+							replyMessage.classList.remove('!bg-zinc-650/15');
 						}, 1000);
 						observer.disconnect();
 					}
@@ -148,8 +148,15 @@
 						>
 						<span
 							class="[&>p]:max-w-[10rem] [&>p]:inline-block [&>p]:overflow-hidden [&>p]:text-ellipsis overflow-hidden text-ellipsis flex-shrink-0 whitespace-nowrap flex select-none"
-							>{@html reply?.content}</span
 						>
+							{@html generateHTML(JSON.parse(reply?.content), [
+								StarterKit,
+								Link,
+								Mention,
+								Emoji,
+								EmojiSuggestion
+							])}
+						</span>
 					</button>
 				{/if}
 				{#if !groupedWithAfter}

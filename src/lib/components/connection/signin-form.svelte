@@ -22,7 +22,6 @@
 			if (!form.valid) return;
 
 			const endpoint = `${import.meta.env.VITE_API_URL}/auth/signin`;
-			console.log(endpoint);
 
 			try {
 				const response = await fetch(endpoint, {
@@ -32,7 +31,7 @@
 					},
 					body: Body.json(form.data)
 				});
-				console.log(response);
+
 				const data = response.data as {
 					message: string;
 					name?: string;

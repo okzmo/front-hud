@@ -8,10 +8,8 @@ export const EmojiSuggestion = Mention.extend({
 		return {
 			...this.parent?.(),
 			suggestion: {
-				char: ':', // Trigger character for emoji suggestions
+				char: ':',
 				command: ({ editor, range, props }) => {
-					// Insert the selected emoji
-
 					editor
 						.chain()
 						.focus()
@@ -34,7 +32,6 @@ export const EmojiSuggestion = Mention.extend({
 					return editor.can().insertContentAt(range, { type: 'emoji' });
 				},
 				items: async ({ query }) => {
-					// Use your custom loadEmojis function here
 					const emojis = await loadEmojis(query);
 					return emojis;
 				}

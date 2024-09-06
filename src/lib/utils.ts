@@ -238,3 +238,9 @@ export function restoreSelection() {
     selection?.addRange(savedSelection);
   }
 }
+
+export function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox?.classList.toggle('showLightBox');
+  document.removeEventListener('keydown', closeLightbox);
+}

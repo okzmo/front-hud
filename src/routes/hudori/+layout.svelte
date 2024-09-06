@@ -11,7 +11,7 @@
 	import { changeStatusOffline, fetchNotifs, scheduleSync, syncNotifications } from '$lib/fetches';
 	import { fade } from 'svelte/transition';
 	import { saveSelection, restoreSelection } from '$lib/utils';
-	import { ContextMenu } from 'bits-ui';
+	import Lightbox from '$lib/components/messages/Lightbox.svelte';
 
 	$: if ($notifications) {
 		scheduleSync();
@@ -85,9 +85,7 @@
 </script>
 
 <div class="h-full w-full flex py-3 pr-3">
-	<!-- <div -->
-	<!-- 	class="absolute -top-14 left-1/2 -translate-x-1/2 rounded-[50%] w-5/6 h-28 bg-zinc-500 z-[1] bg-gradient-to-b from-[#B693FF] to-[#9397FF] blur-3xl opacity-15 pointer-events-none" -->
-	<!-- ></div> -->
+	<Lightbox />
 	{#if !$page.url.pathname.includes('settings')}
 		<Navbar />
 	{/if}

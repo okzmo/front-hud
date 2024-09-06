@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { loadingMessages } from '$lib/stores';
-	import { Skeleton } from '../ui/skeleton';
+	import { lightboxImages } from '$lib/stores';
 
 	export let images: string[];
 
@@ -12,6 +11,13 @@
 		5: 3,
 		6: 3
 	};
+
+	function openImage(image: string) {
+		const lightbox = document.getElementById('lightbox');
+		if (!lightbox) return;
+		lightbox?.classList.toggle('showLightBox');
+		lightboxImages.set(image);
+	}
 </script>
 
 <div class="gallery" style="grid-template-columns: repeat({columnNumber[images.length]}, 1fr);">
@@ -23,9 +29,10 @@
 		{:else}
 			<div class="gallery-item rounded-lg">
 				<img
+					on:click={() => openImage(image)}
 					src={image}
 					alt="Gallery"
-					class="rounded-lg object-cover min-h-[15rem] max-h-[15rem]"
+					class="rounded-lg object-cover min-h-[15rem] max-h-[15rem] cursor-pointer"
 					class:aspect-square={columnNumber[images.length] > 1}
 				/>
 			</div>

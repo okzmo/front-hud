@@ -26,23 +26,26 @@
 	import { typing } from '$lib/fetches';
 	import type { SuggestionProps } from '@tiptap/suggestion';
 	import { Body, fetch } from '@tauri-apps/api/http';
+	import FilesUploaded from './FilesUploaded.svelte';
+
+	export let friend_chatbox: boolean;
+	export let files: Writable<File[]>;
 
 	let element: Element | undefined;
 	let editor: Editor;
 	let mentionList: any;
 	let emojisList: any;
-
-	export let friend_chatbox: boolean;
-	export let files: Writable<File[]>;
-
 	let channelId = '';
 	let currentChannelId = '';
 	let showSlowRequest = false;
 	let mentionProps: SuggestionProps<any> | null;
 	let emojiProps: SuggestionProps<any> | null;
 	let mentions: string[] = [];
-
 	let isTyping = false;
+
+	$: if ($page.params.id || $page.params.channelId) {
+		channelId = $page.params.id || $page.params.channelId;
+	}
 
 	const debounceTypingStart = debounce(() => {
 		if (!isTyping) {
@@ -56,21 +59,6 @@
 			typing('end');
 		}
 	}, 1500);
-
-	$: if ($page.params.id || $page.params.channelId) {
-		channelId = $page.params.id || $page.params.channelId;
-	}
-
-	beforeUpdate(() => {
-		if (currentChannelId !== channelId) {
-			if (editor) {
-				updateChatInputState(currentChannelId, editor.getHTML());
-				editor.destroy();
-			}
-			currentChannelId = channelId;
-			initializeEditor();
-		}
-	});
 
 	async function sendMessage(richInputContent: string) {
 		if ((editor.getText().length <= 0 || editor.getText().length > 2500) && $files.length === 0) {
@@ -310,6 +298,17 @@
 		}
 	}
 
+	beforeUpdate(() => {
+		if (currentChannelId !== channelId) {
+			if (editor) {
+				updateChatInputState(currentChannelId, editor.getHTML());
+				editor.destroy();
+			}
+			currentChannelId = channelId;
+			initializeEditor();
+		}
+	});
+
 	onMount(() => {
 		initializeEditor();
 
@@ -321,6 +320,10 @@
 			editor.destroy();
 		}
 	});
+
+	function deleteFile(file: File) {
+		files.update((state) => state.filter((f) => f !== file));
+	}
 </script>
 
 <div id="rich-input" class="rich-input bg-zinc-960/20 relative rounded-br-xl max-w-full">
@@ -331,6 +334,7 @@
 			Sending...
 		</div>
 	{/if}
+
 	{#if $replyTo}
 		<div
 			class="absolute bg-zinc-850 left-3 -top-8 w-[calc(100%-1.5rem)] py-1 pb-5 px-3 rounded-tr-lg rounded-tl-lg text-sm"
@@ -338,34 +342,43 @@
 			Reply to {$replyTo?.author?.display_name}
 		</div>
 	{/if}
+
 	{#if mentionProps}
 		<MentionList props={mentionProps} bind:this={mentionList} {mentions} />
 	{/if}
+
 	{#if emojiProps}
 		<EmojiList props={emojiProps} bind:this={emojisList} />
 	{/if}
+
+	{#if $files.length > 0}
+		<div
+			class="absolute flex gap-x-2 bg-zinc-925/50 backdrop-blur-xl left-0 bottom-0 px-[1.25rem] pt-3 pb-[5.75rem] w-full text-sm active border-t border-zinc-800"
+		>
+			{#each $files as file}
+				<FilesUploaded {file} on:delete={() => deleteFile(file)} />
+			{/each}
+		</div>
+	{/if}
+
 	<div bind:this={element} class="relative max-w-full">
 		<label
 			for="dropzone-file"
 			id="image-upload-icon"
-			class="absolute top-[2rem] -translate-y-1/2 left-[1.7rem] z-[2] w-[1.25rem] h-[1.25rem] flex justify-center items-start text-zinc-600 hover:text-zinc-400 cursor-pointer transition-colors"
+			class="absolute top-[1.05rem] left-[2rem] z-[2] w-[1.5625rem] h-[1.5625rem] flex justify-center items-start text-zinc-700 hover:text-zinc-400 cursor-pointer transition-colors"
 		>
-			{#if $files.length > 0}
-				<span class="text-xs">{$files.length}</span>
-			{:else}
-				<Icon
-					icon="solar:add-circle-bold-duotone"
-					class="pointer-events-none"
-					height={20}
-					width={20}
-				/>
-			{/if}
+			<Icon
+				icon="solar:add-circle-bold-duotone"
+				class="pointer-events-none"
+				height={25}
+				width={25}
+			/>
 		</label>
 		<Icon
 			icon="solar:smile-circle-bold-duotone"
-			class="absolute top-[2rem] -translate-y-1/2 right-[1.7rem] z-[2] text-zinc-600 hover:text-zinc-400  cursor-pointer transition-colors"
-			height={20}
-			width={20}
+			class="absolute top-[1.05rem] right-[2rem] z-[2] text-zinc-700 hover:text-zinc-400 cursor-pointer transition-colors"
+			height={25}
+			width={25}
 		/>
 	</div>
 </div>
@@ -373,28 +386,25 @@
 <style lang="postcss">
 	.rich-input {
 		width: 100%;
-		z-index: 2;
+		z-index: 10;
 	}
 
 	:global(.ProseMirror:focus) {
 		outline: none;
-		background-color: theme(colors.zinc.925);
+		border-color: theme(colors.zinc.700);
 	}
 
 	:global(.ProseMirror) {
 		max-height: 20rem;
-		background-color: transparent;
-		border-top: 1px solid theme(colors.zinc.850);
-		border-bottom: 0px;
-		border-left: 0px;
-		border-right: 0px;
+		background-color: theme(colors.zinc.97045);
+		border: 0.5px solid theme(colors.zinc.800);
 		font-size: theme(fontSize.base);
-		padding: 1.22rem 4.65rem;
-		border-radius: 0 0 0.75rem 0;
+		padding: 1rem 3.25rem;
+		border-radius: 1.75rem;
 		scroll-padding-block: 0.685rem;
 		overflow: auto;
 		transition: background-color 100ms ease-out;
-		margin: 0;
+		margin: 0rem 1rem 1.2rem;
 		overflow-wrap: break-word;
 		word-break: break-word;
 	}
@@ -409,7 +419,7 @@
 	}
 
 	:global(.is-editor-empty:first-child::before) {
-		color: theme(colors.zinc.600);
+		color: theme(colors.zinc.700);
 		font-size: theme(fontSize.base);
 		content: attr(data-placeholder);
 		float: left;
@@ -417,10 +427,10 @@
 		pointer-events: none;
 	}
 	:global(img.emoji-editor) {
-		height: 1.35em;
-		width: 1.35em;
+		height: 1.45em;
+		width: 1.45em;
 		margin: 0 0.1em 0 0.1em;
-		vertical-align: -0.25em;
+		vertical-align: -0.3em;
 		display: inline-block;
 		pointer-events: none;
 	}

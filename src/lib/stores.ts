@@ -39,6 +39,7 @@ export const replyTo = writable<Message | undefined>();
 export const spaceBg = writable<string>('');
 export const showFriends = writable<boolean>(false);
 export const sessStore = new Store('.sess.dat');
+export const lightboxImages = writable<string>('');
 
 export const friendRequest = writable<SuperValidated<Infer<FriendRequestFormSchema>>>();
 

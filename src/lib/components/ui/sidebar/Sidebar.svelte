@@ -7,7 +7,7 @@
 </script>
 
 <aside
-	class="relative flex-shrink-0 w-[17rem] flex flex-col rounded-tl-[0.5rem] rounded-bl-[0.5rem] border-r border-zinc-850"
+	class="relative flex-shrink-0 w-[17rem] flex flex-col rounded-tl-[0.5rem] rounded-bl-[0.5rem] border-r-[0.5px] border-zinc-850"
 >
 	{#if $page.url.pathname.includes('chat')}
 		<ChannelsList />

@@ -2,7 +2,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as Form from '$lib/components/ui/form';
 	import { Button } from '$lib/components/ui/button';
-	import { user } from '$lib/stores';
+	import { sessStore, user } from '$lib/stores';
 	import Icon from '@iconify/svelte';
 	import { defaults, setError, superForm } from 'sveltekit-superforms/client';
 	import type { PageData } from './$types';
@@ -40,10 +40,12 @@
 			};
 
 			try {
+				const sessId = await sessStore.get('sessionId');
 				const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_email`, {
 					method: 'POST',
 					headers: {
-						'Content-Type': 'application/json'
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${sessId}`
 					},
 					body: Body.json(body)
 				});
@@ -85,12 +87,14 @@
 			};
 
 			try {
+				const sessId = await sessStore.get('sessionId');
 				const response = await fetch(
 					`${import.meta.env.VITE_API_URL}/api/v1/user/change_username`,
 					{
 						method: 'POST',
 						headers: {
-							'Content-Type': 'application/json'
+							'Content-Type': 'application/json',
+							Authorization: `Bearer ${sessId}`
 						},
 						body: Body.json(body)
 					}
@@ -133,10 +137,12 @@
 			};
 
 			try {
+				const sessId = await sessStore.get('sessionId');
 				const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/user/change_name`, {
 					method: 'POST',
 					headers: {
-						'Content-Type': 'application/json'
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${sessId}`
 					},
 					body: Body.json(body)
 				});

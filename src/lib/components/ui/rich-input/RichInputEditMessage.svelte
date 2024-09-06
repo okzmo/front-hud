@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { Editor, generateHTML, type JSONContent } from '@tiptap/core';
+	import { Editor, type JSONContent } from '@tiptap/core';
 	import StarterKit from '@tiptap/starter-kit';
 	import Placeholder from '@tiptap/extension-placeholder';
 	import Link from '@tiptap/extension-link';
@@ -294,11 +294,8 @@
 		transition: border-color 75ms ease-out;
 	}
 
-	:global(.ProseMirror) {
+	:global(.ProseMirror.edit) {
 		max-height: 20rem;
-		border: 1px solid theme(colors.zinc.750);
-		background-color: theme(colors.zinc.850);
-		font-size: theme(fontSize.sm);
 		padding: 0.685rem 2.5rem;
 		border-radius: 0.75rem;
 		scroll-padding-block: 0.685rem;
@@ -308,6 +305,8 @@
 
 	:global(.ProseMirror.edit-message) {
 		margin: 0.5rem 0 0 0 !important;
+		font-size: theme(fontSize.sm);
+		border: 1px solid theme(colors.zinc.750);
 		padding: 0.5rem 0.8rem;
 		border-radius: 0.7rem;
 	}

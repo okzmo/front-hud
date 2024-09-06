@@ -5,10 +5,11 @@
 	import { defaults, stringProxy, superForm, type Infer } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { categoryCreationSchema } from '$lib/components/server/channels/schema-category-request';
-	import { user } from '$lib/stores';
 	import type { Writable } from 'svelte/store';
 	import { formatError } from '$lib/utils';
 	import { page } from '$app/stores';
+	import { fetch, Body } from '@tauri-apps/api/http';
+	import { sessStore } from '$lib/stores';
 
 	export let open: Writable<boolean>;
 	const data = defaults(zod(categoryCreationSchema));
@@ -31,17 +32,16 @@
 			};
 
 			try {
+				const sessId = await sessStore.get('sessionId');
 				const response = await fetch(endpoint, {
 					method: 'POST',
-					credentials: 'include',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-User-Agent': navigator.userAgent,
-						'X-User-ID': $user?.id
+						Authorization: `Bearer ${sessId}`
 					},
-					body: JSON.stringify(body)
+					body: Body.json(body)
 				});
-				const data = await response.json();
+				const data = response.data as { name?: string; message: string };
 
 				if (!response.ok) {
 					throw new Error(data.message);

@@ -105,6 +105,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
+		pointer-events: none;
 		border-radius: inherit;
 		padding: 1px; /* This determines the border thickness */
 		background: linear-gradient(to bottom, rgba(113, 113, 122, 0.3) 0%, rgba(113, 113, 122, 0) 35%);

@@ -9,6 +9,7 @@ export const detailsUsernameSchema = z.object({
 		.string()
 		.min(3, { message: 'This must be 3-20 characters' })
 		.max(20, { message: 'This must be 3-20 characters' })
+		.regex(/^[a-zA-Z0-9]+$/, { message: 'must contain only letters and numbers' })
 });
 
 export const detailsDisplayNameSchema = z.object({

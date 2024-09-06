@@ -128,6 +128,8 @@
 			loadMoreMessages();
 		}
 	}
+
+	$: console.log($files);
 </script>
 
 <label
