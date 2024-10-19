@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Chatbox from '$lib/components/ui/chatbox/Chatbox.svelte';
-	import { notifications, servers, vcRoom, messages } from '$lib/stores';
+	import { notifications, servers, vcRoom, messages, loadingMessages } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { afterNavigate } from '$app/navigation';
+	import { beforeNavigate } from '$app/navigation';
 	import { getMessages } from '$lib/fetches';
 	import VoiceChannel from '$lib/components/ui/voicechannel/VoiceChannel.svelte';
 	import type { User } from '$lib/types';
@@ -42,13 +42,13 @@
 		type = 'textual';
 	}
 
-	afterNavigate(async ({ to }) => {
+	beforeNavigate(async ({ to }) => {
 		if (to && to.params) {
 			const channelId = to.params.channelId;
-			const allMessages = await getMessages({ ...to.params, offset: 0, limit: 25 });
+			const allMessages = (await getMessages({ ...to.params, offset: 0, limit: 25 })) || [];
 			messages.update((cache) => {
-				if (!allMessages || !$messages[channelId]) {
-					cache[channelId] = { messages: [], date: Date.now() };
+				if (!cache[channelId]) {
+					cache[channelId] = { messages: allMessages, date: Date.now() };
 				} else {
 					cache[channelId].messages = allMessages;
 				}
@@ -64,13 +64,14 @@
 			limit: 25
 		};
 		if (!$messages[$page.params.channelId]) {
-			const allMessages = await getMessages(params);
+			const allMessages = (await getMessages(params)) || [];
+			const channelId = $page.params.channelId;
 
 			messages.update((cache) => {
-				if (!cache[$page.params.channelId] || !allMessages) {
-					cache[$page.params.channelId] = { messages: [], date: Date.now() };
+				if (!cache[channelId]) {
+					cache[channelId] = { messages: allMessages, date: Date.now() };
 				} else {
-					cache[$page.params.channelId].messages = allMessages;
+					cache[channelId].messages = allMessages;
 				}
 				return cache;
 			});

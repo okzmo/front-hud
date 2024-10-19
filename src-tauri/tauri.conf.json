@@ -1,129 +1,120 @@
 {
-  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
-  "build": {
-    "beforeBuildCommand": "pnpm run build",
-    "beforeDevCommand": "pnpm run dev",
-    "devPath": "https://localhost:5173",
-    "distDir": "../build"
-  },
-  "package": {
-    "productName": "Hudori",
-    "version": "0.1.0"
-  },
-  "tauri": {
-    "allowlist": {
-      "window": {
-        "all": false,
-        "center": false,
-        "close": true,
-        "create": true,
-        "hide": true,
-        "maximize": true,
-        "minimize": true,
-        "print": false,
-        "requestUserAttention": false,
-        "setAlwaysOnTop": false,
-        "setClosable": false,
-        "setContentProtected": false,
-        "setCursorGrab": false,
-        "setCursorIcon": false,
-        "setCursorPosition": false,
-        "setCursorVisible": false,
-        "setDecorations": false,
-        "setFocus": false,
-        "setFullscreen": false,
-        "setIcon": false,
-        "setIgnoreCursorEvents": false,
-        "setMaxSize": false,
-        "setMaximizable": false,
-        "setMinSize": false,
-        "setMinimizable": false,
-        "setPosition": false,
-        "setResizable": false,
-        "setSize": false,
-        "setSkipTaskbar": false,
-        "setTitle": false,
-        "show": true,
-        "startDragging": true,
-        "unmaximize": true,
-        "unminimize": true
-      },
-      "fs": {
-        "all": true,
-        "scope": [
-          "$APPCACHE/**",
-          "$RESOURCE/**"
-        ]
-      },
-      "path": {
-        "all": true
-      },
-      "protocol": {
-        "asset": true,
-        "assetScope": [
-          "$APPCACHE/**",
-          "$RESOURCE/**"
-        ]
-      },
-      "http": {
-        "all": true,
-        "request": true,
-        "scope": [
-          "http://*",
-          "https://*"
-        ]
-      }
-    },
-    "bundle": {
-      "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
-      "deb": {
-        "depends": []
-      },
-      "externalBin": [],
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "identifier": "com.tauri.dev",
-      "longDescription": "",
-      "macOS": {
-        "entitlements": "Release.entitlements",
-        "exceptionDomain": "",
-        "frameworks": [],
-        "providerShortName": null,
-        "signingIdentity": null
-      },
-      "resources": [],
-      "shortDescription": "",
-      "targets": "all",
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
-      }
-    },
-    "security": {
-      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
-    },
-    "updater": {
-      "active": false
-    },
-    "windows": [
-      {
-        "fullscreen": false,
-        "height": 600,
-        "resizable": true,
-        "title": "Hudori",
-        "width": 800,
-        "url": "/signin",
-        "hiddenTitle": true,
-        "titleBarStyle": "Overlay"
-      }
-    ]
-  }
+	"$schema": "../node_modules/@tauri-apps/cli/schema.json",
+	"build": {
+		"beforeBuildCommand": "pnpm run build",
+		"beforeDevCommand": "pnpm run dev",
+		"devPath": "https://localhost:5173",
+		"distDir": "../build"
+	},
+	"package": {
+		"productName": "Hudori",
+		"version": "0.1.0"
+	},
+	"tauri": {
+		"allowlist": {
+			"window": {
+				"all": false,
+				"center": false,
+				"close": true,
+				"create": true,
+				"hide": true,
+				"maximize": true,
+				"minimize": true,
+				"print": false,
+				"requestUserAttention": false,
+				"setAlwaysOnTop": false,
+				"setClosable": false,
+				"setContentProtected": false,
+				"setCursorGrab": false,
+				"setCursorIcon": false,
+				"setCursorPosition": false,
+				"setCursorVisible": false,
+				"setDecorations": false,
+				"setFocus": false,
+				"setFullscreen": false,
+				"setIcon": false,
+				"setIgnoreCursorEvents": false,
+				"setMaxSize": false,
+				"setMaximizable": false,
+				"setMinSize": false,
+				"setMinimizable": false,
+				"setPosition": false,
+				"setResizable": false,
+				"setSize": false,
+				"setSkipTaskbar": false,
+				"setTitle": false,
+				"show": true,
+				"startDragging": true,
+				"unmaximize": true,
+				"unminimize": true
+			},
+			"fs": {
+				"all": true,
+				"scope": ["$APPCACHE/**", "$RESOURCE/**"]
+			},
+			"path": {
+				"all": true
+			},
+			"protocol": {
+				"asset": true,
+				"assetScope": ["$APPCACHE/**", "$RESOURCE/**"]
+			},
+			"http": {
+				"all": true,
+				"request": true,
+				"scope": ["http://*", "https://*"]
+			}
+		},
+		"bundle": {
+			"active": true,
+			"category": "DeveloperTool",
+			"copyright": "",
+			"deb": {
+				"depends": []
+			},
+			"externalBin": [],
+			"icon": [
+				"icons/32x32.png",
+				"icons/128x128.png",
+				"icons/128x128@2x.png",
+				"icons/icon.icns",
+				"icons/icon.ico"
+			],
+			"identifier": "com.tauri.dev",
+			"longDescription": "",
+			"macOS": {
+				"entitlements": "Release.entitlements",
+				"exceptionDomain": "",
+				"frameworks": [],
+				"providerShortName": null,
+				"signingIdentity": null
+			},
+			"resources": [],
+			"shortDescription": "",
+			"targets": "all",
+			"windows": {
+				"certificateThumbprint": null,
+				"digestAlgorithm": "sha256",
+				"timestampUrl": ""
+			}
+		},
+		"security": {
+			"csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
+		},
+		"updater": {
+			"active": false
+		},
+		"windows": [
+			{
+				"fullscreen": false,
+				"height": 600,
+				"resizable": true,
+				"title": "Hudori",
+				"width": 800,
+				"url": "/signin",
+				"hiddenTitle": true,
+				"titleBarStyle": "Overlay"
+			}
+		]
+	}
 }

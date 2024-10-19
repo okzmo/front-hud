@@ -28,17 +28,17 @@
 		isLoadingMore = true;
 		const channelId = $page.params.id || $page.params.channelId;
 
-		const newMessages = await getMessages({
-			channelId,
-			offset: groupedMessages.length,
-			limit: 25
-		});
+		const newMessages = await getMessages(
+			{
+				channelId,
+				offset: groupedMessages.length,
+				limit: 25
+			},
+			true
+		);
 
 		if (newMessages && newMessages.length > 0) {
 			messages.update((cache) => {
-				if (!cache[channelId]) {
-					cache[channelId] = { messages: [], date: Date.now() };
-				}
 				cache[channelId].messages = [...cache[channelId].messages, ...newMessages];
 				return cache;
 			});
@@ -48,10 +48,12 @@
 
 	$: channelId = $page.params.id || $page.params.channelId;
 	$: if ($messages[channelId]) {
+		loadingMessages.set(true);
 		infiniteLoadKey += 1;
-		if ($messages[channelId]?.messages) {
+		if ($messages[channelId].messages) {
 			groupedMessages = groupMessages($messages[channelId]?.messages);
 		}
+		loadingMessages.set(false);
 	}
 
 	function scrollToPosition() {
@@ -128,8 +130,6 @@
 			loadMoreMessages();
 		}
 	}
-
-	$: console.log($files);
 </script>
 
 <label
